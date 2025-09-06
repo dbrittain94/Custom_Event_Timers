@@ -21,7 +21,7 @@ using System.Runtime.Remoting.Channels;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace AB_Bauble_Farm
+namespace farming.community.AB_Bauble_Farm
 {
     [Export(typeof(Blish_HUD.Modules.Module))]
     public class BaubleFarmModule : Blish_HUD.Modules.Module
@@ -55,6 +55,7 @@ namespace AB_Bauble_Farm
         }
         private SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
         private SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
+        private SettingEntry<int> _timerLowDefault;
         private SettingEntry<int> _timerSVETdefault;
         private SettingEntry<int> _timerEVETdefault;
         private SettingEntry<int> _timerNVETdefault;
@@ -65,25 +66,35 @@ namespace AB_Bauble_Farm
         private SettingEntry<int> _timerBRAMBLEdefault;
         private SettingEntry<int> _timerOOZEdefault;
         private SettingEntry<int> _timerGUZZLERdefault;
+        private SettingEntry<int> _timerTMdefault;
+        private SettingEntry<int> _timerSTONEHEADSdefault;
         protected override void DefineSettings(SettingCollection settings)
         {
             _toggleTimerWindowKeybind = settings.DefineSetting(
-                "Timer Window",
-                new KeyBinding(Keys.None),
-                () => "Toggle Timer Window Keybind",
+                "Timer Keybinding",
+                new KeyBinding(ModifierKeys.Shift, Keys.L),
+                () => "Timer Keybinding",
                 () => "Keybind to show or hide the Timer window."
             );
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
             _toggleInfoWindowKeybind = settings.DefineSetting(
-                "Bauble Info Window",
-                new KeyBinding(Keys.None),
-                () => "Toggle Information Window Keybind",
+                "Info Keybinding",
+                new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),
+                () => "Info Keybinding",
                 () => "Keybind to show or hide the Information window."
             );
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
+
+            _timerLowDefault = settings.DefineSetting(
+                "Low Timer Default Timer",
+                30,
+                () => "Low Timer (seconds)",
+                () => "Set timer for when timer gets below certain threshold in seconds."
+            );
+            _timerLowDefault.SetRange(1, 120);
 
             _timerSVETdefault = settings.DefineSetting(
                 "SVET Default Timer",
@@ -164,6 +175,22 @@ namespace AB_Bauble_Farm
                 () => "Set timer for GUZZLER in minutes."
             );
             _timerGUZZLERdefault.SetRange(1, 15);
+
+            _timerTMdefault = settings.DefineSetting(
+                "TM Default Timer",
+                10,
+                () => "TM (minutes)",
+                () => "Set timer for TM in minutes."
+            );
+            _timerTMdefault.SetRange(1, 10);
+
+            _timerSTONEHEADSdefault = settings.DefineSetting(
+                "STONEHEADS Default Timer",
+                12,
+                () => "STONEHEADS (minutes)",
+                () => "Set timer for STONEHEADS in minutes."
+            );
+            _timerSTONEHEADSdefault.SetRange(1, 15);
         }
         private void ToggleTimerWindowKeybind_Activated(object sender, EventArgs e)
         {
@@ -190,14 +217,14 @@ namespace AB_Bauble_Farm
 
         protected override void Initialize()
         {
-            _timerStartTimes = new DateTime?[10];
-            _timerRunning = new bool[10];
-            _timerLabelDescriptions = new Label[10];
-            _timerLabels = new Label[10];
-            _resetButtons = new StandardButton[10];
-            _customDropdownTimers = new Dropdown[10];
-            _timerDurationOverride = new TimeSpan[10];
-            _timerDurationDefaults = new TimeSpan[10];
+            _timerStartTimes = new DateTime?[12];
+            _timerRunning = new bool[12];
+            _timerLabelDescriptions = new Label[12];
+            _timerLabels = new Label[12];
+            _resetButtons = new StandardButton[12];
+            _customDropdownTimers = new Dropdown[12];
+            _timerDurationOverride = new TimeSpan[12];
+            _timerDurationDefaults = new TimeSpan[12];
             
             // Initialize Timer Defaults
             _timerDurationDefaults[0] = TimeSpan.FromMinutes(_timerSVETdefault.Value);
@@ -210,6 +237,8 @@ namespace AB_Bauble_Farm
             _timerDurationDefaults[7] = TimeSpan.FromMinutes(_timerBRAMBLEdefault.Value);
             _timerDurationDefaults[8] = TimeSpan.FromMinutes(_timerOOZEdefault.Value);
             _timerDurationDefaults[9] = TimeSpan.FromMinutes(_timerGUZZLERdefault.Value);
+            _timerDurationDefaults[10] = TimeSpan.FromMinutes(_timerTMdefault.Value);
+            _timerDurationDefaults[11] = TimeSpan.FromMinutes(_timerSTONEHEADSdefault.Value);
 
             // Initialize all timers as not started
             for (int i = 0; i < 10; i++)
@@ -217,32 +246,7 @@ namespace AB_Bauble_Farm
                 _timerStartTimes[i] = null; // Not started
                 _timerRunning[i] = false;
             }
-        }
 
-        private void CornerIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
-        {
-            // Toggle window visibility
-            if (_TimerWindow.Visible)
-            {
-                _TimerWindow.Hide();
-            }
-            else
-            {
-                _TimerWindow.Show();
-            }
-
-            if (_InfoWindow.Visible)
-            {
-                _InfoWindow.Hide();
-            }
-            else
-            {
-                _InfoWindow.Show();
-            }
-        }
-
-        protected override async Task LoadAsync()
-        {
             try
             {
                 /// Timer Window Setup
@@ -251,8 +255,8 @@ namespace AB_Bauble_Farm
                 AsyncTexture2D _asyncTimerTexture = new AsyncTexture2D();
                 _TimerWindow = new StandardWindow(
                     _asyncTimerTexture,
-                    new Rectangle(0, 0, 420, 400), // The windowRegion
-                    new Rectangle(0, -20, 440, 550)) // The contentRegion
+                    new Rectangle(0, 0, 420, 440), // The windowRegion
+                    new Rectangle(0, -20, 440, 590)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "Timers",
@@ -312,7 +316,7 @@ namespace AB_Bauble_Farm
                 //// Info Window keybind
                 if (_toggleTimerWindowKeybind.Value.PrimaryKey == Keys.None)
                 {
-                    _toggleTimerWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.OemSemicolon ;
+                    _toggleTimerWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.OemSemicolon;
                 }
 
                 // Update the corner icon
@@ -327,8 +331,10 @@ namespace AB_Bauble_Farm
                 };
 
                 /// Shiny Bauble Time Rotation
+                TimeZoneInfo localTimeZone = TimeZoneInfo.Local; // Get the user's local time zone information.
                 DateTime currentTime = DateTime.Now;
-                DateTime originBaubleStartTime = DateTime.Parse("2025-08-28 16:00:00"); //08-28
+                DateTime rawBaubleStartTime = DateTime.Parse("2025-08-28 20:00:00"); // UTC time zone reset
+                DateTime originBaubleStartTime = TimeZoneInfo.ConvertTimeFromUtc(rawBaubleStartTime, localTimeZone);
                 int weekInterval = 3; // Number of weeks between bauble starts
                 TimeSpan differenceOriginCurrent = currentTime - originBaubleStartTime;
                 int weeksElapsed = (int)Math.Floor(differenceOriginCurrent.TotalDays / 7);
@@ -383,10 +389,12 @@ namespace AB_Bauble_Farm
                 };
                 Label startTimeValue = new Label
                 {
-                    Text = NextBaubleStartDate.ToString("MMMM dd, yyyy"),
+                    Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)"),
                     Size = new Point(230, 30),
-                    Location = new Point(110, 80),
+                    Location = new Point(90, 80),
                     Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
                     Parent = _InfoWindow
                 };
                 Label endTimeLabel = new Label
@@ -399,10 +407,12 @@ namespace AB_Bauble_Farm
                 };
                 Label endTimeValue = new Label
                 {
-                    Text = EndofBaubleWeek.ToString("MMMM dd, yyyy"),
+                    Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)"),
                     Size = new Point(230, 30),
-                    Location = new Point(90, 110),
+                    Location = new Point(80, 110),
                     Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
                     Parent = _InfoWindow
                 };
 
@@ -432,7 +442,7 @@ namespace AB_Bauble_Farm
                 {
                     Text = "Timer",
                     Size = new Point(120, 30),
-                    Location = new Point(120, 55),
+                    Location = new Point(130, 55),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
@@ -450,9 +460,9 @@ namespace AB_Bauble_Farm
                 };
 
                 // Create UI elements for each timer
-                string[] Descriptions = { "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER" };
+                string[] Descriptions = { "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER", "TM", "STONEHEADS" };
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 12; i++)
                 {
                     int index = i; // Capture index for event handlers
 
@@ -470,7 +480,9 @@ namespace AB_Bauble_Farm
                     {
                         Text = _timerDurationDefaults[i].ToString(@"mm\:ss"),
                         Size = new Point(100, 30),
-                        Location = new Point(120, 80 + (i * 30)),
+                        Location = new Point(130, 80 + (i * 30)),
+                        Font = GameService.Content.DefaultFont16,
+                        TextColor = Color.GreenYellow,
                         Parent = _TimerWindow
                     };
 
@@ -499,6 +511,32 @@ namespace AB_Bauble_Farm
                 Logger.Error($"Error in LoadAsync: {ex.Message}");
             }
         }
+
+        private void CornerIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
+        {
+            // Toggle window visibility
+            if (_TimerWindow.Visible)
+            {
+                _TimerWindow.Hide();
+            }
+            else
+            {
+                _TimerWindow.Show();
+            }
+
+            if (_InfoWindow.Visible)
+            {
+                _InfoWindow.Hide();
+            }
+            else
+            {
+                _InfoWindow.Show();
+            }
+        }
+
+        protected override async Task LoadAsync()
+        {
+        }
         private void ResetButton_Click(int timerIndex)
         {
             string DropdownValue = _customDropdownTimers[timerIndex].SelectedItem;
@@ -519,7 +557,7 @@ namespace AB_Bauble_Farm
         }
         private void StopButton_Click()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 12; i++)
             {
                 _timerStartTimes[i] = DateTime.Now;
                 _timerRunning[i] = false;
@@ -538,16 +576,19 @@ namespace AB_Bauble_Farm
             _timerDurationDefaults[7] = TimeSpan.FromMinutes(_timerBRAMBLEdefault.Value);
             _timerDurationDefaults[8] = TimeSpan.FromMinutes(_timerOOZEdefault.Value);
             _timerDurationDefaults[9] = TimeSpan.FromMinutes(_timerGUZZLERdefault.Value);
+            _timerDurationDefaults[10] = TimeSpan.FromMinutes(_timerTMdefault.Value);
+            _timerDurationDefaults[11] = TimeSpan.FromMinutes(_timerSTONEHEADSdefault.Value);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 12; i++)
             {
                 string DropdownValue = _customDropdownTimers[i].SelectedItem;
                 if (_timerRunning[i] && _timerStartTimes[i].HasValue)
                 {
+                    TimeSpan remaining = TimeSpan.FromMinutes(0);
                     if (DropdownValue == "Default")
                     {
                         var elapsed = DateTime.Now - _timerStartTimes[i].Value;
-                        var remaining = _timerDurationDefaults[i] - elapsed;
+                        remaining = _timerDurationDefaults[i] - elapsed;
                         if (remaining.TotalSeconds <= 0)
                         {
                             remaining = TimeSpan.Zero;
@@ -558,13 +599,22 @@ namespace AB_Bauble_Farm
                     else
                     {
                         var elapsed = DateTime.Now - _timerStartTimes[i].Value;
-                        var remaining = _timerDurationOverride[i] - elapsed;
+                        remaining = _timerDurationOverride[i] - elapsed;
                         if (remaining.TotalSeconds <= 0)
                         {
                             remaining = TimeSpan.Zero;
                             _timerRunning[i] = false;
                         }
                         _timerLabels[i].Text = $"{remaining:mm\\:ss}";
+                    }
+
+                    if (remaining.TotalSeconds < _timerLowDefault.Value)
+                    {
+                        _timerLabels[i].TextColor = Color.Red;
+                    }
+                    else
+                    {
+                        _timerLabels[i].TextColor = Color.GreenYellow;
                     }
                 }
             }
@@ -573,7 +623,7 @@ namespace AB_Bauble_Farm
         protected override void Unload()
         {
             // Clean up
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 12; i++)
             {
                 _resetButtons[i]?.Dispose();
                 _timerLabels[i]?.Dispose();
