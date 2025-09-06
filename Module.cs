@@ -418,11 +418,34 @@ namespace AB_Bauble_Farm
                 };
                 _stopButton.Click += (s, e) => StopButton_Click();
 
+                Label eventsLabel = new Label
+                {
+                    Text = "Events",
+                    Size = new Point(120, 30),
+                    Location = new Point(30, 55),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _TimerWindow
+                };
+                Label timerLabel = new Label
+                {
+                    Text = "Timer",
+                    Size = new Point(120, 30),
+                    Location = new Point(120, 55),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _TimerWindow
+                };
                 Label overridesLabel = new Label
                 {
                     Text = "Override (min)",
-                    Size = new Point(100, 30),
-                    Location = new Point(320, 40),
+                    Size = new Point(120, 30),
+                    Location = new Point(310, 55),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
                     Parent = _TimerWindow
                 };
 
