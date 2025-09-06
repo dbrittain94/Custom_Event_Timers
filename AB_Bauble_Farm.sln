@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AB_Bauble_Farm", "AB_Bauble_Farm.csproj", "{36A427FF-DF0C-4B31-939C-0DE06802BEDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{36A427FF-DF0C-4B31-939C-0DE06802BEDB}.Debug|x64.ActiveCfg = Debug|x64
+		{36A427FF-DF0C-4B31-939C-0DE06802BEDB}.Debug|x64.Build.0 = Debug|x64
+		{36A427FF-DF0C-4B31-939C-0DE06802BEDB}.Release|x64.ActiveCfg = Release|x64
+		{36A427FF-DF0C-4B31-939C-0DE06802BEDB}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {554EFA56-9782-4ED5-8F2F-5F7ED9E4E3BD}
+	EndGlobalSection
+EndGlobal
