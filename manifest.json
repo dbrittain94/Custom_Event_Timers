@@ -1,7 +1,7 @@
 {
   "name": "AB Bauble Farm",
   "version": "0.0.1",
-  "namespace": "drewb.AB_Bauble_Farm",
+  "namespace": "roguishpanda.AB_Bauble_Farm",
   "package": "AB_Bauble_Farm.dll",
   "manifest_version": 1,
 
@@ -11,7 +11,7 @@
   },
   "contributors": [
     {
-      "name": "DrewB",
+      "name": "roguishpanda",
       "username": "RoguishPanda.9507"
     }
   ]

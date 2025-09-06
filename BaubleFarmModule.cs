@@ -16,7 +16,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Runtime;
 
-namespace drewb.AB_Bauble_Farm
+namespace roguishpanda.AB_Bauble_Farm
 {
     [Export(typeof(Blish_HUD.Modules.Module))]
     public class BaubleFarmModule : Blish_HUD.Modules.Module
