@@ -1,7 +1,7 @@
 {
   "name": "AB Bauble Farm",
   "version": "0.0.1",
-  "namespace": "farming.community.AB_Bauble_Farm",
+  "namespace": "drewb.AB_Bauble_Farm",
   "package": "AB_Bauble_Farm.dll",
   "manifest_version": 1,
 

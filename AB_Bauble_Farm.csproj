@@ -335,7 +335,7 @@
     <Content Include="SharpDX.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ref\textures\" />
+    <Folder Include="ref\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

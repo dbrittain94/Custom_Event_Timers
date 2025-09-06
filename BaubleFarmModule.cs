@@ -1,6 +1,7 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
+using Blish_HUD.Graphics.UI;
 using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
@@ -10,18 +11,12 @@ using Gw2Sharp.WebApi;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D9;
+using SharpDX.DirectWrite;
 using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Channels;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+using System.Runtime;
 
-namespace farming.community.AB_Bauble_Farm
+namespace drewb.AB_Bauble_Farm
 {
     [Export(typeof(Blish_HUD.Modules.Module))]
     public class BaubleFarmModule : Blish_HUD.Modules.Module
@@ -33,6 +28,11 @@ namespace farming.community.AB_Bauble_Farm
         internal ContentsManager ContentsManager => this.ModuleParameters.ContentsManager;
         internal DirectoriesManager DirectoriesManager => this.ModuleParameters.DirectoriesManager;
         internal Gw2ApiManager Gw2ApiManager => this.ModuleParameters.Gw2ApiManager;
+
+        [ImportingConstructor]
+        public BaubleFarmModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
+        {
+        }
         #endregion
 
         private Label[] _timerLabelDescriptions;
@@ -48,11 +48,6 @@ namespace farming.community.AB_Bauble_Farm
         private StandardWindow _TimerWindow;
         private StandardWindow _InfoWindow;
         private CornerIcon _cornerIcon;
-
-        [ImportingConstructor]
-        public BaubleFarmModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
-        {
-        }
         private SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
         private SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
         private SettingEntry<int> _timerLowDefault;
@@ -67,129 +62,54 @@ namespace farming.community.AB_Bauble_Farm
         private SettingEntry<int> _timerOOZEdefault;
         private SettingEntry<int> _timerGUZZLERdefault;
         private SettingEntry<int> _timerTMdefault;
-        private SettingEntry<int> _timerSTONEHEADSdefault;
+        private SettingEntry<int> _timerSTONEHEADSdefault; 
         protected override void DefineSettings(SettingCollection settings)
         {
-            _toggleTimerWindowKeybind = settings.DefineSetting(
-                "Timer Keybinding",
-                new KeyBinding(ModifierKeys.Shift, Keys.L),
-                () => "Timer Keybinding",
-                () => "Keybind to show or hide the Timer window."
-            );
+            _toggleTimerWindowKeybind = settings.DefineSetting("Timer Keybinding",new KeyBinding(ModifierKeys.Shift, Keys.L),() => "Timer Keybinding",() => "Keybind to show or hide the Timer window.");
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
-            _toggleInfoWindowKeybind = settings.DefineSetting(
-                "Info Keybinding",
-                new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),
-                () => "Info Keybinding",
-                () => "Keybind to show or hide the Information window."
-            );
+            _toggleInfoWindowKeybind = settings.DefineSetting("Info Keybinding",new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),() => "Info Keybinding",() => "Keybind to show or hide the Information window.");
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
-            _timerLowDefault = settings.DefineSetting(
-                "Low Timer Default Timer",
-                30,
-                () => "Low Timer (seconds)",
-                () => "Set timer for when timer gets below certain threshold in seconds."
-            );
+            _timerLowDefault = settings.DefineSetting("Low Timer Default Timer",30,() => "Low Timer (seconds)",() => "Set timer for when timer gets below certain threshold in seconds.");
             _timerLowDefault.SetRange(1, 120);
 
-            _timerSVETdefault = settings.DefineSetting(
-                "SVET Default Timer",
-                10,
-                () => "SVET (minutes)",
-                () => "Set timer for SVET in minutes."
-            );
+            _timerSVETdefault = settings.DefineSetting("SVET Default Timer",10,() => "SVET (minutes)",() => "Set timer for SVET in minutes.");
             _timerSVETdefault.SetRange(1, 10);
 
-            _timerEVETdefault = settings.DefineSetting(
-                "EVET Default Timer",
-                10,
-                () => "EVET (minutes)",
-                () => "Set timer for EVET in minutes."
-            );
+            _timerEVETdefault = settings.DefineSetting("EVET Default Timer",10,() => "EVET (minutes)",() => "Set timer for EVET in minutes.");
             _timerEVETdefault.SetRange(1, 10);
 
-            _timerNVETdefault = settings.DefineSetting(
-                "NVET Default Timer",
-                10,
-                () => "NVET (minutes)",
-                () => "Set timer for NVET in minutes."
-            );
+            _timerNVETdefault = settings.DefineSetting("NVET Default Timer",10,() => "NVET (minutes)",() => "Set timer for NVET in minutes.");
             _timerNVETdefault.SetRange(1, 10);
 
-            _timerWVETdefault = settings.DefineSetting(
-                "WVET Default Timer",
-                10,
-                () => "WVET (minutes)",
-                () => "Set timer for WVET in minutes."
-            );
+            _timerWVETdefault = settings.DefineSetting("WVET Default Timer",10,() => "WVET (minutes)",() => "Set timer for WVET in minutes.");
             _timerWVETdefault.SetRange(1, 10);
 
-            _timerSAPdefault = settings.DefineSetting(
-                "SAP Default Timer",
-                8,
-                () => "SAP (minutes)",
-                () => "Set timer for SAP in minutes."
-            );
+            _timerSAPdefault = settings.DefineSetting("SAP Default Timer",8,() => "SAP (minutes)",() => "Set timer for SAP in minutes.");
             _timerSAPdefault.SetRange(1, 10);
 
-            _timerBALTHdefault = settings.DefineSetting(
-                "BALTH Default Timer",
-                8,
-                () => "BALTH (minutes)",
-                () => "Set timer for BALTH in minutes."
-            );
+            _timerBALTHdefault = settings.DefineSetting("BALTH Default Timer",8,() => "BALTH (minutes)",() => "Set timer for BALTH in minutes.");
             _timerBALTHdefault.SetRange(1, 10);
 
-            _timerWYVERNdefault = settings.DefineSetting(
-                "WYVERN Default Timer",
-                13,
-                () => "WYVERN (minutes)",
-                () => "Set timer for WYVERN in minutes."
-            );
+            _timerWYVERNdefault = settings.DefineSetting("WYVERN Default Timer",13,() => "WYVERN (minutes)",() => "Set timer for WYVERN in minutes.");
             _timerWYVERNdefault.SetRange(1, 15);
 
-            _timerBRAMBLEdefault = settings.DefineSetting(
-                "BRAMBLE Default Timer",
-                13,
-                () => "BRAMBLE (minutes)",
-                () => "Set timer for BRAMBLE in minutes."
-            );
+            _timerBRAMBLEdefault = settings.DefineSetting("BRAMBLE Default Timer",13,() => "BRAMBLE (minutes)",() => "Set timer for BRAMBLE in minutes.");
             _timerBRAMBLEdefault.SetRange(1, 15);
 
-            _timerOOZEdefault = settings.DefineSetting(
-                "OOZE Default Timer",
-                14,
-                () => "OOZE (minutes)",
-                () => "Set timer for OOZE in minutes."
-            );
+            _timerOOZEdefault = settings.DefineSetting("OOZE Default Timer",14,() => "OOZE (minutes)",() => "Set timer for OOZE in minutes.");
             _timerOOZEdefault.SetRange(1, 15);
 
-            _timerGUZZLERdefault = settings.DefineSetting(
-                "GUZZLER Default Timer",
-                13,
-                () => "GUZZLER (minutes)",
-                () => "Set timer for GUZZLER in minutes."
-            );
+            _timerGUZZLERdefault = settings.DefineSetting("GUZZLER Default Timer",13,() => "GUZZLER (minutes)",() => "Set timer for GUZZLER in minutes.");
             _timerGUZZLERdefault.SetRange(1, 15);
 
-            _timerTMdefault = settings.DefineSetting(
-                "TM Default Timer",
-                10,
-                () => "TM (minutes)",
-                () => "Set timer for TM in minutes."
-            );
+            _timerTMdefault = settings.DefineSetting("TM Default Timer",10,() => "TM (minutes)",() => "Set timer for TM in minutes.");
             _timerTMdefault.SetRange(1, 10);
 
-            _timerSTONEHEADSdefault = settings.DefineSetting(
-                "STONEHEADS Default Timer",
-                12,
-                () => "STONEHEADS (minutes)",
-                () => "Set timer for STONEHEADS in minutes."
-            );
+            _timerSTONEHEADSdefault = settings.DefineSetting("STONEHEADS Default Timer",12,() => "STONEHEADS (minutes)",() => "Set timer for STONEHEADS in minutes.");
             _timerSTONEHEADSdefault.SetRange(1, 15);
         }
         private void ToggleTimerWindowKeybind_Activated(object sender, EventArgs e)
@@ -217,6 +137,7 @@ namespace farming.community.AB_Bauble_Farm
 
         protected override void Initialize()
         {
+            #region Initialize Defaults
             _timerStartTimes = new DateTime?[12];
             _timerRunning = new bool[12];
             _timerLabelDescriptions = new Label[12];
@@ -246,10 +167,11 @@ namespace farming.community.AB_Bauble_Farm
                 _timerStartTimes[i] = null; // Not started
                 _timerRunning[i] = false;
             }
+            #endregion
 
             try
             {
-                /// Timer Window Setup
+                #region Timer Window Window
                 //// Assign all textures and parameters for timer window
                 AsyncTexture2D _Timertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
                 AsyncTexture2D _asyncTimerTexture = new AsyncTexture2D();
@@ -277,9 +199,9 @@ namespace farming.community.AB_Bauble_Farm
                     Location = newLocation // Align with content region
                 };
 
-                //_TimerWindow.Show();
+                #endregion
 
-                /// Bauble Info Window
+                #region Bauble Information Window
                 //// Display information about next Bauble run here
                 AsyncTexture2D _Infotexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
                 AsyncTexture2D _asyncInfoTexture = new AsyncTexture2D();
@@ -306,19 +228,9 @@ namespace farming.community.AB_Bauble_Farm
                     Size = _InfoWindow.ContentRegion.Size, // Match the panel to the content region
                     Location = newLocation // Align with content region
                 };
+                #endregion
 
-                /// Allocate keybinds if no defaults found for Timer Window
-                //// Timer Window keybind
-                if (_toggleTimerWindowKeybind.Value.PrimaryKey == Keys.None)
-                {
-                    _toggleTimerWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.L;
-                }
-                //// Info Window keybind
-                if (_toggleTimerWindowKeybind.Value.PrimaryKey == Keys.None)
-                {
-                    _toggleTimerWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.OemSemicolon;
-                }
-
+                #region Corner Icon
                 // Update the corner icon
                 AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
                 _cornerIcon = new CornerIcon
@@ -330,6 +242,12 @@ namespace farming.community.AB_Bauble_Farm
                     Parent = GameService.Graphics.SpriteScreen
                 };
 
+                // Handle click event to toggle window visibility
+                _cornerIcon.Click += CornerIcon_Click;
+
+                #endregion
+
+                #region Bauble Information Timestamps
                 /// Shiny Bauble Time Rotation
                 TimeZoneInfo localTimeZone = TimeZoneInfo.Local; // Get the user's local time zone information.
                 DateTime currentTime = DateTime.Now;
@@ -361,7 +279,9 @@ namespace farming.community.AB_Bauble_Farm
                     FarmStatus = "OFF";
                     Statuscolor = Color.Red;
                 }
+                #endregion
 
+                #region Bauble Information Labels
                 Label statusLabel = new Label
                 {
                     Text = "Bauble Farm Status :",
@@ -415,9 +335,9 @@ namespace farming.community.AB_Bauble_Farm
                     TextColor = Color.DodgerBlue,
                     Parent = _InfoWindow
                 };
+                #endregion
 
-                // Handle click event to toggle window visibility
-                _cornerIcon.Click += CornerIcon_Click;
+                #region Timer Controls
 
                 _stopButton = new StandardButton
                 {
@@ -504,6 +424,8 @@ namespace farming.community.AB_Bauble_Farm
                         Location = new Point(320, 80 + (i * 30)),
                         Parent = _TimerWindow
                     };
+
+                    #endregion
                 }
             }
             catch (Exception ex)
@@ -532,10 +454,6 @@ namespace farming.community.AB_Bauble_Farm
             {
                 _InfoWindow.Show();
             }
-        }
-
-        protected override async Task LoadAsync()
-        {
         }
         private void ResetButton_Click(int timerIndex)
         {
