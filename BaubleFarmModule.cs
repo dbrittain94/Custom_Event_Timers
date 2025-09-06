@@ -237,8 +237,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Icon = cornertexture, // Use a game-sourced texture
                     Size = new Point(32, 32),
-                    Location = new Point(0, 0), // Adjust to position as corner icon
-                    BasicTooltipText = "Toggle Bauble Farm",
+                    //Location = new Point(0, 0), // Adjust to position as corner icon
+                    BasicTooltipText = "Bauble Farm",
                     Parent = GameService.Graphics.SpriteScreen
                 };
 
