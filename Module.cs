@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.Direct2D1;
+using SharpDX.Direct3D9;
 using System;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -45,13 +46,15 @@ namespace AB_Bauble_Farm
         private TimeSpan[] _timerDurationDefaults;
         private TimeSpan[] _timerDurationOverride;
         private StandardWindow _TimerWindow;
+        private StandardWindow _InfoWindow;
         private CornerIcon _cornerIcon;
 
         [ImportingConstructor]
         public BaubleFarmModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
         {
         }
-        private SettingEntry<KeyBinding> _toggleWindowKeybind;
+        private SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
+        private SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
         private SettingEntry<int> _timerSVETdefault;
         private SettingEntry<int> _timerEVETdefault;
         private SettingEntry<int> _timerNVETdefault;
@@ -64,14 +67,23 @@ namespace AB_Bauble_Farm
         private SettingEntry<int> _timerGUZZLERdefault;
         protected override void DefineSettings(SettingCollection settings)
         {
-            _toggleWindowKeybind = settings.DefineSetting(
+            _toggleTimerWindowKeybind = settings.DefineSetting(
                 "Timer Window",
                 new KeyBinding(Keys.None),
-                () => "Toggle Window Keybind",
-                () => "Keybind to show or hide the custom window."
+                () => "Toggle Timer Window Keybind",
+                () => "Keybind to show or hide the Timer window."
             );
-            _toggleWindowKeybind.Value.Enabled = true;
-            _toggleWindowKeybind.Value.Activated += ToggleWindowKeybind_Activated;
+            _toggleTimerWindowKeybind.Value.Enabled = true;
+            _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
+
+            _toggleInfoWindowKeybind = settings.DefineSetting(
+                "Bauble Info Window",
+                new KeyBinding(Keys.None),
+                () => "Toggle Information Window Keybind",
+                () => "Keybind to show or hide the Information window."
+            );
+            _toggleInfoWindowKeybind.Value.Enabled = true;
+            _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
             _timerSVETdefault = settings.DefineSetting(
                 "SVET Default Timer",
@@ -153,12 +165,8 @@ namespace AB_Bauble_Farm
             );
             _timerGUZZLERdefault.SetRange(1, 15);
         }
-        private void ToggleWindowKeybind_Activated(object sender, EventArgs e)
+        private void ToggleTimerWindowKeybind_Activated(object sender, EventArgs e)
         {
-            //if (_TimerWindow != null)
-            //{
-            //    _TimerWindow.Visible = !_TimerWindow.Visible; // Toggle visibility
-            //}
             if (_TimerWindow.Visible)
             {
                 _TimerWindow.Hide();
@@ -166,6 +174,17 @@ namespace AB_Bauble_Farm
             else
             {
                 _TimerWindow.Show();
+            }
+        }
+        private void ToggleInfoWindowKeybind_Activated(object sender, EventArgs e)
+        {
+            if (_InfoWindow.Visible)
+            {
+                _InfoWindow.Hide();
+            }
+            else
+            {
+                _InfoWindow.Show();
             }
         }
 
@@ -179,7 +198,7 @@ namespace AB_Bauble_Farm
             _customDropdownTimers = new Dropdown[10];
             _timerDurationOverride = new TimeSpan[10];
             _timerDurationDefaults = new TimeSpan[10];
-
+            
             // Initialize Timer Defaults
             _timerDurationDefaults[0] = TimeSpan.FromMinutes(_timerSVETdefault.Value);
             _timerDurationDefaults[1] = TimeSpan.FromMinutes(_timerEVETdefault.Value);
@@ -211,23 +230,34 @@ namespace AB_Bauble_Farm
             {
                 _TimerWindow.Show();
             }
+
+            if (_InfoWindow.Visible)
+            {
+                _InfoWindow.Hide();
+            }
+            else
+            {
+                _InfoWindow.Show();
+            }
         }
 
         protected override async Task LoadAsync()
         {
             try
             {
-                AsyncTexture2D texture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
-                AsyncTexture2D _asyncTexture = new AsyncTexture2D();
+                /// Timer Window Setup
+                //// Assign all textures and parameters for timer window
+                AsyncTexture2D _Timertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
+                AsyncTexture2D _asyncTimerTexture = new AsyncTexture2D();
                 _TimerWindow = new StandardWindow(
-                    _asyncTexture,
-                    new Rectangle(0, 0, 420, 400), // The windowRegion 300, 250
-                    new Rectangle(0, -20, 440, 550)) // The contentRegion 250, 200
+                    _asyncTimerTexture,
+                    new Rectangle(0, 0, 420, 400), // The windowRegion
+                    new Rectangle(0, -20, 440, 550)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "Timers",
                     SavesPosition = true,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarm_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
 
                 int originalPointX = _TimerWindow.ContentRegion.Location.X;
@@ -235,22 +265,57 @@ namespace AB_Bauble_Farm
                 Point newLocation = new Point();
                 newLocation.X = originalPointX;
                 newLocation.Y = originalPointY + 20;
-                var contentPanel = new Panel
+                var timerPanel = new Panel
                 {
                     Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
-                    BackgroundTexture = texture,
+                    BackgroundTexture = _Timertexture,
                     Size = _TimerWindow.ContentRegion.Size, // Match the panel to the content region
                     Location = newLocation // Align with content region
                 };
 
-                _TimerWindow.Show();
+                //_TimerWindow.Show();
 
-                if (_toggleWindowKeybind.Value.PrimaryKey == Keys.None)
+                /// Bauble Info Window
+                //// Display information about next Bauble run here
+                AsyncTexture2D _Infotexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
+                AsyncTexture2D _asyncInfoTexture = new AsyncTexture2D();
+                _InfoWindow = new StandardWindow(
+                    _asyncInfoTexture,
+                    new Rectangle(0, 0, 320, 130), // The windowRegion
+                    new Rectangle(0, -20, 340, 180)) // The contentRegion
                 {
-                    _toggleWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.L;
+                    Parent = GameService.Graphics.SpriteScreen,
+                    Title = "Information",
+                    SavesPosition = true,
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmInfoWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                };
+
+                originalPointX = _InfoWindow.ContentRegion.Location.X;
+                originalPointY = _InfoWindow.ContentRegion.Location.Y;
+                newLocation = new Point();
+                newLocation.X = originalPointX;
+                newLocation.Y = originalPointY + 20;
+                var infoPanel = new Panel
+                {
+                    Parent = _InfoWindow, // Set the panel's parent to the StandardWindow
+                    BackgroundTexture = _Infotexture,
+                    Size = _InfoWindow.ContentRegion.Size, // Match the panel to the content region
+                    Location = newLocation // Align with content region
+                };
+
+                /// Allocate keybinds if no defaults found for Timer Window
+                //// Timer Window keybind
+                if (_toggleTimerWindowKeybind.Value.PrimaryKey == Keys.None)
+                {
+                    _toggleTimerWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.L;
+                }
+                //// Info Window keybind
+                if (_toggleTimerWindowKeybind.Value.PrimaryKey == Keys.None)
+                {
+                    _toggleTimerWindowKeybind.Value.PrimaryKey = Keys.LeftShift | Keys.OemSemicolon ;
                 }
 
-                // Initialize the corner icon
+                // Update the corner icon
                 AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
                 _cornerIcon = new CornerIcon
                 {
@@ -259,6 +324,86 @@ namespace AB_Bauble_Farm
                     Location = new Point(0, 0), // Adjust to position as corner icon
                     BasicTooltipText = "Toggle Bauble Farm",
                     Parent = GameService.Graphics.SpriteScreen
+                };
+
+                /// Shiny Bauble Time Rotation
+                DateTime currentTime = DateTime.Now;
+                DateTime originBaubleStartTime = DateTime.Parse("2025-08-28 16:00:00"); //08-28
+                int weekInterval = 3; // Number of weeks between bauble starts
+                TimeSpan differenceOriginCurrent = currentTime - originBaubleStartTime;
+                int weeksElapsed = (int)Math.Floor(differenceOriginCurrent.TotalDays / 7);
+                int currentIntervalNumber = (int)Math.Floor((double)weeksElapsed / weekInterval);
+                DateTime currentIntervalStartDate = originBaubleStartTime.AddDays(currentIntervalNumber * weekInterval * 7);
+                DateTime nextThirdWeekIntervalStartDate = currentIntervalStartDate.AddDays(weekInterval * 7);
+                DateTime NextBaubleStartDate = new DateTime();
+                DateTime EndofBaubleWeek = new DateTime();
+                DateTime oneWeekAheadcurrent = currentIntervalStartDate.AddDays(7);
+                DateTime oneWeekAheadnext = nextThirdWeekIntervalStartDate.AddDays(7);
+                string FarmStatus = "";
+                Color Statuscolor = Color.Red;
+                if (currentIntervalStartDate >= currentTime && currentTime <= oneWeekAheadcurrent)
+                {
+                    NextBaubleStartDate = currentIntervalStartDate;
+                    EndofBaubleWeek = oneWeekAheadcurrent;
+                    FarmStatus = "ON";
+                    Statuscolor = Color.Green;
+                }
+                else
+                {
+                    NextBaubleStartDate = nextThirdWeekIntervalStartDate;
+                    EndofBaubleWeek = oneWeekAheadnext;
+                    FarmStatus = "OFF";
+                    Statuscolor = Color.Red;
+                }
+
+                Label statusLabel = new Label
+                {
+                    Text = "Bauble Farm Status :",
+                    Size = new Point(180, 30),
+                    Location = new Point(30, 50),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                Label statusValue = new Label
+                {
+                    Text = FarmStatus,
+                    Size = new Point(230, 30),
+                    Location = new Point(190, 50),
+                    Font = GameService.Content.DefaultFont16,
+                    TextColor = Statuscolor,
+                    Parent = _InfoWindow
+                };
+                Label startTimeLabel = new Label
+                {
+                    Text = "Start ->",
+                    Size = new Point(100, 30),
+                    Location = new Point(30, 80),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                Label startTimeValue = new Label
+                {
+                    Text = NextBaubleStartDate.ToString("MMMM dd, yyyy"),
+                    Size = new Point(230, 30),
+                    Location = new Point(110, 80),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                Label endTimeLabel = new Label
+                {
+                    Text = "End ->",
+                    Size = new Point(100, 30),
+                    Location = new Point(30, 110),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                Label endTimeValue = new Label
+                {
+                    Text = EndofBaubleWeek.ToString("MMMM dd, yyyy"),
+                    Size = new Point(230, 30),
+                    Location = new Point(90, 110),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
                 };
 
                 // Handle click event to toggle window visibility
@@ -277,7 +422,7 @@ namespace AB_Bauble_Farm
                 {
                     Text = "Override (min)",
                     Size = new Point(100, 30),
-                    Location = new Point(330, 40),
+                    Location = new Point(320, 40),
                     Parent = _TimerWindow
                 };
 
@@ -324,8 +469,6 @@ namespace AB_Bauble_Farm
                         Location = new Point(320, 80 + (i * 30)),
                         Parent = _TimerWindow
                     };
-
-                    //_customDropdownTimers[i].Click += (s, e) => ResetButton_Click(index);
                 }
             }
             catch (Exception ex)
@@ -361,6 +504,18 @@ namespace AB_Bauble_Farm
         }
         protected override void Update(GameTime gameTime)
         {
+            // Update Timer Defaults
+            _timerDurationDefaults[0] = TimeSpan.FromMinutes(_timerSVETdefault.Value);
+            _timerDurationDefaults[1] = TimeSpan.FromMinutes(_timerEVETdefault.Value);
+            _timerDurationDefaults[2] = TimeSpan.FromMinutes(_timerNVETdefault.Value);
+            _timerDurationDefaults[3] = TimeSpan.FromMinutes(_timerWVETdefault.Value);
+            _timerDurationDefaults[4] = TimeSpan.FromMinutes(_timerSAPdefault.Value);
+            _timerDurationDefaults[5] = TimeSpan.FromMinutes(_timerBALTHdefault.Value);
+            _timerDurationDefaults[6] = TimeSpan.FromMinutes(_timerWYVERNdefault.Value);
+            _timerDurationDefaults[7] = TimeSpan.FromMinutes(_timerBRAMBLEdefault.Value);
+            _timerDurationDefaults[8] = TimeSpan.FromMinutes(_timerOOZEdefault.Value);
+            _timerDurationDefaults[9] = TimeSpan.FromMinutes(_timerGUZZLERdefault.Value);
+
             for (int i = 0; i < 10; i++)
             {
                 string DropdownValue = _customDropdownTimers[i].SelectedItem;
@@ -404,12 +559,18 @@ namespace AB_Bauble_Farm
             _cornerIcon.Click -= CornerIcon_Click;
             _cornerIcon?.Dispose();
 
-            if (_toggleWindowKeybind != null)
+            if (_toggleTimerWindowKeybind != null)
             {
-                _toggleWindowKeybind.Value.Activated -= ToggleWindowKeybind_Activated;
+                _toggleTimerWindowKeybind.Value.Activated -= ToggleTimerWindowKeybind_Activated;
             }
             _TimerWindow?.Dispose();
             _TimerWindow = null;
+            if (_toggleInfoWindowKeybind != null)
+            {
+                _toggleInfoWindowKeybind.Value.Activated -= ToggleInfoWindowKeybind_Activated;
+            }
+            _InfoWindow?.Dispose();
+            _InfoWindow = null;
         }
 
     }
