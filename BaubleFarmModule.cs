@@ -17,6 +17,7 @@ using SharpDX.Direct3D9;
 using SharpDX.DirectWrite;
 using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Runtime;
 using System.Threading;
 
@@ -43,12 +44,14 @@ namespace roguishpanda.AB_Bauble_Farm
         private Label[] _timerLabels;
         private Label _statusValue;
         private Label _startTimeValue;
-        private Label _endTimeValue; 
-        private TimeSpan timerDuration;
+        private Label _endTimeValue;
+        private Checkbox _InOrdercheckbox;
         private DateTime elapsedDateTime;
         private DateTime initialDateTime;
         private bool timerActive = false;
+        private int TimerRowNum = 12;
         private StandardButton _stopButton;
+        private StandardButton[] _stopButtons;
         private StandardButton[] _resetButtons;
         private Dropdown[] _customDropdownTimers;
         private DateTime?[] _timerStartTimes; // Nullable to track if timer is started
@@ -56,11 +59,13 @@ namespace roguishpanda.AB_Bauble_Farm
         private readonly TimeSpan _timerDurationDefault = TimeSpan.FromMinutes(10);
         private TimeSpan[] _timerDurationDefaults;
         private TimeSpan[] _timerDurationOverride;
+        private Panel[] _TimerWindowsOrdered;
         private StandardWindow _TimerWindow;
         private StandardWindow _InfoWindow;
         private CornerIcon _cornerIcon;
         private SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
         private SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
+        private SettingEntry<bool> _InOrdercheckboxDefault;
         private SettingEntry<int> _timerLowDefault;
         private SettingEntry<int> _timerSVETdefault;
         private SettingEntry<int> _timerEVETdefault;
@@ -75,56 +80,57 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<int> _timerTMdefault;
         private SettingEntry<int> _timerSTONEHEADSdefault;
         private AsyncTexture2D _asyncTimertexture;
-        private Microsoft.Xna.Framework.Graphics.SpriteBatch _spriteBatch;
         protected override void DefineSettings(SettingCollection settings)
         {
-            _toggleTimerWindowKeybind = settings.DefineSetting("Timer Keybinding",new KeyBinding(ModifierKeys.Shift, Keys.L),() => "Timer Keybinding",() => "Keybind to show or hide the Timer window.");
+            _toggleTimerWindowKeybind = settings.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Keys.L),() => "Timer Keybinding",() => "Keybind to show or hide the Timer window.");
             _toggleTimerWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
-            _toggleInfoWindowKeybind = settings.DefineSetting("Info Keybinding",new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),() => "Info Keybinding",() => "Keybind to show or hide the Information window.");
+            _toggleInfoWindowKeybind = settings.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),() => "Info Keybinding",() => "Keybind to show or hide the Information window.");
             _toggleInfoWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
-            _timerLowDefault = settings.DefineSetting("Low Timer Default Timer",30,() => "Low Timer (seconds)",() => "Set timer for when timer gets below certain threshold in seconds.");
+            _InOrdercheckboxDefault = settings.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time");
+
+            _timerLowDefault = settings.DefineSetting("LowTimerDefaultTimer",30,() => "Low Timer (seconds)",() => "Set timer for when timer gets below certain threshold in seconds.");
             _timerLowDefault.SetRange(1, 120);
 
-            _timerSVETdefault = settings.DefineSetting("SVET Default Timer",10,() => "SVET (minutes)",() => "Set timer for SVET in minutes.");
+            _timerSVETdefault = settings.DefineSetting("SVETDefaultTimer",10,() => "SVET (minutes)",() => "Set timer for SVET in minutes.");
             _timerSVETdefault.SetRange(1, 10);
 
-            _timerEVETdefault = settings.DefineSetting("EVET Default Timer",10,() => "EVET (minutes)",() => "Set timer for EVET in minutes.");
+            _timerEVETdefault = settings.DefineSetting("EVETDefaultTimer",10,() => "EVET (minutes)",() => "Set timer for EVET in minutes.");
             _timerEVETdefault.SetRange(1, 10);
 
-            _timerNVETdefault = settings.DefineSetting("NVET Default Timer",10,() => "NVET (minutes)",() => "Set timer for NVET in minutes.");
+            _timerNVETdefault = settings.DefineSetting("NVETDefaultTimer",10,() => "NVET (minutes)",() => "Set timer for NVET in minutes.");
             _timerNVETdefault.SetRange(1, 10);
 
-            _timerWVETdefault = settings.DefineSetting("WVET Default Timer",10,() => "WVET (minutes)",() => "Set timer for WVET in minutes.");
+            _timerWVETdefault = settings.DefineSetting("WVETDefaultTimer",10,() => "WVET (minutes)",() => "Set timer for WVET in minutes.");
             _timerWVETdefault.SetRange(1, 10);
 
-            _timerSAPdefault = settings.DefineSetting("SAP Default Timer",8,() => "SAP (minutes)",() => "Set timer for SAP in minutes.");
+            _timerSAPdefault = settings.DefineSetting("SAPDefaultTimer",8,() => "SAP (minutes)",() => "Set timer for SAP in minutes.");
             _timerSAPdefault.SetRange(1, 10);
 
-            _timerBALTHdefault = settings.DefineSetting("BALTH Default Timer",8,() => "BALTH (minutes)",() => "Set timer for BALTH in minutes.");
+            _timerBALTHdefault = settings.DefineSetting("BALTHDefaultTimer",8,() => "BALTH (minutes)",() => "Set timer for BALTH in minutes.");
             _timerBALTHdefault.SetRange(1, 10);
 
-            _timerWYVERNdefault = settings.DefineSetting("WYVERN Default Timer",13,() => "WYVERN (minutes)",() => "Set timer for WYVERN in minutes.");
+            _timerWYVERNdefault = settings.DefineSetting("WYVERNDefaultTimer",13,() => "WYVERN (minutes)",() => "Set timer for WYVERN in minutes.");
             _timerWYVERNdefault.SetRange(1, 15);
 
-            _timerBRAMBLEdefault = settings.DefineSetting("BRAMBLE Default Timer",13,() => "BRAMBLE (minutes)",() => "Set timer for BRAMBLE in minutes.");
+            _timerBRAMBLEdefault = settings.DefineSetting("BRAMBLEDefaultTimer",13,() => "BRAMBLE (minutes)",() => "Set timer for BRAMBLE in minutes.");
             _timerBRAMBLEdefault.SetRange(1, 15);
 
-            _timerOOZEdefault = settings.DefineSetting("OOZE Default Timer",14,() => "OOZE (minutes)",() => "Set timer for OOZE in minutes.");
+            _timerOOZEdefault = settings.DefineSetting("OOZEDefaultTimer",14,() => "OOZE (minutes)",() => "Set timer for OOZE in minutes.");
             _timerOOZEdefault.SetRange(1, 15);
 
-            _timerGUZZLERdefault = settings.DefineSetting("GUZZLER Default Timer",13,() => "GUZZLER (minutes)",() => "Set timer for GUZZLER in minutes.");
+            _timerGUZZLERdefault = settings.DefineSetting("GUZZLERDefaultTimer",13,() => "GUZZLER (minutes)",() => "Set timer for GUZZLER in minutes.");
             _timerGUZZLERdefault.SetRange(1, 15);
 
-            _timerTMdefault = settings.DefineSetting("TM Default Timer",10,() => "TM (minutes)",() => "Set timer for TM in minutes.");
+            _timerTMdefault = settings.DefineSetting("TMDefaultTimer",10,() => "TM (minutes)",() => "Set timer for TM in minutes.");
             _timerTMdefault.SetRange(1, 10);
 
-            _timerSTONEHEADSdefault = settings.DefineSetting("STONEHEADS Default Timer",12,() => "STONEHEADS (minutes)",() => "Set timer for STONEHEADS in minutes.");
+            _timerSTONEHEADSdefault = settings.DefineSetting("STONEHEADSDefaultTimer",12,() => "STONEHEADS (minutes)",() => "Set timer for STONEHEADS in minutes.");
             _timerSTONEHEADSdefault.SetRange(1, 15);
         }
         private void ToggleTimerWindowKeybind_Activated(object sender, EventArgs e)
@@ -153,14 +159,16 @@ namespace roguishpanda.AB_Bauble_Farm
         protected override void Initialize()
         {
             #region Initialize Defaults
-            _timerStartTimes = new DateTime?[12];
-            _timerRunning = new bool[12];
-            _timerLabelDescriptions = new Label[12];
-            _timerLabels = new Label[12];
-            _resetButtons = new StandardButton[12];
-            _customDropdownTimers = new Dropdown[12];
-            _timerDurationOverride = new TimeSpan[12];
-            _timerDurationDefaults = new TimeSpan[12];
+            _timerStartTimes = new DateTime?[TimerRowNum];
+            _timerRunning = new bool[TimerRowNum];
+            _timerLabelDescriptions = new Label[TimerRowNum];
+            _timerLabels = new Label[TimerRowNum];
+            _resetButtons = new StandardButton[TimerRowNum];
+            _stopButtons = new StandardButton[TimerRowNum];
+            _customDropdownTimers = new Dropdown[TimerRowNum];
+            _TimerWindowsOrdered = new Panel[TimerRowNum];
+            _timerDurationOverride = new TimeSpan[TimerRowNum];
+            _timerDurationDefaults = new TimeSpan[TimerRowNum];
 
             // Initialize Timer Defaults
             int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
@@ -169,7 +177,7 @@ namespace roguishpanda.AB_Bauble_Farm
             };
 
             // Initialize all timers as not started
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < TimerRowNum; i++)
             {
                 _timerDurationDefaults[i] = TimeSpan.FromMinutes(timerDefaultValues[i]);
                 _timerStartTimes[i] = null; // Not started
@@ -180,13 +188,14 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 #region Timer Window Window
+
                 //// Assign all textures and parameters for timer window
                 _asyncTimertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
                 AsyncTexture2D TimerTexture = new AsyncTexture2D();
                 _TimerWindow = new StandardWindow(
                     TimerTexture,
                     new Rectangle(0, 0, 390, 470), // The windowRegion
-                    new Rectangle(-10, -30, 390, 470)) // The contentRegion
+                    new Rectangle(-10, -20, 390, 470)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "Timers",
@@ -196,6 +205,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
 
+                /// Create texture panel for timer window
                 int originalLocationX = _TimerWindow.ContentRegion.Location.X;
                 int originalLocationY = _TimerWindow.ContentRegion.Location.Y;
                 int originalSizeX = _TimerWindow.ContentRegion.Size.X;
@@ -203,7 +213,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 Point newLocation = new Point();
                 Point newSize = new Point();
                 newLocation.X = originalLocationX + 10;
-                newLocation.Y = originalLocationY + 30;
+                newLocation.Y = originalLocationY + 20;
                 newSize.X = originalSizeX + 30;
                 newSize.Y = originalSizeY + 150;
                 var timerPanel = new Panel
@@ -246,6 +256,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 #endregion
 
                 #region Corner Icon
+
                 // Update the corner icon
                 AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
                 _cornerIcon = new CornerIcon
@@ -340,6 +351,16 @@ namespace roguishpanda.AB_Bauble_Farm
                 };
                 _stopButton.Click += (s, e) => StopButton_Click();
 
+                _InOrdercheckbox = new Checkbox
+                {
+                    Text = "Order by Timer",
+                    Size = new Point(120, 30),
+                    Location = new Point(150, 50),
+                    Parent = _TimerWindow
+                };
+                _InOrdercheckbox.Checked = _InOrdercheckboxDefault.Value;
+                _InOrdercheckbox.Click += (s, e) => InOrdercheckbox_Click();
+
                 Label eventsLabel = new Label
                 {
                     Text = "Events",
@@ -374,27 +395,36 @@ namespace roguishpanda.AB_Bauble_Farm
                 // Create UI elements for each timer
                 string[] Descriptions = { "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER", "TM", "STONEHEADS" };
 
-                for (int i = 0; i < 12; i++)
+                for (int i = 0; i < TimerRowNum; i++)
                 {
                     int index = i; // Capture index for event handlers
+
+                    // Timer Panels
+                    _TimerWindowsOrdered[i] = new Panel
+                    {
+                        Parent = _TimerWindow,
+                        BackgroundTexture = _asyncTimertexture,
+                        Size = new Point(390, 30),
+                        Location = new Point(0, 115 + (i * 30)),
+                    };
 
                     // Waypoint
                     //var waypointButton = new Blish_HUD.Controls.Image(AsyncTexture2D.FromAssetId(157353))
                     //{
-                        //BasicTooltipText = "Waypoint",
-                        //Size = new Point(32, 32),
-                        //Location = new Point(10, 110 + (i * 30)),
-                        //Parent = _TimerWindow
+                    //BasicTooltipText = "Waypoint",
+                    //Size = new Point(32, 32),
+                    //Location = new Point(10, 110 + (i * 30)),
+                    //Parent = _TimerWindow
                     //};
                     //waypointButton.Click += (s, e) => waypointButton_Click(Descriptions[i]);
 
                     // Timer label descriptions
-                    _timerLabelDescriptions[0] = new Label
+                    _timerLabelDescriptions[i] = new Label
                     {
                         Text = Descriptions[i],
                         Size = new Point(100, 30),
-                        Location = new Point(40, 110 + (i * 30)),
-                        Parent = _TimerWindow
+                        Location = new Point(40, 0),
+                        Parent = _TimerWindowsOrdered[i]
                     };
 
                     // Timer label
@@ -402,29 +432,39 @@ namespace roguishpanda.AB_Bauble_Farm
                     {
                         Text = _timerDurationDefaults[i].ToString(@"mm\:ss"),
                         Size = new Point(100, 30),
-                        Location = new Point(140, 110 + (i * 30)),
+                        Location = new Point(140, 0),
                         Font = GameService.Content.DefaultFont16,
                         TextColor = Color.GreenYellow,
-                        Parent = _TimerWindow
+                        Parent = _TimerWindowsOrdered[i]
                     };
 
                     // Reset button
                     _resetButtons[i] = new StandardButton
                     {
-                        Text = "Restart",
-                        Size = new Point(80, 30),
-                        Location = new Point(190, 110 + (i * 30)),
-                        Parent = _TimerWindow
+                        Text = "Start",
+                        Size = new Point(50, 30),
+                        Location = new Point(190, 0),
+                        Parent = _TimerWindowsOrdered[i]
                     };
                     _resetButtons[i].Click += (s, e) => ResetButton_Click(index);
+
+                    // Reset button
+                    _stopButtons[i] = new StandardButton
+                    {
+                        Text = "Stop",
+                        Size = new Point(50, 30),
+                        Location = new Point(240, 0),
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    _stopButtons[i].Click += (s, e) => stopButtons_Click(index);
 
                     // Override Timer dropdown
                     _customDropdownTimers[i] = new Dropdown
                     {
                         Items = { "Default", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" },
                         Size = new Point(80, 30),
-                        Location = new Point(290, 110 + (i * 30)),
-                        Parent = _TimerWindow
+                        Location = new Point(290, 0),
+                        Parent = _TimerWindowsOrdered[i]
                     };
 
                     #endregion
@@ -511,12 +551,45 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
             }
         }
+        private void stopButtons_Click(int timerIndex)
+        {
+            string DropdownValue = _customDropdownTimers[timerIndex].SelectedItem;
+            if (_timerStartTimes[timerIndex].HasValue)
+            {
+                if (DropdownValue == "Default")
+                {
+                    _timerRunning[timerIndex] = false;
+                    _timerLabels[timerIndex].Text = $"{_timerDurationDefaults[timerIndex]:mm\\:ss}";
+                    _timerLabels[timerIndex].TextColor = Color.GreenYellow;
+                }
+                else
+                {
+                    _timerRunning[timerIndex] = false;
+                    _timerLabels[timerIndex].Text = $"{_timerDurationOverride[timerIndex]:mm\\:ss}";
+                    _timerLabels[timerIndex].TextColor = Color.GreenYellow;
+                }
+            }
+        }
         private void StopButton_Click()
         {
-            for (int i = 0; i < 12; i++)
+            for (int timerIndex = 0; timerIndex < TimerRowNum; timerIndex++)
             {
-                _timerStartTimes[i] = DateTime.Now;
-                _timerRunning[i] = false;
+                string DropdownValue = _customDropdownTimers[timerIndex].SelectedItem;
+                if (_timerStartTimes[timerIndex].HasValue)
+                {
+                    if (DropdownValue == "Default")
+                    {
+                        _timerRunning[timerIndex] = false;
+                        _timerLabels[timerIndex].Text = $"{_timerDurationDefaults[timerIndex]:mm\\:ss}";
+                        _timerLabels[timerIndex].TextColor = Color.GreenYellow;
+                    }
+                    else
+                    {
+                        _timerRunning[timerIndex] = false;
+                        _timerLabels[timerIndex].Text = $"{_timerDurationOverride[timerIndex]:mm\\:ss}";
+                        _timerLabels[timerIndex].TextColor = Color.GreenYellow;
+                    }
+                }
             }
         }
         protected override void Update(GameTime gameTime)
@@ -542,20 +615,20 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
             }
 
-
             // Update Timer Information
             int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
             _timerBALTHdefault.Value, _timerWYVERNdefault.Value, _timerBRAMBLEdefault.Value, _timerOOZEdefault.Value, _timerGUZZLERdefault.Value,
             _timerTMdefault.Value, _timerSTONEHEADSdefault.Value
             };
 
-            for (int i = 0; i < 12; i++)
+            TimeSpan[] CurrentElapsedTime = new TimeSpan[TimerRowNum];
+            for (int i = 0; i < TimerRowNum; i++)
             {
                 _timerDurationDefaults[i] = TimeSpan.FromMinutes(timerDefaultValues[i]);
                 string DropdownValue = _customDropdownTimers[i].SelectedItem;
+                TimeSpan remaining = TimeSpan.FromMinutes(0);
                 if (_timerRunning[i] && _timerStartTimes[i].HasValue)
                 {
-                    TimeSpan remaining = TimeSpan.FromMinutes(0);
                     if (DropdownValue == "Default")
                     {
                         var elapsed = DateTime.Now - _timerStartTimes[i].Value;
@@ -588,13 +661,48 @@ namespace roguishpanda.AB_Bauble_Farm
                         _timerLabels[i].TextColor = Color.GreenYellow;
                     }
                 }
+                if (remaining == TimeSpan.FromMinutes(0) && _timerLabels[i].Text != "00:00")
+                {
+                    CurrentElapsedTime[i] = _timerDurationDefaults[i];
+                }
+                else
+                {
+                    CurrentElapsedTime[i] = remaining;
+                }
+            }
+
+            if (_InOrdercheckbox.Checked == true)
+            {
+                OrderPanelsByTime(CurrentElapsedTime);
+            }
+        }
+        private void OrderPanelsByTime(TimeSpan[] CurrentElapsedTime)
+        {
+            var sortedWithIndices = CurrentElapsedTime
+                .Select((value, index) => (Value: value, OriginalIndex: index))
+                .OrderBy(item => item.Value)
+                .ToList();
+
+            for (int i = 0; i < TimerRowNum; i++)
+            {
+                _TimerWindowsOrdered[sortedWithIndices[i].OriginalIndex].Location = new Point(0, 115 + (i * 30));
+            }
+        }
+        private void InOrdercheckbox_Click()
+        {
+            if (_InOrdercheckbox.Checked == false)
+            {
+                for (int i = 0; i < TimerRowNum; i++)
+                {
+                    _TimerWindowsOrdered[i].Location = new Point(0, 115 + (i * 30));
+                }
             }
         }
 
         protected override void Unload()
         {
             // Clean up
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < TimerRowNum; i++)
             {
                 _resetButtons[i]?.Dispose();
                 _timerLabels[i]?.Dispose();
@@ -617,6 +725,5 @@ namespace roguishpanda.AB_Bauble_Farm
             _InfoWindow = null;
             timerActive = false;
         }
-
     }
 }
