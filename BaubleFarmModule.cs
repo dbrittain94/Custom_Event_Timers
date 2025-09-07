@@ -18,6 +18,7 @@ using SharpDX.DirectWrite;
 using System;
 using System.ComponentModel.Composition;
 using System.Runtime;
+using System.Threading;
 
 namespace roguishpanda.AB_Bauble_Farm
 {
@@ -40,6 +41,13 @@ namespace roguishpanda.AB_Bauble_Farm
 
         private Label[] _timerLabelDescriptions;
         private Label[] _timerLabels;
+        private Label _statusValue;
+        private Label _startTimeValue;
+        private Label _endTimeValue; 
+        private TimeSpan timerDuration;
+        private DateTime elapsedDateTime;
+        private DateTime initialDateTime;
+        private bool timerActive = false;
         private StandardButton _stopButton;
         private StandardButton[] _resetButtons;
         private Dropdown[] _customDropdownTimers;
@@ -71,10 +79,12 @@ namespace roguishpanda.AB_Bauble_Farm
         protected override void DefineSettings(SettingCollection settings)
         {
             _toggleTimerWindowKeybind = settings.DefineSetting("Timer Keybinding",new KeyBinding(ModifierKeys.Shift, Keys.L),() => "Timer Keybinding",() => "Keybind to show or hide the Timer window.");
+            _toggleTimerWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
             _toggleInfoWindowKeybind = settings.DefineSetting("Info Keybinding",new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),() => "Info Keybinding",() => "Keybind to show or hide the Information window.");
+            _toggleInfoWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
@@ -253,37 +263,14 @@ namespace roguishpanda.AB_Bauble_Farm
                 #endregion
 
                 #region Bauble Information Timestamps
-                /// Shiny Bauble Time Rotation
-                TimeZoneInfo localTimeZone = TimeZoneInfo.Local; // Get the user's local time zone information.
-                DateTime currentTime = DateTime.Now;
-                DateTime rawBaubleStartTime = DateTime.Parse("2025-08-28 20:00:00"); // UTC time zone reset
-                DateTime originBaubleStartTime = TimeZoneInfo.ConvertTimeFromUtc(rawBaubleStartTime, localTimeZone);
-                int weekInterval = 3; // Number of weeks between bauble starts
-                TimeSpan differenceOriginCurrent = currentTime - originBaubleStartTime;
-                int weeksElapsed = (int)Math.Floor(differenceOriginCurrent.TotalDays / 7);
-                int currentIntervalNumber = (int)Math.Floor((double)weeksElapsed / weekInterval);
-                DateTime currentIntervalStartDate = originBaubleStartTime.AddDays(currentIntervalNumber * weekInterval * 7);
-                DateTime nextThirdWeekIntervalStartDate = currentIntervalStartDate.AddDays(weekInterval * 7);
-                DateTime NextBaubleStartDate = new DateTime();
-                DateTime EndofBaubleWeek = new DateTime();
-                DateTime oneWeekAheadcurrent = currentIntervalStartDate.AddDays(7);
-                DateTime oneWeekAheadnext = nextThirdWeekIntervalStartDate.AddDays(7);
-                string FarmStatus = "";
-                Color Statuscolor = Color.Red;
-                if (currentIntervalStartDate >= currentTime && currentTime <= oneWeekAheadcurrent)
-                {
-                    NextBaubleStartDate = currentIntervalStartDate;
-                    EndofBaubleWeek = oneWeekAheadcurrent;
-                    FarmStatus = "ON";
-                    Statuscolor = Color.Green;
-                }
-                else
-                {
-                    NextBaubleStartDate = nextThirdWeekIntervalStartDate;
-                    EndofBaubleWeek = oneWeekAheadnext;
-                    FarmStatus = "OFF";
-                    Statuscolor = Color.Red;
-                }
+
+                var BaubleInformation = GetBaubleInformation();
+                DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
+                DateTime EndofBaubleWeek = BaubleInformation.EndofBaubleWeek;
+                string FarmStatus = BaubleInformation.FarmStatus;
+                Color Statuscolor = BaubleInformation.Statuscolor;
+                initialDateTime = DateTime.Now;
+
                 #endregion
 
                 #region Bauble Information Labels
@@ -295,7 +282,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Font = GameService.Content.DefaultFont16,
                     Parent = _InfoWindow
                 };
-                Label statusValue = new Label
+                _statusValue = new Label
                 {
                     Text = FarmStatus,
                     Size = new Point(230, 30),
@@ -312,7 +299,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Font = GameService.Content.DefaultFont16,
                     Parent = _InfoWindow
                 };
-                Label startTimeValue = new Label
+                _startTimeValue = new Label
                 {
                     Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)"),
                     Size = new Point(230, 30),
@@ -330,7 +317,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Font = GameService.Content.DefaultFont16,
                     Parent = _InfoWindow
                 };
-                Label endTimeValue = new Label
+                _endTimeValue = new Label
                 {
                     Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)"),
                     Size = new Point(230, 30),
@@ -399,7 +386,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         //Location = new Point(10, 110 + (i * 30)),
                         //Parent = _TimerWindow
                     //};
-                    //_resetButtons[i].Click += (s, e) => ResetButton_Click(index);
+                    //waypointButton.Click += (s, e) => waypointButton_Click(Descriptions[i]);
 
                     // Timer label descriptions
                     _timerLabelDescriptions[0] = new Label
@@ -470,6 +457,42 @@ namespace roguishpanda.AB_Bauble_Farm
                 _InfoWindow.Show();
             }
         }
+        private (DateTime NextBaubleStartDate, DateTime EndofBaubleWeek, string FarmStatus, Color Statuscolor) GetBaubleInformation()
+        {
+            /// Shiny Bauble Time Rotation
+            TimeZoneInfo localTimeZone = TimeZoneInfo.Local; // Get the user's local time zone information.
+            DateTime currentTime = DateTime.Now;
+            DateTime rawBaubleStartTime = DateTime.Parse("2025-08-28 20:00:00"); // UTC time zone reset
+            DateTime originBaubleStartTime = TimeZoneInfo.ConvertTimeFromUtc(rawBaubleStartTime, localTimeZone);
+            int weekInterval = 3; // Number of weeks between bauble starts
+            TimeSpan differenceOriginCurrent = currentTime - originBaubleStartTime;
+            int weeksElapsed = (int)Math.Floor(differenceOriginCurrent.TotalDays / 7);
+            int currentIntervalNumber = (int)Math.Floor((double)weeksElapsed / weekInterval);
+            DateTime currentIntervalStartDate = originBaubleStartTime.AddDays(currentIntervalNumber * weekInterval * 7);
+            DateTime nextThirdWeekIntervalStartDate = currentIntervalStartDate.AddDays(weekInterval * 7);
+            DateTime NextBaubleStartDate = new DateTime();
+            DateTime EndofBaubleWeek = new DateTime();
+            DateTime oneWeekAheadcurrent = currentIntervalStartDate.AddDays(7);
+            DateTime oneWeekAheadnext = nextThirdWeekIntervalStartDate.AddDays(7);
+            string FarmStatus = "";
+            Color Statuscolor = Color.Red;
+            if (currentIntervalStartDate >= currentTime && currentTime <= oneWeekAheadcurrent)
+            {
+                NextBaubleStartDate = currentIntervalStartDate;
+                EndofBaubleWeek = oneWeekAheadcurrent;
+                FarmStatus = "ON";
+                Statuscolor = Color.Green;
+            }
+            else
+            {
+                NextBaubleStartDate = nextThirdWeekIntervalStartDate;
+                EndofBaubleWeek = oneWeekAheadnext;
+                FarmStatus = "OFF";
+                Statuscolor = Color.Red;
+            }
+
+            return (NextBaubleStartDate, EndofBaubleWeek, FarmStatus, Statuscolor);
+        }
         private void ResetButton_Click(int timerIndex)
         {
             string DropdownValue = _customDropdownTimers[timerIndex].SelectedItem;
@@ -498,7 +521,29 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         protected override void Update(GameTime gameTime)
         {
-            // Update Timer Defaults
+            // Update Bauble Information Labels
+            if (timerActive)
+            {
+                elapsedDateTime = DateTime.Now;
+                TimeSpan difference = elapsedDateTime - initialDateTime;
+
+                if (difference >= TimeSpan.FromMinutes(10))
+                {
+                    var BaubleInformation = GetBaubleInformation();
+                    DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
+                    DateTime EndofBaubleWeek = BaubleInformation.EndofBaubleWeek;
+                    string FarmStatus = BaubleInformation.FarmStatus;
+                    Color Statuscolor = BaubleInformation.Statuscolor;
+                    _statusValue.Text = FarmStatus;
+                    _statusValue.TextColor = Statuscolor;
+                    _startTimeValue.Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)");
+                    _endTimeValue.Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)");
+                    initialDateTime = DateTime.Now;
+                }
+            }
+
+
+            // Update Timer Information
             int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
             _timerBALTHdefault.Value, _timerWYVERNdefault.Value, _timerBRAMBLEdefault.Value, _timerOOZEdefault.Value, _timerGUZZLERdefault.Value,
             _timerTMdefault.Value, _timerSTONEHEADSdefault.Value
@@ -506,7 +551,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
             for (int i = 0; i < 12; i++)
             {
-                _timerDurationDefaults[0] = TimeSpan.FromMinutes(timerDefaultValues[i]);
+                _timerDurationDefaults[i] = TimeSpan.FromMinutes(timerDefaultValues[i]);
                 string DropdownValue = _customDropdownTimers[i].SelectedItem;
                 if (_timerRunning[i] && _timerStartTimes[i].HasValue)
                 {
@@ -570,6 +615,7 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             _InfoWindow?.Dispose();
             _InfoWindow = null;
+            timerActive = false;
         }
 
     }
