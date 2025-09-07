@@ -733,7 +733,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 elapsedDateTime = DateTime.Now;
                 TimeSpan difference = elapsedDateTime - initialDateTime;
 
-                if (difference >= TimeSpan.FromMinutes(10))
+                if (difference >= TimeSpan.FromMinutes(1))
                 {
                     var BaubleInformation = GetBaubleInformation();
                     DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
