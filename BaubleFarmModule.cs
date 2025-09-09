@@ -1,35 +1,36 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
-using Blish_HUD.Graphics.UI;
 using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
-using Blish_HUD.Overlay.UI.Views;
 using Blish_HUD.Settings;
-using Gw2Sharp.WebApi;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using NAudio.Wave;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D9;
-using SharpDX.DirectWrite;
+using SharpDX.MediaFoundation;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Runtime;
-using System.Threading;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace roguishpanda.AB_Bauble_Farm
 {
+    public class EventData
+    {
+        public int ID { get; set; }
+        public string Description { get; set; }
+        public DateTime? StartTime { get; set; }
+        public bool IsActive { get; set; }
+    }
+
     [Export(typeof(Blish_HUD.Modules.Module))]
     public class BaubleFarmModule : Blish_HUD.Modules.Module
     {
         private static readonly Logger Logger = Logger.GetLogger<BaubleFarmModule>();
+        internal static BaubleFarmModule ModuleInstance;
 
         #region Service Managers
         internal SettingsManager SettingsManager => this.ModuleParameters.SettingsManager;
@@ -47,7 +48,6 @@ namespace roguishpanda.AB_Bauble_Farm
         private Checkbox _InOrdercheckbox;
         private DateTime elapsedDateTime;
         private DateTime initialDateTime;
-        private bool timerActive = false;
         private int TimerRowNum = 12;
         private StandardButton _stopButton;
         private StandardButton[] _stopButtons;
@@ -93,11 +93,16 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<int> _timerTMdefault;
         private SettingEntry<int> _timerSTONEHEADSdefault;
         private AsyncTexture2D _asyncTimertexture;
+        private string _jsonFilePath;
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true // Makes JSON human-readable
+        };
 
         [ImportingConstructor]
         public BaubleFarmModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
         {
-
+            ModuleInstance = this;
         }
 
         protected override void DefineSettings(SettingCollection settings)
@@ -663,6 +668,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _timerDurationOverride[timerIndex] = TimeSpan.FromMinutes(totalMinutes);
                 }
             }
+
+            UpdateJsonEvents();
         }
         private void stopButtons_Click(int timerIndex)
         {
@@ -682,6 +689,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 _resetButtons[timerIndex].Enabled = true;
                 _customDropdownTimers[timerIndex].Enabled = true;
             }
+
+            UpdateJsonEvents();
         }
         private void StopButton_Click()
         {
@@ -704,6 +713,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _customDropdownTimers[timerIndex].Enabled = true;
                 }
             }
+
+            UpdateJsonEvents();
         }
         private void dropdownChanged_Click(int timerIndex)
         {
@@ -721,28 +732,119 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerLabels[timerIndex].Text = $"{_timerDurationOverride[timerIndex]:mm\\:ss}";
             }
         }
-        protected override void Update(GameTime gameTime)
+        private void UpdateJsonEvents()
         {
-            // Update Bauble Information Labels
-            if (timerActive)
+            /// Backup timers in case of DC, disconnect, or crash
+            List<EventData> eventDataList = new List<EventData>();
+            for (int i = 0; i < TimerRowNum; i++)
             {
-                elapsedDateTime = DateTime.Now;
-                TimeSpan difference = elapsedDateTime - initialDateTime;
-
-                if (difference >= TimeSpan.FromMinutes(1))
+                DateTime? startTime = null;
+                if (_timerRunning[i] == true)
                 {
-                    var BaubleInformation = GetBaubleInformation();
-                    DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
-                    DateTime EndofBaubleWeek = BaubleInformation.EndofBaubleWeek;
-                    string FarmStatus = BaubleInformation.FarmStatus;
-                    Color Statuscolor = BaubleInformation.Statuscolor;
-                    _statusValue.Text = FarmStatus;
-                    _statusValue.TextColor = Statuscolor;
-                    _startTimeValue.Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)");
-                    _endTimeValue.Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)");
-                    initialDateTime = DateTime.Now;
+                    startTime = _timerStartTimes[i];
+                }
+                eventDataList.Add(new EventData
+                {
+                    ID = i,
+                    Description = $"{_timerLabelDescriptions[i].Text}",
+                    StartTime = startTime,
+                    IsActive = _timerRunning[i]
+                });
+            }
+            try
+            {
+                string jsonContent = JsonSerializer.Serialize(eventDataList, _jsonOptions);
+                File.WriteAllText(_jsonFilePath, jsonContent);
+                //Logger.Info($"Saved {_eventDataList.Count} events to {_jsonFilePath}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to save JSON file: {ex.Message}");
+            }
+            //eventDataList = new List<EventData>();
+        }
+        protected override async Task LoadAsync()
+        {
+            // Load backup JSON file for timers in case of DC, crashes, or disconnects
+            //_eventDataList = new List<EventData>();
+            List<EventData> eventDataList = new List<EventData>();
+
+            // Get module-specific directory
+            string moduleDir = DirectoriesManager.GetFullDirectoryPath("ShinyBaubles");
+            _jsonFilePath = Path.Combine(moduleDir, "events.json");
+
+            // Load JSON file if it exists
+            if (File.Exists(_jsonFilePath))
+            {
+                try
+                {
+                    // Use StreamReader for async file reading in .NET Framework 4.8
+                    using (StreamReader reader = new StreamReader(_jsonFilePath))
+                    {
+                        string jsonContent = await reader.ReadToEndAsync();
+                        eventDataList = JsonSerializer.Deserialize<List<EventData>>(jsonContent, _jsonOptions);
+                        //Logger.Info($"Loaded {_eventDataList.Count} events from {_jsonFilePath}");
+                    }
+
+                    var eventData = eventDataList;
+                    for (int i = 0; i < TimerRowNum; i++)
+                    {
+                        DateTime? startTime = eventData[i].StartTime;
+                        if (eventData[i].IsActive = true && startTime != null && eventData[i].Description == _timerLabelDescriptions[i].Text)
+                        {
+                            DateTime now = DateTime.Now;
+                            TimeSpan difference = now - startTime.Value;
+
+                            if (difference.TotalSeconds < 3600)
+                            {
+                                _timerStartTimes[i] = eventData[i].StartTime;
+                                _timerRunning[i] = eventData[i].IsActive;
+                                _resetButtons[i].Enabled = false;
+                            }
+                            else
+                            {
+                                _timerStartTimes[i] = null;
+                                _timerRunning[i] = false;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Logger.Warn($"Failed to load JSON file: {ex.Message}");
+                    //_eventDataList = new List<EventData>(); // Fallback to empty list
                 }
             }
+            else
+            {
+                Logger.Info("No JSON file found. Starting with an empty event list.");
+            }
+        }
+        protected override void Update(GameTime gameTime)
+        {
+            #region Bauble Information Updates
+
+            // Update Bauble Information Labels
+            elapsedDateTime = DateTime.Now;
+            TimeSpan difference = elapsedDateTime - initialDateTime;
+
+            if (difference >= TimeSpan.FromMinutes(1))
+            {
+                var BaubleInformation = GetBaubleInformation();
+                DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
+                DateTime EndofBaubleWeek = BaubleInformation.EndofBaubleWeek;
+                string FarmStatus = BaubleInformation.FarmStatus;
+                Color Statuscolor = BaubleInformation.Statuscolor;
+                _statusValue.Text = FarmStatus;
+                _statusValue.TextColor = Statuscolor;
+                _startTimeValue.Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)");
+                _endTimeValue.Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)");
+                initialDateTime = DateTime.Now;
+            }
+
+            #endregion
+
+            #region Timer Information Updates
 
             // Update Timer Information
             int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
@@ -817,6 +919,8 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 OrderPanelsByTime(CurrentElapsedTime);
             }
+
+            #endregion
         }
         private void OrderPanelsByTime(TimeSpan[] CurrentElapsedTime)
         {
@@ -844,6 +948,7 @@ namespace roguishpanda.AB_Bauble_Farm
         protected override void Unload()
         {
             // Clean up
+            ModuleInstance = null;
             for (int i = 0; i < TimerRowNum; i++)
             {
                 _resetButtons[i]?.Dispose();
@@ -865,7 +970,6 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             _InfoWindow?.Dispose();
             _InfoWindow = null;
-            timerActive = false;
         }
     }
 }
