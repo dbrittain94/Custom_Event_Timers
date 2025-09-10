@@ -1,10 +1,10 @@
 {
   "name": "Shiny Baubles",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "namespace": "roguishpanda.AB_Bauble_Farm",
   "package": "AB_Bauble_Farm.dll",
   "manifest_version": 1,
-  "directories": [ "ShinyBaubles" ],
+  "directories": [ "Shiny_Baubles" ],
   "description": "Shiny Baubles",
   "dependencies": {
     "bh.blishhud": ">=1.2.0"

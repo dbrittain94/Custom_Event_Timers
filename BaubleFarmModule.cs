@@ -747,8 +747,8 @@ namespace roguishpanda.AB_Bauble_Farm
             List<EventData> eventDataList = new List<EventData>();
 
             // Get module-specific directory
-            string moduleDir = DirectoriesManager.GetFullDirectoryPath("ShinyBaubles");
-            _jsonFilePath = Path.Combine(moduleDir, "events.json");
+            string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
+            _jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
 
             // Load JSON file if it exists
             if (File.Exists(_jsonFilePath))
