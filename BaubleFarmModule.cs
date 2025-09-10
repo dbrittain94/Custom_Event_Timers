@@ -127,101 +127,113 @@ namespace roguishpanda.AB_Bauble_Farm
             _svetKeybind = settings.DefineSetting("svetKeybinding", new KeyBinding(Keys.None), () => "SVET Keybinding", () => "Keybind to start/stop svet timer.");
             _svetKeybind.Value.BlockSequenceFromGw2 = true;
             _svetKeybind.Value.Enabled = true;
-            _svetKeybind.Value.Activated += svetKeybind_Activated;
+            _svetKeybind.Value.Activated += (sender, e) => timerKeybinds(0);
 
             _evetKeybind = settings.DefineSetting("evetKeybinding", new KeyBinding(Keys.None), () => "EVET Keybinding", () => "Keybind to start/stop evet timer.");
             _evetKeybind.Value.BlockSequenceFromGw2 = true;
             _evetKeybind.Value.Enabled = true;
-            _evetKeybind.Value.Activated += evetKeybind_Activated;
+            _evetKeybind.Value.Activated += (sender, e) => timerKeybinds(1);
 
             _nvetKeybind = settings.DefineSetting("nvetKeybinding", new KeyBinding(Keys.None), () => "NVET Keybinding", () => "Keybind to start/stop nvet timer.");
             _nvetKeybind.Value.BlockSequenceFromGw2 = true;
             _nvetKeybind.Value.Enabled = true;
-            _nvetKeybind.Value.Activated += nvetKeybind_Activated;
+            _nvetKeybind.Value.Activated += (sender, e) => timerKeybinds(2);
 
             _wvetKeybind = settings.DefineSetting("wvetKeybinding", new KeyBinding(Keys.None), () => "WVET Keybinding", () => "Keybind to start/stop wvet timer.");
             _wvetKeybind.Value.BlockSequenceFromGw2 = true;
             _wvetKeybind.Value.Enabled = true;
-            _wvetKeybind.Value.Activated += wvetKeybind_Activated;
+            _wvetKeybind.Value.Activated += (sender, e) => timerKeybinds(3);
 
             _sapKeybind = settings.DefineSetting("sapKeybinding", new KeyBinding(Keys.None), () => "SAP Keybinding", () => "Keybind to start/stop sap timer.");
             _sapKeybind.Value.BlockSequenceFromGw2 = true;
             _sapKeybind.Value.Enabled = true;
-            _sapKeybind.Value.Activated += sapKeybind_Activated;
+            _sapKeybind.Value.Activated += (sender, e) => timerKeybinds(4);
 
             _balthKeybind = settings.DefineSetting("balthKeybinding", new KeyBinding(Keys.None), () => "BALTH Keybinding", () => "Keybind to start/stop balth timer.");
             _balthKeybind.Value.BlockSequenceFromGw2 = true;
             _balthKeybind.Value.Enabled = true;
-            _balthKeybind.Value.Activated += balthKeybind_Activated;
+            _balthKeybind.Value.Activated += (sender, e) => timerKeybinds(5);
 
             _wyvernKeybind = settings.DefineSetting("wyvernKeybinding", new KeyBinding(Keys.None), () => "WYVERN Keybinding", () => "Keybind to start/stop wyvern timer.");
             _wyvernKeybind.Value.BlockSequenceFromGw2 = true;
             _wyvernKeybind.Value.Enabled = true;
-            _wyvernKeybind.Value.Activated += wyvernKeybind_Activated;
+            _wyvernKeybind.Value.Activated += (sender, e) => timerKeybinds(6);
 
             _brambleKeybind = settings.DefineSetting("brambleKeybinding", new KeyBinding(Keys.None), () => "BRAMBLE Keybinding", () => "Keybind to start/stop bramble timer.");
             _brambleKeybind.Value.BlockSequenceFromGw2 = true;
             _brambleKeybind.Value.Enabled = true;
-            _brambleKeybind.Value.Activated += brambleKeybind_Activated;
+            _brambleKeybind.Value.Activated += (sender, e) => timerKeybinds(7);
 
             _oozeKeybind = settings.DefineSetting("oozeKeybinding", new KeyBinding(Keys.None), () => "OOZE Keybinding", () => "Keybind to start/stop ooze timer.");
             _oozeKeybind.Value.BlockSequenceFromGw2 = true;
             _oozeKeybind.Value.Enabled = true;
-            _oozeKeybind.Value.Activated += oozeKeybind_Activated;
+            _oozeKeybind.Value.Activated += (sender, e) => timerKeybinds(8);
 
             _guzzlerKeybind = settings.DefineSetting("guzzlerKeybinding", new KeyBinding(Keys.None), () => "GUZZLER Keybinding", () => "Keybind to start/stop guzzler timer.");
             _guzzlerKeybind.Value.BlockSequenceFromGw2 = true;
             _guzzlerKeybind.Value.Enabled = true;
-            _guzzlerKeybind.Value.Activated += guzzlerKeybind_Activated;
+            _guzzlerKeybind.Value.Activated += (sender, e) => timerKeybinds(9);
 
             _tmKeybind = settings.DefineSetting("tmKeybinding", new KeyBinding(Keys.None), () => "TM Keybinding", () => "Keybind to start/stop TM timer.");
             _tmKeybind.Value.BlockSequenceFromGw2 = true;
             _tmKeybind.Value.Enabled = true;
-            _tmKeybind.Value.Activated += tmKeybind_Activated;
+            _tmKeybind.Value.Activated += (sender, e) => timerKeybinds(10);
 
             _stoneheadKeybind = settings.DefineSetting("stoneheadKeybinding", new KeyBinding(Keys.None), () => "STONEHEAD Keybinding", () => "Keybind to start/stop stonehead timer.");
             _stoneheadKeybind.Value.BlockSequenceFromGw2 = true;
             _stoneheadKeybind.Value.Enabled = true;
-            _stoneheadKeybind.Value.Activated += stoneheadKeybind_Activated;
+            _stoneheadKeybind.Value.Activated += (sender, e) => timerKeybinds(11);
 
             _timerLowDefault = settings.DefineSetting("LowTimerDefaultTimer",30,() => "Low Timer",() => "Set timer for when timer gets below certain threshold in seconds.");
             _timerLowDefault.SetRange(1, 120);
 
             _timerSVETdefault = settings.DefineSetting("SVETDefaultTimer",10,() => "SVET Timer",() => "Set timer for SVET in minutes.");
             _timerSVETdefault.SetRange(1, 10);
+            _timerSVETdefault.SettingChanged += (sender, e) => timerDefaults(0);
 
             _timerEVETdefault = settings.DefineSetting("EVETDefaultTimer",10,() => "EVET Timer", () => "Set timer for EVET in minutes.");
             _timerEVETdefault.SetRange(1, 10);
+            _timerEVETdefault.SettingChanged += (sender, e) => timerDefaults(1);
 
             _timerNVETdefault = settings.DefineSetting("NVETDefaultTimer",10,() => "NVET Timer", () => "Set timer for NVET in minutes.");
             _timerNVETdefault.SetRange(1, 10);
+            _timerNVETdefault.SettingChanged += (sender, e) => timerDefaults(2);
 
             _timerWVETdefault = settings.DefineSetting("WVETDefaultTimer",10,() => "WVET Timer", () => "Set timer for WVET in minutes.");
             _timerWVETdefault.SetRange(1, 10);
+            _timerWVETdefault.SettingChanged += (sender, e) => timerDefaults(3);
 
             _timerSAPdefault = settings.DefineSetting("SAPDefaultTimer",8,() => "SAP Timer", () => "Set timer for SAP in minutes.");
             _timerSAPdefault.SetRange(1, 10);
+            _timerSAPdefault.SettingChanged += (sender, e) => timerDefaults(4);
 
             _timerBALTHdefault = settings.DefineSetting("BALTHDefaultTimer",8,() => "BALTH Timer", () => "Set timer for BALTH in minutes.");
             _timerBALTHdefault.SetRange(1, 10);
+            _timerBALTHdefault.SettingChanged += (sender, e) => timerDefaults(5);
 
             _timerWYVERNdefault = settings.DefineSetting("WYVERNDefaultTimer",13,() => "WYVERN Timer", () => "Set timer for WYVERN in minutes.");
             _timerWYVERNdefault.SetRange(1, 15);
+            _timerWYVERNdefault.SettingChanged += (sender, e) => timerDefaults(6);
 
             _timerBRAMBLEdefault = settings.DefineSetting("BRAMBLEDefaultTimer",13,() => "BRAMBLE Timer", () => "Set timer for BRAMBLE in minutes.");
             _timerBRAMBLEdefault.SetRange(1, 15);
+            _timerBRAMBLEdefault.SettingChanged += (sender, e) => timerDefaults(7);
 
             _timerOOZEdefault = settings.DefineSetting("OOZEDefaultTimer",14,() => "OOZE Timer", () => "Set timer for OOZE in minutes.");
             _timerOOZEdefault.SetRange(1, 15);
+            _timerOOZEdefault.SettingChanged += (sender, e) => timerDefaults(8);
 
             _timerGUZZLERdefault = settings.DefineSetting("GUZZLERDefaultTimer",13,() => "GUZZLER Timer", () => "Set timer for GUZZLER in minutes.");
             _timerGUZZLERdefault.SetRange(1, 15);
+            _timerGUZZLERdefault.SettingChanged += (sender, e) => timerDefaults(9);
 
             _timerTMdefault = settings.DefineSetting("TMDefaultTimer",10,() => "TM Timer", () => "Set timer for TM in minutes.");
             _timerTMdefault.SetRange(1, 10);
+            _timerTMdefault.SettingChanged += (sender, e) => timerDefaults(10);
 
             _timerSTONEHEADSdefault = settings.DefineSetting("STONEHEADSDefaultTimer",12,() => "STONEHEADS Timer", () => "Set timer for STONEHEADS in minutes.");
             _timerSTONEHEADSdefault.SetRange(1, 15);
+            _timerSTONEHEADSdefault.SettingChanged += (sender, e) => timerDefaults(11);
         }
         private void ToggleTimerWindowKeybind_Activated(object sender, EventArgs e)
         {
@@ -250,54 +262,6 @@ namespace roguishpanda.AB_Bauble_Farm
             _infoPanel.Opacity = _OpacityDefault.Value;
             _timerPanel.Opacity = _OpacityDefault.Value;
         }
-        private void svetKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(0);
-        }
-        private void evetKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(1);
-        }
-        private void nvetKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(2);
-        }
-        private void wvetKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(3);
-        }
-        private void sapKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(4);
-        }
-        private void balthKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(5);
-        }
-        private void wyvernKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(6);
-        }
-        private void brambleKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(7);
-        }
-        private void oozeKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(8);
-        }
-        private void guzzlerKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(9);
-        }
-        private void tmKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(10);
-        }
-        private void stoneheadKeybind_Activated(object sender, EventArgs e)
-        {
-            timerKeybinds(11);
-        }
         private void timerKeybinds(int timerIndex)
         {
             if (_resetButtons[timerIndex].Enabled == true)
@@ -307,6 +271,19 @@ namespace roguishpanda.AB_Bauble_Farm
             else
             {
                 stopButtons_Click(timerIndex);
+            }
+        }
+        private void timerDefaults(int timerIndex)
+        {
+            int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
+            _timerBALTHdefault.Value, _timerWYVERNdefault.Value, _timerBRAMBLEdefault.Value, _timerOOZEdefault.Value, _timerGUZZLERdefault.Value,
+            _timerTMdefault.Value, _timerSTONEHEADSdefault.Value
+            };
+
+            _timerDurationDefaults[timerIndex] = TimeSpan.FromMinutes(timerDefaultValues[timerIndex]);
+            _timerLabels[timerIndex].Text = $"{_timerDurationDefaults[timerIndex]:mm\\:ss}";
+            if (_timerRunning[timerIndex] == false)
+            {
             }
         }
         protected override void Initialize()
@@ -847,15 +824,9 @@ namespace roguishpanda.AB_Bauble_Farm
             #region Timer Information Updates
 
             // Update Timer Information
-            int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
-            _timerBALTHdefault.Value, _timerWYVERNdefault.Value, _timerBRAMBLEdefault.Value, _timerOOZEdefault.Value, _timerGUZZLERdefault.Value,
-            _timerTMdefault.Value, _timerSTONEHEADSdefault.Value
-            };
-
             TimeSpan[] CurrentElapsedTime = new TimeSpan[TimerRowNum];
             for (int i = 0; i < TimerRowNum; i++)
             {
-                _timerDurationDefaults[i] = TimeSpan.FromMinutes(timerDefaultValues[i]);
                 string DropdownValue = _customDropdownTimers[i].SelectedItem;
                 TimeSpan remaining = TimeSpan.FromMinutes(0);
                 if (_timerRunning[i] && _timerStartTimes[i].HasValue)
