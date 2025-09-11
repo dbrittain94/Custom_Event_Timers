@@ -151,6 +151,7 @@
     <None Include="mgfxc.runtimeconfig.dev.json" />
     <None Include="mgfxc.runtimeconfig.json" />
     <None Include="packages.config" />
+    <None Include="ref\Defaults\Default_Notes.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaubleFarmModule.cs" />
@@ -334,9 +335,7 @@
     <Content Include="SharpDX.dll" />
     <Content Include="SharpDX.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ref\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

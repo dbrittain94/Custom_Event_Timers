@@ -1,6 +1,8 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
+using Blish_HUD.GameServices.ArcDps.V2.Models;
+using Blish_HUD.Graphics.UI;
 using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
@@ -12,7 +14,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -24,6 +28,13 @@ namespace roguishpanda.AB_Bauble_Farm
         public string Description { get; set; }
         public DateTime? StartTime { get; set; }
         public bool IsActive { get; set; }
+    }
+    public class NotesData
+    {
+        public int ID { get; set; }
+        public string Description { get; set; }
+        public string Waypoint { get; set; }
+        public List<string> Notes { get; set; }
     }
 
     [Export(typeof(Blish_HUD.Modules.Module))]
@@ -45,6 +56,8 @@ namespace roguishpanda.AB_Bauble_Farm
         private Label _statusValue;
         private Label _startTimeValue;
         private Label _endTimeValue;
+        private string[] _Waypoints;
+        private List<List<string>> _Notes;
         private Checkbox _InOrdercheckbox;
         private DateTime elapsedDateTime;
         private DateTime initialDateTime;
@@ -60,8 +73,10 @@ namespace roguishpanda.AB_Bauble_Farm
         private Panel[] _TimerWindowsOrdered;
         private Panel _infoPanel;
         private Panel _timerPanel;
+        private Panel _SettingsPanel;
         private StandardWindow _TimerWindow;
         private StandardWindow _InfoWindow;
+        private TabbedWindow2 _SettingsWindow;
         private CornerIcon _cornerIcon;
         private SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
         private SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
@@ -92,8 +107,9 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<int> _timerGUZZLERdefault;
         private SettingEntry<int> _timerTMdefault;
         private SettingEntry<int> _timerSTONEHEADSdefault;
-        private AsyncTexture2D _asyncTimertexture;
-        private string _jsonFilePath;
+        public AsyncTexture2D _asyncTimertexture;
+        public AsyncTexture2D _asyncGeneralSettingstexture;
+        public AsyncTexture2D _asyncNotesSettingstexture;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -290,6 +306,8 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             #region Initialize Defaults
             _timerStartTimes = new DateTime?[TimerRowNum];
+            _Waypoints = new string[TimerRowNum];
+            _Notes = new List<List<string>>();
             _timerRunning = new bool[TimerRowNum];
             _timerLabelDescriptions = new Label[TimerRowNum];
             _timerLabels = new Label[TimerRowNum];
@@ -320,7 +338,9 @@ namespace roguishpanda.AB_Bauble_Farm
                 #region Timer Window Window
 
                 //// Assign all textures and parameters for timer window
-                //_asyncTimertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
+                _asyncTimertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
+                _asyncGeneralSettingstexture = AsyncTexture2D.FromAssetId(156701);
+                _asyncNotesSettingstexture = AsyncTexture2D.FromAssetId(1654244);
                 AsyncTexture2D NoTexture = new AsyncTexture2D();
                 _TimerWindow = new StandardWindow(
                     NoTexture,
@@ -522,6 +542,53 @@ namespace roguishpanda.AB_Bauble_Farm
                         Location = new Point(0, 95 + (i * 30)),
                     };
 
+                    // Waypoint Icon
+                    /*AsyncTexture2D waypointTexture = AsyncTexture2D.FromAssetId(157353);
+                    Image waypointIcon = new Image
+                    {
+                        Texture = waypointTexture,
+                        Location = new Point(0, 0),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        //Visible = false,
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    waypointIcon.MouseEntered += (sender, e) => {
+                        waypointIcon.Location = new Point(0 - 2, 0 - 2);
+                        waypointIcon.Size = new Point(36, 36);
+                        waypointIcon.Opacity = 1f;
+                    };
+                    waypointIcon.MouseLeft += (s, e) => {
+                        waypointIcon.Location = new Point(0, 0);
+                        waypointIcon.Size = new Point(32, 32);
+                        waypointIcon.Opacity = 0.7f;
+                    };
+                    waypointIcon.Click += (s, e) => WaypointIcon_Click(index);*/
+
+                    // Notes Icon
+                    AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
+                    Image notesIcon = new Image
+                    {
+                        Texture = notesTexture,
+                        Location = new Point(10, 0),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        //Visible = false,
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    notesIcon.MouseEntered += (sender, e) => {
+                        notesIcon.Location = new Point(10 - 2, 0 - 2);
+                        notesIcon.Size = new Point(36, 36);
+                        notesIcon.Opacity = 1f;
+                    };
+                    notesIcon.MouseLeft += (s, e) => {
+                        notesIcon.Location = new Point(10, 0);
+                        notesIcon.Size = new Point(32, 32);
+                        notesIcon.Opacity = 0.7f;
+                    };
+                    notesIcon.Click += (s, e) => NotesIcon_Click(index);
+
+                    // Timer Event Description
                     _timerLabelDescriptions[i] = new Label
                     {
                         Text = Descriptions[i],
@@ -573,6 +640,45 @@ namespace roguishpanda.AB_Bauble_Farm
                     _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
 
                     #endregion
+
+                    #region Timer Settings Window
+
+                    _SettingsWindow = new TabbedWindow2(
+                        _asyncTimertexture,
+                        new Rectangle(0, 0, 1000, 700), // The windowRegion
+                        new Rectangle(0, 0, 1000, 700)) // The contentRegion
+                    {
+                        Parent = GameService.Graphics.SpriteScreen,
+                        Title = "",
+                        Location = new Point(300, 300),
+                        SavesPosition = true,
+                        Visible = false,
+                        Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
+                    };
+
+                    AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
+                    Image settingsIcon = new Image
+                    {
+                        Texture = geartexture,
+                        Location = new Point(340, 30),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        Visible = false,
+                        Parent = _TimerWindow
+                    };
+                    settingsIcon.MouseEntered += (sender, e) => {
+                        settingsIcon.Location = new Point(340 - 4, 30 - 4);
+                        settingsIcon.Size = new Point(40, 40);
+                        settingsIcon.Opacity = 1f;
+                    };
+                    settingsIcon.MouseLeft += (s, e) => {
+                        settingsIcon.Location = new Point(340, 30);
+                        settingsIcon.Size = new Point(32, 32);
+                        settingsIcon.Opacity = 0.7f;
+                    };
+                    settingsIcon.Click += SettingsIcon_Click;
+
+                    #endregion
                 }
             }
             catch (Exception ex)
@@ -581,7 +687,30 @@ namespace roguishpanda.AB_Bauble_Farm
             }
         }
 
-        private void CornerIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
+        private void NotesIcon_Click(int index)
+        {
+            List<string> test = _Notes[index];
+            string test2 = _Waypoints[index];
+        }
+
+        private void WaypointIcon_Click(int index)
+        {
+            string test = _Waypoints[index];
+        }
+
+        private void SettingsIcon_Click(object sender, MouseEventArgs e)
+        {
+            if (_SettingsWindow.Visible == true)
+            {
+                _SettingsWindow.Hide();
+            }
+            else
+            {
+                _SettingsWindow.Show();
+            }
+        }
+
+        private void CornerIcon_Click(object sender, MouseEventArgs e)
         {
             // Toggle window visibility
             if (_TimerWindow.Visible)
@@ -713,6 +842,8 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             /// Backup timers in case of DC, disconnect, or crash
             List<EventData> eventDataList = new List<EventData>();
+            string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
+            string jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
             for (int i = 0; i < TimerRowNum; i++)
             {
                 DateTime? startTime = null;
@@ -731,7 +862,7 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 string jsonContent = JsonSerializer.Serialize(eventDataList, _jsonOptions);
-                File.WriteAllText(_jsonFilePath, jsonContent);
+                File.WriteAllText(jsonFilePath, jsonContent);
                 //Logger.Info($"Saved {_eventDataList.Count} events to {_jsonFilePath}");
             }
             catch (Exception ex)
@@ -742,25 +873,20 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         protected override async Task LoadAsync()
         {
-            // Load backup JSON file for timers in case of DC, crashes, or disconnects
-            //_eventDataList = new List<EventData>();
+            #region Load Backup Timer JSON
+
             List<EventData> eventDataList = new List<EventData>();
-
-            // Get module-specific directory
             string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
-            _jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
-
-            // Load JSON file if it exists
-            if (File.Exists(_jsonFilePath))
+            string jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
+            if (File.Exists(jsonFilePath))
             {
                 try
                 {
-                    // Use StreamReader for async file reading in .NET Framework 4.8
-                    using (StreamReader reader = new StreamReader(_jsonFilePath))
+                    using (StreamReader reader = new StreamReader(jsonFilePath))
                     {
                         string jsonContent = await reader.ReadToEndAsync();
                         eventDataList = JsonSerializer.Deserialize<List<EventData>>(jsonContent, _jsonOptions);
-                        //Logger.Info($"Loaded {_eventDataList.Count} events from {_jsonFilePath}");
+                        //Logger.Info($"Loaded {_eventDataList.Count} events from {jsonFilePath}");
                     }
 
                     var eventData = eventDataList;
@@ -777,6 +903,7 @@ namespace roguishpanda.AB_Bauble_Farm
                                 _timerStartTimes[i] = eventData[i].StartTime;
                                 _timerRunning[i] = eventData[i].IsActive;
                                 _resetButtons[i].Enabled = false;
+                                _customDropdownTimers[i].Enabled = false;
                             }
                             else
                             {
@@ -789,13 +916,46 @@ namespace roguishpanda.AB_Bauble_Farm
                 catch (Exception ex)
                 {
                     //Logger.Warn($"Failed to load JSON file: {ex.Message}");
-                    //_eventDataList = new List<EventData>(); // Fallback to empty list
                 }
             }
             else
             {
-                Logger.Info("No JSON file found. Starting with an empty event list.");
+                Logger.Info("No Timers JSON file found.");
             }
+
+            #endregion
+
+            #region Load Notes
+
+            List<NotesData> eventNotes = new List<NotesData>();
+            jsonFilePath = @"Defaults\Default_Notes.json";
+            Stream json = ContentsManager.GetFileStream(jsonFilePath);
+            try
+            {
+                using (StreamReader reader = new StreamReader(json))
+                {
+                    string jsonContent = await reader.ReadToEndAsync();
+                    eventNotes = JsonSerializer.Deserialize<List<NotesData>>(jsonContent, _jsonOptions);
+                    //Logger.Info($"Loaded {eventNotes.Count} events from {jsonFilePath}");
+                }
+
+                var notesData = eventNotes;
+                for (int i = 0; i < TimerRowNum; i++)
+                {
+                    if (notesData[i].Description == _timerLabelDescriptions[i].Text)
+                    {
+                        //Logger.Info($"Waypoint: {notesData[i].Waypoint} Notes: {notesData[i].Notes}");
+                        _Waypoints[i] = notesData[i].Waypoint;
+                        _Notes.Add(notesData[i].Notes);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to load JSON file: {ex.Message}");
+            }
+
+            #endregion
         }
         protected override void Update(GameTime gameTime)
         {
