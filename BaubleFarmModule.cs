@@ -13,12 +13,17 @@ using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace roguishpanda.AB_Bauble_Farm
 {
@@ -51,11 +56,11 @@ namespace roguishpanda.AB_Bauble_Farm
 
         #endregion
 
-        private Label[] _timerLabelDescriptions;
-        private Label[] _timerLabels;
-        private Label _statusValue;
-        private Label _startTimeValue;
-        private Label _endTimeValue;
+        private Blish_HUD.Controls.Label[] _timerLabelDescriptions;
+        private Blish_HUD.Controls.Label[] _timerLabels;
+        private Blish_HUD.Controls.Label _statusValue;
+        private Blish_HUD.Controls.Label _startTimeValue;
+        private Blish_HUD.Controls.Label _endTimeValue;
         private string[] _Waypoints;
         private List<List<string>> _Notes;
         private Checkbox _InOrdercheckbox;
@@ -70,10 +75,10 @@ namespace roguishpanda.AB_Bauble_Farm
         private bool[] _timerRunning; // Track running state
         private TimeSpan[] _timerDurationDefaults;
         private TimeSpan[] _timerDurationOverride;
-        private Panel[] _TimerWindowsOrdered;
-        private Panel _infoPanel;
-        private Panel _timerPanel;
-        private Panel _SettingsPanel;
+        private Blish_HUD.Controls.Panel[] _TimerWindowsOrdered;
+        private Blish_HUD.Controls.Panel _infoPanel;
+        private Blish_HUD.Controls.Panel _timerPanel;
+        private Blish_HUD.Controls.Panel _SettingsPanel;
         private StandardWindow _TimerWindow;
         private StandardWindow _InfoWindow;
         private TabbedWindow2 _SettingsWindow;
@@ -92,6 +97,8 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<KeyBinding> _guzzlerKeybind;
         private SettingEntry<KeyBinding> _tmKeybind;
         private SettingEntry<KeyBinding> _stoneheadKeybind;
+        private SettingEntry<KeyBinding> _postNotesKeybind;
+        private SettingEntry<KeyBinding> _cancelNotesKeybind;
         private SettingEntry<bool> _InOrdercheckboxDefault;
         private SettingEntry<float> _OpacityDefault;
         private SettingEntry<int> _timerLowDefault;
@@ -110,6 +117,9 @@ namespace roguishpanda.AB_Bauble_Farm
         public AsyncTexture2D _asyncTimertexture;
         public AsyncTexture2D _asyncGeneralSettingstexture;
         public AsyncTexture2D _asyncNotesSettingstexture;
+        private Blish_HUD.Controls.Panel _inputPanel;
+        private Blish_HUD.Controls.Label _instructionLabel;
+        private Image[] _notesIcon;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -130,72 +140,82 @@ namespace roguishpanda.AB_Bauble_Farm
             _OpacityDefault.SetRange(0.1f, 1.0f);
             _OpacityDefault.SettingChanged += ChangeOpacity_Activated;
 
-            _toggleTimerWindowKeybind = settings.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Keys.L),() => "Timer Window",() => "Keybind to show or hide the Timer window.");
+            _toggleTimerWindowKeybind = settings.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.L),() => "Timer Window",() => "Keybind to show or hide the Timer window.");
             _toggleTimerWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
-            _toggleInfoWindowKeybind = settings.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
+            _toggleInfoWindowKeybind = settings.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
             _toggleInfoWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
-            _svetKeybind = settings.DefineSetting("svetKeybinding", new KeyBinding(Keys.None), () => "SVET Keybinding", () => "Keybind to start/stop svet timer.");
+            _postNotesKeybind = settings.DefineSetting("PostNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.B), () => "Post Notes", () => "Keybind to confirm posting notes in chat.");
+            _postNotesKeybind.Value.BlockSequenceFromGw2 = true;
+            _postNotesKeybind.Value.Enabled = true;
+            _postNotesKeybind.Value.BindingChanged += PostNotes_BindingChanged;
+
+            _cancelNotesKeybind = settings.DefineSetting("CancelNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.N), () => "Cancel Notes", () => "Keybind to cancel posting notes in chat.");
+            _cancelNotesKeybind.Value.BlockSequenceFromGw2 = true;
+            _cancelNotesKeybind.Value.Enabled = true;
+            _cancelNotesKeybind.Value.BindingChanged += CancelNotes_BindingChanged;
+
+            _svetKeybind = settings.DefineSetting("svetKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "SVET Keybinding", () => "Keybind to start/stop svet timer.");
             _svetKeybind.Value.BlockSequenceFromGw2 = true;
             _svetKeybind.Value.Enabled = true;
             _svetKeybind.Value.Activated += (sender, e) => timerKeybinds(0);
 
-            _evetKeybind = settings.DefineSetting("evetKeybinding", new KeyBinding(Keys.None), () => "EVET Keybinding", () => "Keybind to start/stop evet timer.");
+            _evetKeybind = settings.DefineSetting("evetKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "EVET Keybinding", () => "Keybind to start/stop evet timer.");
             _evetKeybind.Value.BlockSequenceFromGw2 = true;
             _evetKeybind.Value.Enabled = true;
             _evetKeybind.Value.Activated += (sender, e) => timerKeybinds(1);
 
-            _nvetKeybind = settings.DefineSetting("nvetKeybinding", new KeyBinding(Keys.None), () => "NVET Keybinding", () => "Keybind to start/stop nvet timer.");
+            _nvetKeybind = settings.DefineSetting("nvetKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "NVET Keybinding", () => "Keybind to start/stop nvet timer.");
             _nvetKeybind.Value.BlockSequenceFromGw2 = true;
             _nvetKeybind.Value.Enabled = true;
             _nvetKeybind.Value.Activated += (sender, e) => timerKeybinds(2);
 
-            _wvetKeybind = settings.DefineSetting("wvetKeybinding", new KeyBinding(Keys.None), () => "WVET Keybinding", () => "Keybind to start/stop wvet timer.");
+            _wvetKeybind = settings.DefineSetting("wvetKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "WVET Keybinding", () => "Keybind to start/stop wvet timer.");
             _wvetKeybind.Value.BlockSequenceFromGw2 = true;
             _wvetKeybind.Value.Enabled = true;
             _wvetKeybind.Value.Activated += (sender, e) => timerKeybinds(3);
 
-            _sapKeybind = settings.DefineSetting("sapKeybinding", new KeyBinding(Keys.None), () => "SAP Keybinding", () => "Keybind to start/stop sap timer.");
+            _sapKeybind = settings.DefineSetting("sapKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "SAP Keybinding", () => "Keybind to start/stop sap timer.");
             _sapKeybind.Value.BlockSequenceFromGw2 = true;
             _sapKeybind.Value.Enabled = true;
             _sapKeybind.Value.Activated += (sender, e) => timerKeybinds(4);
 
-            _balthKeybind = settings.DefineSetting("balthKeybinding", new KeyBinding(Keys.None), () => "BALTH Keybinding", () => "Keybind to start/stop balth timer.");
+            _balthKeybind = settings.DefineSetting("balthKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "BALTH Keybinding", () => "Keybind to start/stop balth timer.");
             _balthKeybind.Value.BlockSequenceFromGw2 = true;
             _balthKeybind.Value.Enabled = true;
             _balthKeybind.Value.Activated += (sender, e) => timerKeybinds(5);
 
-            _wyvernKeybind = settings.DefineSetting("wyvernKeybinding", new KeyBinding(Keys.None), () => "WYVERN Keybinding", () => "Keybind to start/stop wyvern timer.");
+            _wyvernKeybind = settings.DefineSetting("wyvernKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "WYVERN Keybinding", () => "Keybind to start/stop wyvern timer.");
             _wyvernKeybind.Value.BlockSequenceFromGw2 = true;
             _wyvernKeybind.Value.Enabled = true;
             _wyvernKeybind.Value.Activated += (sender, e) => timerKeybinds(6);
 
-            _brambleKeybind = settings.DefineSetting("brambleKeybinding", new KeyBinding(Keys.None), () => "BRAMBLE Keybinding", () => "Keybind to start/stop bramble timer.");
+            _brambleKeybind = settings.DefineSetting("brambleKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "BRAMBLE Keybinding", () => "Keybind to start/stop bramble timer.");
             _brambleKeybind.Value.BlockSequenceFromGw2 = true;
             _brambleKeybind.Value.Enabled = true;
             _brambleKeybind.Value.Activated += (sender, e) => timerKeybinds(7);
 
-            _oozeKeybind = settings.DefineSetting("oozeKeybinding", new KeyBinding(Keys.None), () => "OOZE Keybinding", () => "Keybind to start/stop ooze timer.");
+            _oozeKeybind = settings.DefineSetting("oozeKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "OOZE Keybinding", () => "Keybind to start/stop ooze timer.");
             _oozeKeybind.Value.BlockSequenceFromGw2 = true;
             _oozeKeybind.Value.Enabled = true;
             _oozeKeybind.Value.Activated += (sender, e) => timerKeybinds(8);
 
-            _guzzlerKeybind = settings.DefineSetting("guzzlerKeybinding", new KeyBinding(Keys.None), () => "GUZZLER Keybinding", () => "Keybind to start/stop guzzler timer.");
+            _guzzlerKeybind = settings.DefineSetting("guzzlerKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "GUZZLER Keybinding", () => "Keybind to start/stop guzzler timer.");
             _guzzlerKeybind.Value.BlockSequenceFromGw2 = true;
             _guzzlerKeybind.Value.Enabled = true;
             _guzzlerKeybind.Value.Activated += (sender, e) => timerKeybinds(9);
 
-            _tmKeybind = settings.DefineSetting("tmKeybinding", new KeyBinding(Keys.None), () => "TM Keybinding", () => "Keybind to start/stop TM timer.");
+            _tmKeybind = settings.DefineSetting("tmKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "TM Keybinding", () => "Keybind to start/stop TM timer.");
             _tmKeybind.Value.BlockSequenceFromGw2 = true;
             _tmKeybind.Value.Enabled = true;
             _tmKeybind.Value.Activated += (sender, e) => timerKeybinds(10);
 
-            _stoneheadKeybind = settings.DefineSetting("stoneheadKeybinding", new KeyBinding(Keys.None), () => "STONEHEAD Keybinding", () => "Keybind to start/stop stonehead timer.");
+            _stoneheadKeybind = settings.DefineSetting("stoneheadKeybinding", new KeyBinding(Microsoft.Xna.Framework.Input.Keys.None), () => "STONEHEAD Keybinding", () => "Keybind to start/stop stonehead timer.");
             _stoneheadKeybind.Value.BlockSequenceFromGw2 = true;
             _stoneheadKeybind.Value.Enabled = true;
             _stoneheadKeybind.Value.Activated += (sender, e) => timerKeybinds(11);
@@ -251,6 +271,43 @@ namespace roguishpanda.AB_Bauble_Farm
             _timerSTONEHEADSdefault.SetRange(1, 15);
             _timerSTONEHEADSdefault.SettingChanged += (sender, e) => timerDefaults(11);
         }
+
+        private void CancelNotes_BindingChanged(object sender, EventArgs e)
+        {
+            if (_cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
+            {
+                foreach (var image in _notesIcon)
+                {
+                    image.Hide();
+                }
+            }
+            else
+            {
+                foreach (var image in _notesIcon)
+                {
+                    image.Show();
+                }
+            }
+        }
+
+        private void PostNotes_BindingChanged(object sender, EventArgs e)
+        {
+            if ( _postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
+            {
+                foreach (var image in _notesIcon)
+                {
+                    image.Hide();
+                }
+            }
+            else
+            {
+                foreach (var image in _notesIcon)
+                {
+                    image.Show();
+                }
+            }
+        }
+
         private void ToggleTimerWindowKeybind_Activated(object sender, EventArgs e)
         {
             if (_TimerWindow.Visible)
@@ -309,12 +366,13 @@ namespace roguishpanda.AB_Bauble_Farm
             _Waypoints = new string[TimerRowNum];
             _Notes = new List<List<string>>();
             _timerRunning = new bool[TimerRowNum];
-            _timerLabelDescriptions = new Label[TimerRowNum];
-            _timerLabels = new Label[TimerRowNum];
+            _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
+            _notesIcon = new Image[TimerRowNum];
+            _timerLabels = new Blish_HUD.Controls.Label[TimerRowNum];
             _resetButtons = new StandardButton[TimerRowNum];
             _stopButtons = new StandardButton[TimerRowNum];
             _customDropdownTimers = new Dropdown[TimerRowNum];
-            _TimerWindowsOrdered = new Panel[TimerRowNum];
+            _TimerWindowsOrdered = new Blish_HUD.Controls.Panel[TimerRowNum];
             _timerDurationOverride = new TimeSpan[TimerRowNum];
             _timerDurationDefaults = new TimeSpan[TimerRowNum];
 
@@ -355,7 +413,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
                 /// Create texture panel for timer window
-                _timerPanel = new Panel
+                _timerPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
                     Size = new Point(_TimerWindow.ContentRegion.Size.X + 500, _TimerWindow.ContentRegion.Size.X + 500), // Match the panel to the content region
@@ -379,7 +437,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmInfoWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
 
-                _infoPanel = new Panel
+                _infoPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _InfoWindow, // Set the panel's parent to the StandardWindow
                     Size = new Point(_InfoWindow.ContentRegion.Size.X + 500, _InfoWindow.ContentRegion.Size.X + 500), // Match the panel to the content region
@@ -420,7 +478,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 #endregion
 
                 #region Bauble Information Labels
-                Label statusLabel = new Label
+                Blish_HUD.Controls.Label statusLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "Bauble Farm Status :",
                     Size = new Point(180, 30),
@@ -428,7 +486,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Font = GameService.Content.DefaultFont16,
                     Parent = _InfoWindow
                 };
-                _statusValue = new Label
+                _statusValue = new Blish_HUD.Controls.Label
                 {
                     Text = FarmStatus,
                     Size = new Point(230, 30),
@@ -437,7 +495,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     TextColor = Statuscolor,
                     Parent = _InfoWindow
                 };
-                Label startTimeLabel = new Label
+                Blish_HUD.Controls.Label startTimeLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "Start ->",
                     Size = new Point(100, 30),
@@ -445,7 +503,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Font = GameService.Content.DefaultFont16,
                     Parent = _InfoWindow
                 };
-                _startTimeValue = new Label
+                _startTimeValue = new Blish_HUD.Controls.Label
                 {
                     Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)"),
                     Size = new Point(230, 30),
@@ -455,7 +513,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     TextColor = Color.DodgerBlue,
                     Parent = _InfoWindow
                 };
-                Label endTimeLabel = new Label
+                Blish_HUD.Controls.Label endTimeLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "End ->",
                     Size = new Point(100, 30),
@@ -463,7 +521,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Font = GameService.Content.DefaultFont16,
                     Parent = _InfoWindow
                 };
-                _endTimeValue = new Label
+                _endTimeValue = new Blish_HUD.Controls.Label
                 {
                     Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)"),
                     Size = new Point(230, 30),
@@ -496,7 +554,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _InOrdercheckbox.Checked = _InOrdercheckboxDefault.Value;
                 _InOrdercheckbox.Click += (s, e) => InOrdercheckbox_Click();
 
-                Label eventsLabel = new Label
+                Blish_HUD.Controls.Label eventsLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "Events",
                     Size = new Point(120, 30),
@@ -506,7 +564,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     TextColor = Color.DodgerBlue,
                     Parent = _TimerWindow
                 };
-                Label timerLabel = new Label
+                Blish_HUD.Controls.Label timerLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "Timer",
                     Size = new Point(120, 30),
@@ -516,7 +574,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     TextColor = Color.DodgerBlue,
                     Parent = _TimerWindow
                 };
-                Label overridesLabel = new Label
+                Blish_HUD.Controls.Label overridesLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "Override (min)",
                     Size = new Point(120, 30),
@@ -535,7 +593,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     int index = i; // Capture index for event handlers
 
                     // Timer Panels
-                    _TimerWindowsOrdered[i] = new Panel
+                    _TimerWindowsOrdered[i] = new Blish_HUD.Controls.Panel
                     {
                         Parent = _TimerWindow,
                         Size = new Point(390, 30),
@@ -567,7 +625,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
                     // Notes Icon
                     AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
-                    Image notesIcon = new Image
+                    _notesIcon[i] = new Image
                     {
                         Texture = notesTexture,
                         Location = new Point(10, 0),
@@ -576,20 +634,22 @@ namespace roguishpanda.AB_Bauble_Farm
                         //Visible = false,
                         Parent = _TimerWindowsOrdered[i]
                     };
-                    notesIcon.MouseEntered += (sender, e) => {
-                        notesIcon.Location = new Point(10 - 2, 0 - 2);
-                        notesIcon.Size = new Point(36, 36);
-                        notesIcon.Opacity = 1f;
+                    _notesIcon[i].MouseEntered += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(10 - 2, 0 - 2);
+                        noteIcon.Size = new Point(36, 36);
+                        noteIcon.Opacity = 1f;
                     };
-                    notesIcon.MouseLeft += (s, e) => {
-                        notesIcon.Location = new Point(10, 0);
-                        notesIcon.Size = new Point(32, 32);
-                        notesIcon.Opacity = 0.7f;
+                    _notesIcon[i].MouseLeft += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(10, 0);
+                        noteIcon.Size = new Point(32, 32);
+                        noteIcon.Opacity = 0.7f;
                     };
-                    notesIcon.Click += (s, e) => NotesIcon_Click(index);
+                    _notesIcon[i].Click += async (s, e) => await NotesIcon_Click(index);
 
                     // Timer Event Description
-                    _timerLabelDescriptions[i] = new Label
+                    _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label
                     {
                         Text = Descriptions[i],
                         Size = new Point(100, 30),
@@ -598,12 +658,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
 
                     // Timer label
-                    _timerLabels[i] = new Label
+                    _timerLabels[i] = new Blish_HUD.Controls.Label
                     {
                         Text = _timerDurationDefaults[i].ToString(@"mm\:ss"),
                         Size = new Point(100, 30),
                         Location = new Point(110, 0),
-                        HorizontalAlignment = HorizontalAlignment.Center,
+                        HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
                         Font = GameService.Content.DefaultFont16,
                         TextColor = Color.GreenYellow,
                         Parent = _TimerWindowsOrdered[i]
@@ -639,66 +699,369 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
                     _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
 
-                    #endregion
 
-                    #region Timer Settings Window
-
-                    _SettingsWindow = new TabbedWindow2(
-                        _asyncTimertexture,
-                        new Rectangle(0, 0, 1000, 700), // The windowRegion
-                        new Rectangle(0, 0, 1000, 700)) // The contentRegion
+                    if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
                     {
-                        Parent = GameService.Graphics.SpriteScreen,
-                        Title = "",
-                        Location = new Point(300, 300),
-                        SavesPosition = true,
-                        Visible = false,
-                        Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
-                    };
-
-                    AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
-                    Image settingsIcon = new Image
+                        _notesIcon[i].Hide();
+                    }
+                    else
                     {
-                        Texture = geartexture,
-                        Location = new Point(340, 30),
-                        Size = new Point(32, 32),
-                        Opacity = 0.7f,
-                        Visible = false,
-                        Parent = _TimerWindow
-                    };
-                    settingsIcon.MouseEntered += (sender, e) => {
-                        settingsIcon.Location = new Point(340 - 4, 30 - 4);
-                        settingsIcon.Size = new Point(40, 40);
-                        settingsIcon.Opacity = 1f;
-                    };
-                    settingsIcon.MouseLeft += (s, e) => {
-                        settingsIcon.Location = new Point(340, 30);
-                        settingsIcon.Size = new Point(32, 32);
-                        settingsIcon.Opacity = 0.7f;
-                    };
-                    settingsIcon.Click += SettingsIcon_Click;
-
+                        _notesIcon[i].Show();
+                    }
                     #endregion
                 }
+
+                #region Timer Settings Window
+
+                _SettingsWindow = new TabbedWindow2(
+                    _asyncTimertexture,
+                    new Rectangle(0, 0, 1000, 700), // The windowRegion
+                    new Rectangle(0, 0, 1000, 700)) // The contentRegion
+                {
+                    Parent = GameService.Graphics.SpriteScreen,
+                    Title = "",
+                    Location = new Point(300, 300),
+                    SavesPosition = true,
+                    Visible = false,
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
+                };
+
+                AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
+                Image settingsIcon = new Image
+                {
+                    Texture = geartexture,
+                    Location = new Point(340, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    Visible = false,
+                    Parent = _TimerWindow
+                };
+                settingsIcon.MouseEntered += (sender, e) => {
+                    settingsIcon.Location = new Point(340 - 4, 30 - 4);
+                    settingsIcon.Size = new Point(40, 40);
+                    settingsIcon.Opacity = 1f;
+                };
+                settingsIcon.MouseLeft += (s, e) => {
+                    settingsIcon.Location = new Point(340, 30);
+                    settingsIcon.Size = new Point(32, 32);
+                    settingsIcon.Opacity = 0.7f;
+                };
+                settingsIcon.Click += SettingsIcon_Click;
+                #endregion
             }
             catch (Exception ex)
             {
                 Logger.Error($"Error in LoadAsync: {ex.Message}");
             }
         }
+        // Constants for SendInput
+        private const uint KEYEVENTF_KEYUP = 0x0002;
+        private const uint VK_RETURN = 0x0D; // Virtual key code for Enter
+        private const uint VK_CONTROL = 0x11; // Virtual key code for Ctrl
 
-        private void NotesIcon_Click(int index)
+        // Structs for SendInput
+        [StructLayout(LayoutKind.Sequential)]
+        private struct INPUT
         {
-            List<string> test = _Notes[index];
-            string test2 = _Waypoints[index];
+            public uint type;
+            public INPUTUNION u;
         }
 
+        [StructLayout(LayoutKind.Explicit)]
+        private struct INPUTUNION
+        {
+            [FieldOffset(0)]
+            public MOUSEINPUT mi;
+            [FieldOffset(0)]
+            public KEYBDINPUT ki;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct KEYBDINPUT
+        {
+            public ushort wVk;
+            public ushort wScan;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MOUSEINPUT
+        {
+            public int dx;
+            public int dy;
+            public uint mouseData;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        // Import SendInput from user32.dll
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        // Import MapVirtualKey to convert virtual key to scan code
+        [DllImport("user32.dll")]
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        // Simulate a single key press (down and up)
+        private static void SendKey(uint virtualKey)
+        {
+            INPUT[] inputs = new INPUT[2];
+
+            // Key down
+            inputs[0] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)virtualKey,
+                        wScan = (ushort)MapVirtualKey(virtualKey, 0),
+                        dwFlags = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+
+            // Key up
+            inputs[1] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)virtualKey,
+                        wScan = (ushort)MapVirtualKey(virtualKey, 0),
+                        dwFlags = KEYEVENTF_KEYUP,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+
+            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+            Thread.Sleep(10); // Small delay to ensure input is processed
+        }
+
+        // Simulate Ctrl+V (paste)
+        private static void SendCtrlV()
+        {
+            INPUT[] inputs = new INPUT[4];
+
+            // Ctrl down
+            inputs[0] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)VK_CONTROL,
+                        wScan = (ushort)MapVirtualKey(VK_CONTROL, 0),
+                        dwFlags = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+            SendInput(1, new[] { inputs[0] }, Marshal.SizeOf(typeof(INPUT))); // Ctrl down
+            Thread.Sleep(50);
+
+            // V down
+            inputs[1] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = 0x56, // Virtual key code for 'V'
+                        wScan = (ushort)MapVirtualKey(0x56, 0),
+                        dwFlags = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            }; 
+            SendInput(1, new[] { inputs[1] }, Marshal.SizeOf(typeof(INPUT))); // V down
+            Thread.Sleep(50);
+
+            // V up
+            inputs[2] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = 0x56, // Virtual key code for 'V'
+                        wScan = (ushort)MapVirtualKey(0x56, 0),
+                        dwFlags = KEYEVENTF_KEYUP,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+            SendInput(1, new[] { inputs[2] }, Marshal.SizeOf(typeof(INPUT))); // V up
+            Thread.Sleep(50);
+
+            // Ctrl up
+            inputs[3] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)VK_CONTROL,
+                        wScan = (ushort)MapVirtualKey(VK_CONTROL, 0),
+                        dwFlags = KEYEVENTF_KEYUP,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+
+            SendInput(1, new[] { inputs[3] }, Marshal.SizeOf(typeof(INPUT))); // Ctrl up
+            Thread.Sleep(50);
+        }
+
+        // Copy text to clipboard
+        private static void CopyToClipboard(string text)
+        {
+            // Ensure clipboard access is thread-safe
+            Thread thread = new Thread(() => Clipboard.SetText(text));
+            thread.SetApartmentState(ApartmentState.STA); // Clipboard requires STA
+            thread.Start();
+            thread.Join(); // Wait for clipboard operation to complete
+        }
+        private void ClipboardPaste(string Message)
+        {
+            // Press Enter
+            SendKey(VK_RETURN);
+            Thread.Sleep(100);
+            // Copy "hello" to clipboard
+            CopyToClipboard(Message);
+            Thread.Sleep(100);
+            // Simulate Ctrl+V to paste
+            SendCtrlV();
+            Thread.Sleep(100);
+            // Press Enter again
+            SendKey(VK_RETURN);
+            Thread.Sleep(100);
+        }
+        private async Task NotesIcon_Click(int index)
+        {
+            string waypoint = _Waypoints[index];
+            List<string> notes = _Notes[index];
+
+            ShowInputPanel();
+            bool wasKeybindPressed = await WaitForKeybindAsync();
+            await WaitForShiftKeyUpAsync();
+            _inputPanel?.Hide();
+            _inputPanel = null;
+            Thread.Sleep(1000);
+
+            if (wasKeybindPressed)
+            {
+                ClipboardPaste(waypoint);
+                for (int i = 0; i < notes.Count; i++)
+                {
+                    ClipboardPaste(notes[i]);
+                }
+            }
+        }
+        private void ShowInputPanel()
+        {
+            _inputPanel = new Blish_HUD.Controls.Panel()
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Width = 500,
+                Height = 50,
+                BackgroundColor = Color.Black,
+                Opacity = 0.9f
+            };
+            _inputPanel.Location = new Point((GameService.Graphics.SpriteScreen.Size.X - _inputPanel.Size.X) / 2, (GameService.Graphics.SpriteScreen.Size.Y - _inputPanel.Size.Y) / 2);
+
+            _instructionLabel = new Blish_HUD.Controls.Label()
+            {
+                Text = "Press (" + _postNotesKeybind.Value.GetBindingDisplayText() + ") to continue... OR (" + _cancelNotesKeybind.Value.GetBindingDisplayText() + ") to cancel",
+                Size = new Point(500, 20),
+                HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
+                Parent = _inputPanel,
+                Font = GameService.Content.DefaultFont16
+            };
+            _instructionLabel.Location = new Point((_inputPanel.Size.X - _instructionLabel.Size.X) / 2, (_inputPanel.Size.Y - _instructionLabel.Size.Y) / 2);
+        }
+        private Task<bool> WaitForKeybindAsync()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+
+            // Register the keybind event
+            EventHandler<EventArgs> handler = null;
+            EventHandler<EventArgs> handler2 = null;
+            handler = (s, e) =>
+            {
+                tcs.TrySetResult(true);
+                _postNotesKeybind.Value.Activated -= handler;
+                _cancelNotesKeybind.Value.Activated -= handler2;
+            };
+            _postNotesKeybind.Value.Activated += handler;
+
+            // Handler for Escape key
+            handler2 = (s, e) =>
+            {
+                tcs.TrySetResult(false);
+                _postNotesKeybind.Value.Activated -= handler;
+                _cancelNotesKeybind.Value.Activated -= handler2;
+            };
+            _cancelNotesKeybind.Value.Activated += handler2;
+
+            return tcs.Task;
+        }
+        public async Task WaitForShiftKeyUpAsync()
+        {
+            // Get the Input service from Blish HUD
+            var input = GameService.Input;
+
+            // Check if either Shift key is currently pressed
+            if (input.Keyboard.ActiveModifiers.HasFlag(ModifierKeys.Shift))
+            {
+                // Create a TaskCompletionSource to handle async waiting
+                var tcs = new TaskCompletionSource<bool>();
+
+                // Define a handler for key state changes
+                void KeyStateChanged(object sender, KeyboardEventArgs e)
+                {
+                    // Check if Shift is no longer pressed
+                    if (!input.Keyboard.ActiveModifiers.HasFlag(ModifierKeys.Shift))
+                    {
+                        // Unsubscribe from the event to avoid memory leaks
+                        input.Keyboard.KeyStateChanged -= KeyStateChanged;
+                        // Signal task completion
+                        tcs.SetResult(true);
+                    }
+                }
+
+                // Subscribe to the KeyStateChanged event
+                input.Keyboard.KeyStateChanged += KeyStateChanged;
+
+                // Wait for the task to complete (Shift key released)
+                await tcs.Task;
+            }
+        }
         private void WaypointIcon_Click(int index)
         {
             string test = _Waypoints[index];
         }
 
-        private void SettingsIcon_Click(object sender, MouseEventArgs e)
+        private void SettingsIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
             if (_SettingsWindow.Visible == true)
             {
@@ -710,7 +1073,7 @@ namespace roguishpanda.AB_Bauble_Farm
             }
         }
 
-        private void CornerIcon_Click(object sender, MouseEventArgs e)
+        private void CornerIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
             // Toggle window visibility
             if (_TimerWindow.Visible)
