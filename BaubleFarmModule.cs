@@ -7,6 +7,7 @@ using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
+using Blish_HUD.Settings.UI.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using SharpDX.MediaFoundation;
@@ -38,7 +39,10 @@ namespace roguishpanda.AB_Bauble_Farm
     {
         public int ID { get; set; }
         public string Description { get; set; }
-        public string Waypoint { get; set; }
+        public int PrimaryKey { get; set; }
+        public int ModifierKeys { get; set; }
+        public int TimerMinutes { get; set; }
+        public int TimerSeconds { get; set; }
         public List<string> Notes { get; set; }
     }
 
@@ -56,71 +60,76 @@ namespace roguishpanda.AB_Bauble_Farm
 
         #endregion
 
-        private Blish_HUD.Controls.Label[] _timerLabelDescriptions;
-        private Blish_HUD.Controls.Label[] _timerLabels;
-        private Blish_HUD.Controls.Label _statusValue;
-        private Blish_HUD.Controls.Label _startTimeValue;
-        private Blish_HUD.Controls.Label _endTimeValue;
-        private string[] _Waypoints;
-        private List<List<string>> _Notes;
-        private Checkbox _InOrdercheckbox;
-        private DateTime elapsedDateTime;
-        private DateTime initialDateTime;
-        private int TimerRowNum = 12;
-        private StandardButton _stopButton;
-        private StandardButton[] _stopButtons;
-        private StandardButton[] _resetButtons;
-        private Dropdown[] _customDropdownTimers;
-        private DateTime?[] _timerStartTimes; // Nullable to track if timer is started
-        private bool[] _timerRunning; // Track running state
-        private TimeSpan[] _timerDurationDefaults;
-        private TimeSpan[] _timerDurationOverride;
-        private Blish_HUD.Controls.Panel[] _TimerWindowsOrdered;
-        private Blish_HUD.Controls.Panel _infoPanel;
-        private Blish_HUD.Controls.Panel _timerPanel;
-        private Blish_HUD.Controls.Panel _SettingsPanel;
-        private StandardWindow _TimerWindow;
-        private StandardWindow _InfoWindow;
-        private TabbedWindow2 _SettingsWindow;
-        private CornerIcon _cornerIcon;
-        private SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
-        private SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
-        private SettingEntry<KeyBinding> _svetKeybind;
-        private SettingEntry<KeyBinding> _evetKeybind;
-        private SettingEntry<KeyBinding> _nvetKeybind;
-        private SettingEntry<KeyBinding> _wvetKeybind;
-        private SettingEntry<KeyBinding> _sapKeybind;
-        private SettingEntry<KeyBinding> _balthKeybind;
-        private SettingEntry<KeyBinding> _wyvernKeybind;
-        private SettingEntry<KeyBinding> _brambleKeybind;
-        private SettingEntry<KeyBinding> _oozeKeybind;
-        private SettingEntry<KeyBinding> _guzzlerKeybind;
-        private SettingEntry<KeyBinding> _tmKeybind;
-        private SettingEntry<KeyBinding> _stoneheadKeybind;
-        private SettingEntry<KeyBinding> _postNotesKeybind;
-        private SettingEntry<KeyBinding> _cancelNotesKeybind;
-        private SettingEntry<bool> _InOrdercheckboxDefault;
-        private SettingEntry<float> _OpacityDefault;
-        private SettingEntry<int> _timerLowDefault;
-        private SettingEntry<int> _timerSVETdefault;
-        private SettingEntry<int> _timerEVETdefault;
-        private SettingEntry<int> _timerNVETdefault;
-        private SettingEntry<int> _timerWVETdefault;
-        private SettingEntry<int> _timerSAPdefault;
-        private SettingEntry<int> _timerBALTHdefault;
-        private SettingEntry<int> _timerWYVERNdefault;
-        private SettingEntry<int> _timerBRAMBLEdefault;
-        private SettingEntry<int> _timerOOZEdefault;
-        private SettingEntry<int> _timerGUZZLERdefault;
-        private SettingEntry<int> _timerTMdefault;
-        private SettingEntry<int> _timerSTONEHEADSdefault;
+        public Blish_HUD.Controls.Label[] _timerLabelDescriptions;
+        public Blish_HUD.Controls.Label[] _timerLabels;
+        public Blish_HUD.Controls.Label _statusValue;
+        public Blish_HUD.Controls.Label _startTimeValue;
+        public Blish_HUD.Controls.Label _endTimeValue;
+        public List<List<string>> _Notes;
+        public Checkbox _InOrdercheckbox;
+        public DateTime elapsedDateTime;
+        public DateTime initialDateTime;
+        public int TimerRowNum = 12;
+        public StandardButton _stopButton;
+        public StandardButton[] _stopButtons;
+        public StandardButton[] _resetButtons;
+        public Dropdown[] _customDropdownTimers;
+        public DateTime?[] _timerStartTimes; // Nullable to track if timer is started
+        public bool[] _timerRunning; // Track running state
+        public TimeSpan[] _timerDurationDefaults;
+        public TimeSpan[] _timerDurationOverride;
+        public Blish_HUD.Controls.Panel[] _TimerWindowsOrdered;
+        public Blish_HUD.Controls.Panel _infoPanel;
+        public Blish_HUD.Controls.Panel _timerPanel;
+        public Blish_HUD.Controls.Panel _SettingsPanel;
+        public StandardWindow _TimerWindow;
+        public StandardWindow _InfoWindow;
+        public TabbedWindow2 _SettingsWindow;
+        public Blish_HUD.Controls.Panel _timerSettingsPanel;
+        public CornerIcon _cornerIcon;
+        public SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
+        public SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
+        public SettingEntry<KeyBinding> _svetKeybind;
+        public SettingEntry<KeyBinding> _evetKeybind;
+        public SettingEntry<KeyBinding> _nvetKeybind;
+        public SettingEntry<KeyBinding> _wvetKeybind;
+        public SettingEntry<KeyBinding> _sapKeybind;
+        public SettingEntry<KeyBinding> _balthKeybind;
+        public SettingEntry<KeyBinding> _wyvernKeybind;
+        public SettingEntry<KeyBinding> _brambleKeybind;
+        public SettingEntry<KeyBinding> _oozeKeybind;
+        public SettingEntry<KeyBinding> _guzzlerKeybind;
+        public SettingEntry<KeyBinding> _tmKeybind;
+        public SettingEntry<KeyBinding> _stoneheadKeybind;
+        public SettingEntry<KeyBinding> _postNotesKeybind;
+        public SettingEntry<KeyBinding> _cancelNotesKeybind;
+        public SettingEntry<bool> _InOrdercheckboxDefault;
+        public SettingEntry<float> _OpacityDefault;
+        public SettingEntry<int> _timerLowDefault;
+        public SettingEntry<int> _timerSVETdefault;
+        public SettingEntry<int> _timerEVETdefault;
+        public SettingEntry<int> _timerNVETdefault;
+        public SettingEntry<int> _timerWVETdefault;
+        public SettingEntry<int> _timerSAPdefault;
+        public SettingEntry<int> _timerBALTHdefault;
+        public SettingEntry<int> _timerWYVERNdefault;
+        public SettingEntry<int> _timerBRAMBLEdefault;
+        public SettingEntry<int> _timerOOZEdefault;
+        public SettingEntry<int> _timerGUZZLERdefault;
+        public SettingEntry<int> _timerTMdefault;
+        public SettingEntry<int> _timerSTONEHEADSdefault;
         public AsyncTexture2D _asyncTimertexture;
         public AsyncTexture2D _asyncGeneralSettingstexture;
         public AsyncTexture2D _asyncNotesSettingstexture;
-        private Blish_HUD.Controls.Panel _inputPanel;
-        private Blish_HUD.Controls.Label _instructionLabel;
-        private Image[] _notesIcon;
-        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        public Blish_HUD.Controls.Panel _inputPanel;
+        public Blish_HUD.Controls.Label _instructionLabel;
+        public Image[] _notesIcon;
+        public int[] _ModifierKeys;
+        public int[] _PrimaryKey;
+        public int[] _TimerMinutes;
+        public int[] _TimerSeconds;
+        public int[] _TimerID;
+        public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
         };
@@ -361,398 +370,6 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         protected override void Initialize()
         {
-            #region Initialize Defaults
-            _timerStartTimes = new DateTime?[TimerRowNum];
-            _Waypoints = new string[TimerRowNum];
-            _Notes = new List<List<string>>();
-            _timerRunning = new bool[TimerRowNum];
-            _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
-            _notesIcon = new Image[TimerRowNum];
-            _timerLabels = new Blish_HUD.Controls.Label[TimerRowNum];
-            _resetButtons = new StandardButton[TimerRowNum];
-            _stopButtons = new StandardButton[TimerRowNum];
-            _customDropdownTimers = new Dropdown[TimerRowNum];
-            _TimerWindowsOrdered = new Blish_HUD.Controls.Panel[TimerRowNum];
-            _timerDurationOverride = new TimeSpan[TimerRowNum];
-            _timerDurationDefaults = new TimeSpan[TimerRowNum];
-
-            // Initialize Timer Defaults
-            int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
-            _timerBALTHdefault.Value, _timerWYVERNdefault.Value, _timerBRAMBLEdefault.Value, _timerOOZEdefault.Value, _timerGUZZLERdefault.Value,
-            _timerTMdefault.Value, _timerSTONEHEADSdefault.Value
-            };
-
-            // Initialize all timers as not started
-            for (int i = 0; i < TimerRowNum; i++)
-            {
-                _timerDurationDefaults[i] = TimeSpan.FromMinutes(timerDefaultValues[i]);
-                _timerStartTimes[i] = null; // Not started
-                _timerRunning[i] = false;
-            }
-            #endregion
-
-            try
-            {
-                #region Timer Window Window
-
-                //// Assign all textures and parameters for timer window
-                _asyncTimertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
-                _asyncGeneralSettingstexture = AsyncTexture2D.FromAssetId(156701);
-                _asyncNotesSettingstexture = AsyncTexture2D.FromAssetId(1654244);
-                AsyncTexture2D NoTexture = new AsyncTexture2D();
-                _TimerWindow = new StandardWindow(
-                    NoTexture,
-                    new Rectangle(0, 0, 390, 470), // The windowRegion
-                    new Rectangle(0, -10, 390, 470)) // The contentRegion
-                {
-                    Parent = GameService.Graphics.SpriteScreen,
-                    Title = "", //Timers
-                    SavesPosition = true,
-                    SavesSize = true,
-                    CanResize = true,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
-                };
-                /// Create texture panel for timer window
-                _timerPanel = new Blish_HUD.Controls.Panel
-                {
-                    Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(_TimerWindow.ContentRegion.Size.X + 500, _TimerWindow.ContentRegion.Size.X + 500), // Match the panel to the content region
-                    Location = _TimerWindow.ContentRegion.Location, // Align with content region
-                    BackgroundColor = Color.Black,
-                    Opacity = _OpacityDefault.Value
-                };
-
-                #endregion
-
-                #region Bauble Information Window
-                //// Display information about next Bauble run here
-                _InfoWindow = new StandardWindow(
-                    NoTexture,
-                    new Rectangle(0, 0, 320, 130), // The windowRegion
-                    new Rectangle(0, -10, 320, 130)) // The contentRegion
-                {
-                    Parent = GameService.Graphics.SpriteScreen,
-                    Title = "Information",
-                    SavesPosition = true,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmInfoWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
-                };
-
-                _infoPanel = new Blish_HUD.Controls.Panel
-                {
-                    Parent = _InfoWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(_InfoWindow.ContentRegion.Size.X + 500, _InfoWindow.ContentRegion.Size.X + 500), // Match the panel to the content region
-                    Location = _InfoWindow.ContentRegion.Location, // Align with content region
-                    BackgroundColor = Color.Black,
-                    Opacity = _OpacityDefault.Value
-                };
-
-                #endregion
-
-                #region Corner Icon
-
-                // Update the corner icon
-                AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
-                _cornerIcon = new CornerIcon
-                {
-                    Icon = cornertexture, // Use a game-sourced texture
-                    Size = new Point(32, 32),
-                    //Location = new Point(0, 0), // Adjust to position as corner icon
-                    BasicTooltipText = "Bauble Farm",
-                    Parent = GameService.Graphics.SpriteScreen
-                };
-
-                // Handle click event to toggle window visibility
-                _cornerIcon.Click += CornerIcon_Click;
-
-                #endregion
-
-                #region Bauble Information Timestamps
-
-                var BaubleInformation = GetBaubleInformation();
-                DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
-                DateTime EndofBaubleWeek = BaubleInformation.EndofBaubleWeek;
-                string FarmStatus = BaubleInformation.FarmStatus;
-                Color Statuscolor = BaubleInformation.Statuscolor;
-                initialDateTime = DateTime.Now;
-
-                #endregion
-
-                #region Bauble Information Labels
-                Blish_HUD.Controls.Label statusLabel = new Blish_HUD.Controls.Label
-                {
-                    Text = "Bauble Farm Status :",
-                    Size = new Point(180, 30),
-                    Location = new Point(30, 30),
-                    Font = GameService.Content.DefaultFont16,
-                    Parent = _InfoWindow
-                };
-                _statusValue = new Blish_HUD.Controls.Label
-                {
-                    Text = FarmStatus,
-                    Size = new Point(230, 30),
-                    Location = new Point(190, 30),
-                    Font = GameService.Content.DefaultFont16,
-                    TextColor = Statuscolor,
-                    Parent = _InfoWindow
-                };
-                Blish_HUD.Controls.Label startTimeLabel = new Blish_HUD.Controls.Label
-                {
-                    Text = "Start ->",
-                    Size = new Point(100, 30),
-                    Location = new Point(30, 60),
-                    Font = GameService.Content.DefaultFont16,
-                    Parent = _InfoWindow
-                };
-                _startTimeValue = new Blish_HUD.Controls.Label
-                {
-                    Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)"),
-                    Size = new Point(230, 30),
-                    Location = new Point(90, 60),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _InfoWindow
-                };
-                Blish_HUD.Controls.Label endTimeLabel = new Blish_HUD.Controls.Label
-                {
-                    Text = "End ->",
-                    Size = new Point(100, 30),
-                    Location = new Point(30, 90),
-                    Font = GameService.Content.DefaultFont16,
-                    Parent = _InfoWindow
-                };
-                _endTimeValue = new Blish_HUD.Controls.Label
-                {
-                    Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)"),
-                    Size = new Point(230, 30),
-                    Location = new Point(80, 90),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _InfoWindow
-                };
-                #endregion
-
-                #region Timer Controls
-
-                _stopButton = new StandardButton
-                {
-                    Text = "Stop All Timers",
-                    Size = new Point(120, 30),
-                    Location = new Point(20, 30),
-                    Parent = _TimerWindow
-                };
-                _stopButton.Click += (s, e) => StopButton_Click();
-
-                _InOrdercheckbox = new Checkbox
-                {
-                    Text = "Order by Timer",
-                    Size = new Point(120, 30),
-                    Location = new Point(150, 30),
-                    Parent = _TimerWindow
-                };
-                _InOrdercheckbox.Checked = _InOrdercheckboxDefault.Value;
-                _InOrdercheckbox.Click += (s, e) => InOrdercheckbox_Click();
-
-                Blish_HUD.Controls.Label eventsLabel = new Blish_HUD.Controls.Label
-                {
-                    Text = "Events",
-                    Size = new Point(120, 30),
-                    Location = new Point(40, 65),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _TimerWindow
-                };
-                Blish_HUD.Controls.Label timerLabel = new Blish_HUD.Controls.Label
-                {
-                    Text = "Timer",
-                    Size = new Point(120, 30),
-                    Location = new Point(140, 65),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _TimerWindow
-                };
-                Blish_HUD.Controls.Label overridesLabel = new Blish_HUD.Controls.Label
-                {
-                    Text = "Override (min)",
-                    Size = new Point(120, 30),
-                    Location = new Point(280, 65),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _TimerWindow
-                };
-
-                // Create UI elements for each timer
-                string[] Descriptions = { "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER", "TM", "STONEHEADS" };
-
-                for (int i = 0; i < TimerRowNum; i++)
-                {
-                    int index = i; // Capture index for event handlers
-
-                    // Timer Panels
-                    _TimerWindowsOrdered[i] = new Blish_HUD.Controls.Panel
-                    {
-                        Parent = _TimerWindow,
-                        Size = new Point(390, 30),
-                        Location = new Point(0, 95 + (i * 30)),
-                    };
-
-                    // Waypoint Icon
-                    /*AsyncTexture2D waypointTexture = AsyncTexture2D.FromAssetId(157353);
-                    Image waypointIcon = new Image
-                    {
-                        Texture = waypointTexture,
-                        Location = new Point(0, 0),
-                        Size = new Point(32, 32),
-                        Opacity = 0.7f,
-                        //Visible = false,
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-                    waypointIcon.MouseEntered += (sender, e) => {
-                        waypointIcon.Location = new Point(0 - 2, 0 - 2);
-                        waypointIcon.Size = new Point(36, 36);
-                        waypointIcon.Opacity = 1f;
-                    };
-                    waypointIcon.MouseLeft += (s, e) => {
-                        waypointIcon.Location = new Point(0, 0);
-                        waypointIcon.Size = new Point(32, 32);
-                        waypointIcon.Opacity = 0.7f;
-                    };
-                    waypointIcon.Click += (s, e) => WaypointIcon_Click(index);*/
-
-                    // Notes Icon
-                    AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
-                    _notesIcon[i] = new Image
-                    {
-                        Texture = notesTexture,
-                        Location = new Point(10, 0),
-                        Size = new Point(32, 32),
-                        Opacity = 0.7f,
-                        //Visible = false,
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-                    _notesIcon[i].MouseEntered += (sender, e) => {
-                        Image noteIcon = sender as Image;
-                        noteIcon.Location = new Point(10 - 2, 0 - 2);
-                        noteIcon.Size = new Point(36, 36);
-                        noteIcon.Opacity = 1f;
-                    };
-                    _notesIcon[i].MouseLeft += (sender, e) => {
-                        Image noteIcon = sender as Image;
-                        noteIcon.Location = new Point(10, 0);
-                        noteIcon.Size = new Point(32, 32);
-                        noteIcon.Opacity = 0.7f;
-                    };
-                    _notesIcon[i].Click += async (s, e) => await NotesIcon_Click(index);
-
-                    // Timer Event Description
-                    _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label
-                    {
-                        Text = Descriptions[i],
-                        Size = new Point(100, 30),
-                        Location = new Point(40, 0),
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-
-                    // Timer label
-                    _timerLabels[i] = new Blish_HUD.Controls.Label
-                    {
-                        Text = _timerDurationDefaults[i].ToString(@"mm\:ss"),
-                        Size = new Point(100, 30),
-                        Location = new Point(110, 0),
-                        HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
-                        Font = GameService.Content.DefaultFont16,
-                        TextColor = Color.GreenYellow,
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-
-                    // Reset button
-                    _resetButtons[i] = new StandardButton
-                    {
-                        Text = "Start",
-                        Size = new Point(50, 30),
-                        Location = new Point(190, 0),
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-                    _resetButtons[i].Click += (s, e) => ResetButton_Click(index);
-
-                    // Reset button
-                    _stopButtons[i] = new StandardButton
-                    {
-                        Text = "Stop",
-                        Size = new Point(50, 30),
-                        Location = new Point(240, 0),
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-                    _stopButtons[i].Click += (s, e) => stopButtons_Click(index);
-
-                    // Override Timer dropdown
-                    _customDropdownTimers[i] = new Dropdown
-                    {
-                        Items = { "Default", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" },
-                        Size = new Point(80, 30),
-                        Location = new Point(290, 0),
-                        Parent = _TimerWindowsOrdered[i]
-                    };
-                    _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
-
-
-                    if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
-                    {
-                        _notesIcon[i].Hide();
-                    }
-                    else
-                    {
-                        _notesIcon[i].Show();
-                    }
-                    #endregion
-                }
-
-                #region Timer Settings Window
-
-                _SettingsWindow = new TabbedWindow2(
-                    _asyncTimertexture,
-                    new Rectangle(0, 0, 1000, 700), // The windowRegion
-                    new Rectangle(0, 0, 1000, 700)) // The contentRegion
-                {
-                    Parent = GameService.Graphics.SpriteScreen,
-                    Title = "",
-                    Location = new Point(300, 300),
-                    SavesPosition = true,
-                    Visible = false,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
-                };
-
-                AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
-                Image settingsIcon = new Image
-                {
-                    Texture = geartexture,
-                    Location = new Point(340, 30),
-                    Size = new Point(32, 32),
-                    Opacity = 0.7f,
-                    Visible = false,
-                    Parent = _TimerWindow
-                };
-                settingsIcon.MouseEntered += (sender, e) => {
-                    settingsIcon.Location = new Point(340 - 4, 30 - 4);
-                    settingsIcon.Size = new Point(40, 40);
-                    settingsIcon.Opacity = 1f;
-                };
-                settingsIcon.MouseLeft += (s, e) => {
-                    settingsIcon.Location = new Point(340, 30);
-                    settingsIcon.Size = new Point(32, 32);
-                    settingsIcon.Opacity = 0.7f;
-                };
-                settingsIcon.Click += SettingsIcon_Click;
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"Error in LoadAsync: {ex.Message}");
-            }
         }
         // Constants for SendInput
         private const uint KEYEVENTF_KEYUP = 0x0002;
@@ -957,7 +574,6 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private async Task NotesIcon_Click(int index)
         {
-            string waypoint = _Waypoints[index];
             List<string> notes = _Notes[index];
 
             ShowInputPanel();
@@ -969,7 +585,6 @@ namespace roguishpanda.AB_Bauble_Farm
 
             if (wasKeybindPressed)
             {
-                ClipboardPaste(waypoint);
                 for (int i = 0; i < notes.Count; i++)
                 {
                     ClipboardPaste(notes[i]);
@@ -1056,11 +671,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 await tcs.Task;
             }
         }
-        private void WaypointIcon_Click(int index)
-        {
-            string test = _Waypoints[index];
-        }
-
         private void SettingsIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
             if (_SettingsWindow.Visible == true)
@@ -1236,11 +846,438 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         protected override async Task LoadAsync()
         {
+            #region Initialize Defaults
+
+            _timerStartTimes = new DateTime?[TimerRowNum];
+            _Notes = new List<List<string>>();
+            _timerRunning = new bool[TimerRowNum];
+            _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
+            _notesIcon = new Image[TimerRowNum];
+            _timerLabels = new Blish_HUD.Controls.Label[TimerRowNum];
+            _resetButtons = new StandardButton[TimerRowNum];
+            _stopButtons = new StandardButton[TimerRowNum];
+            _customDropdownTimers = new Dropdown[TimerRowNum];
+            _TimerWindowsOrdered = new Blish_HUD.Controls.Panel[TimerRowNum];
+            _timerDurationOverride = new TimeSpan[TimerRowNum];
+            _timerDurationDefaults = new TimeSpan[TimerRowNum];
+            _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
+            _ModifierKeys = new int[TimerRowNum];
+            _PrimaryKey = new int[TimerRowNum];
+            _TimerMinutes = new int[TimerRowNum];
+            _TimerSeconds = new int[TimerRowNum];
+            _TimerID = new int[TimerRowNum];
+
+            #endregion
+
+            #region Load Notes
+
+            List<NotesData> eventNotes = new List<NotesData>();
+            string jsonFilePath = @"Defaults\Default_Timer_Notes.json";
+            Stream json = ContentsManager.GetFileStream(jsonFilePath);
+            try
+            {
+                using (StreamReader reader = new StreamReader(json))
+                {
+                    string jsonContent = await reader.ReadToEndAsync();
+                    eventNotes = JsonSerializer.Deserialize<List<NotesData>>(jsonContent, _jsonOptions);
+                    //Logger.Info($"Loaded {eventNotes.Count} events from {jsonFilePath}");
+                }
+
+                var timerNotesData = eventNotes;
+                int Count = eventNotes.Count();
+                TimerRowNum = Count;
+                for (int i = 0; i < TimerRowNum; i++)
+                {
+                    _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
+
+                    _Notes.Add(timerNotesData[i].Notes);
+                    _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
+                    _ModifierKeys[i] = timerNotesData[i].ModifierKeys;
+                    _PrimaryKey[i] = timerNotesData[i].PrimaryKey;
+                    _TimerMinutes[i] = timerNotesData[i].TimerMinutes;
+                    _TimerSeconds[i] = timerNotesData[i].TimerSeconds;
+                    _TimerID[i] = timerNotesData[i].ID;
+
+                    //Logger.Info($"Waypoint: {timerNotesData[i].Waypoint} Notes: {timerNotesData[i].Notes}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to load Default_Timer_Notes JSON file: {ex.Message}");
+            }
+
+            // Initialize Timer Defaults
+            int[] timerDefaultValues = { _timerSVETdefault.Value, _timerEVETdefault.Value, _timerNVETdefault.Value, _timerWVETdefault.Value, _timerSAPdefault.Value,
+            _timerBALTHdefault.Value, _timerWYVERNdefault.Value, _timerBRAMBLEdefault.Value, _timerOOZEdefault.Value, _timerGUZZLERdefault.Value,
+            _timerTMdefault.Value, _timerSTONEHEADSdefault.Value
+            };
+
+            // Initialize all timers as not started
+            for (int i = 0; i < TimerRowNum; i++)
+            {
+                _timerDurationDefaults[i] = TimeSpan.FromMinutes(timerDefaultValues[i]);
+                _timerStartTimes[i] = null; // Not started
+                _timerRunning[i] = false;
+            }
+
+            #endregion
+
+
+            try
+            {
+                #region Timer Window Window
+
+                //// Assign all textures and parameters for timer window
+                _asyncTimertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
+                _asyncGeneralSettingstexture = AsyncTexture2D.FromAssetId(156701);
+                _asyncNotesSettingstexture = AsyncTexture2D.FromAssetId(1654244);
+                AsyncTexture2D NoTexture = new AsyncTexture2D();
+                _TimerWindow = new StandardWindow(
+                    NoTexture,
+                    new Rectangle(0, 0, 390, 470), // The windowRegion
+                    new Rectangle(0, -10, 390, 470)) // The contentRegion
+                {
+                    Parent = GameService.Graphics.SpriteScreen,
+                    Title = "", //Timers
+                    SavesPosition = true,
+                    SavesSize = true,
+                    CanResize = true,
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                };
+                /// Create texture panel for timer window
+                _timerPanel = new Blish_HUD.Controls.Panel
+                {
+                    Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
+                    Size = new Point(_TimerWindow.ContentRegion.Size.X + 500, _TimerWindow.ContentRegion.Size.Y + 500), // Match the panel to the content region
+                    Location = _TimerWindow.ContentRegion.Location, // Align with content region
+                    BackgroundColor = Color.Black,
+                    Opacity = _OpacityDefault.Value
+                };
+
+                #endregion
+
+                #region Bauble Information Window
+                //// Display information about next Bauble run here
+                _InfoWindow = new StandardWindow(
+                    NoTexture,
+                    new Rectangle(0, 0, 320, 130), // The windowRegion
+                    new Rectangle(0, -10, 320, 130)) // The contentRegion
+                {
+                    Parent = GameService.Graphics.SpriteScreen,
+                    Title = "Information",
+                    SavesPosition = true,
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmInfoWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                };
+
+                _infoPanel = new Blish_HUD.Controls.Panel
+                {
+                    Parent = _InfoWindow, // Set the panel's parent to the StandardWindow
+                    Size = new Point(_InfoWindow.ContentRegion.Size.X + 500, _InfoWindow.ContentRegion.Size.Y + 500), // Match the panel to the content region
+                    Location = _InfoWindow.ContentRegion.Location, // Align with content region
+                    BackgroundColor = Color.Black,
+                    Opacity = _OpacityDefault.Value
+                };
+
+                #endregion
+
+                #region Corner Icon
+
+                // Update the corner icon
+                AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
+                _cornerIcon = new CornerIcon
+                {
+                    Icon = cornertexture, // Use a game-sourced texture
+                    Size = new Point(32, 32),
+                    //Location = new Point(0, 0), // Adjust to position as corner icon
+                    BasicTooltipText = "Bauble Farm",
+                    Parent = GameService.Graphics.SpriteScreen
+                };
+
+                // Handle click event to toggle window visibility
+                _cornerIcon.Click += CornerIcon_Click;
+
+                #endregion
+
+                #region Bauble Information Timestamps
+
+                var BaubleInformation = GetBaubleInformation();
+                DateTime NextBaubleStartDate = BaubleInformation.NextBaubleStartDate;
+                DateTime EndofBaubleWeek = BaubleInformation.EndofBaubleWeek;
+                string FarmStatus = BaubleInformation.FarmStatus;
+                Color Statuscolor = BaubleInformation.Statuscolor;
+                initialDateTime = DateTime.Now;
+
+                #endregion
+
+                #region Bauble Information Labels
+                Blish_HUD.Controls.Label statusLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "Bauble Farm Status :",
+                    Size = new Point(180, 30),
+                    Location = new Point(30, 30),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                _statusValue = new Blish_HUD.Controls.Label
+                {
+                    Text = FarmStatus,
+                    Size = new Point(230, 30),
+                    Location = new Point(190, 30),
+                    Font = GameService.Content.DefaultFont16,
+                    TextColor = Statuscolor,
+                    Parent = _InfoWindow
+                };
+                Blish_HUD.Controls.Label startTimeLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "Start ->",
+                    Size = new Point(100, 30),
+                    Location = new Point(30, 60),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                _startTimeValue = new Blish_HUD.Controls.Label
+                {
+                    Text = NextBaubleStartDate.ToString("hh:mm tt (MMMM dd, yyyy)"),
+                    Size = new Point(230, 30),
+                    Location = new Point(90, 60),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _InfoWindow
+                };
+                Blish_HUD.Controls.Label endTimeLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "End ->",
+                    Size = new Point(100, 30),
+                    Location = new Point(30, 90),
+                    Font = GameService.Content.DefaultFont16,
+                    Parent = _InfoWindow
+                };
+                _endTimeValue = new Blish_HUD.Controls.Label
+                {
+                    Text = EndofBaubleWeek.ToString("hh:mm tt (MMMM dd, yyyy)"),
+                    Size = new Point(230, 30),
+                    Location = new Point(80, 90),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _InfoWindow
+                };
+                #endregion
+
+                #region Timer Controls
+
+                _stopButton = new StandardButton
+                {
+                    Text = "Stop All Timers",
+                    Size = new Point(120, 30),
+                    Location = new Point(20, 30),
+                    Parent = _TimerWindow
+                };
+                _stopButton.Click += (s, e) => StopButton_Click();
+
+                _InOrdercheckbox = new Checkbox
+                {
+                    Text = "Order by Timer",
+                    Size = new Point(120, 30),
+                    Location = new Point(150, 30),
+                    Parent = _TimerWindow
+                };
+                _InOrdercheckbox.Checked = _InOrdercheckboxDefault.Value;
+                _InOrdercheckbox.Click += (s, e) => InOrdercheckbox_Click();
+
+                Blish_HUD.Controls.Label eventsLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "Events",
+                    Size = new Point(120, 30),
+                    Location = new Point(40, 65),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _TimerWindow
+                };
+                Blish_HUD.Controls.Label timerLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "Timer",
+                    Size = new Point(120, 30),
+                    Location = new Point(140, 65),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _TimerWindow
+                };
+                Blish_HUD.Controls.Label overridesLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "Override (min)",
+                    Size = new Point(120, 30),
+                    Location = new Point(280, 65),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _TimerWindow
+                };
+
+                // Create UI elements for each timer
+                //string[] Descriptions = { "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER", "TM", "STONEHEADS" };
+
+                for (int i = 0; i < TimerRowNum; i++)
+                {
+                    int index = i; // Capture index for event handlers
+
+                    // Timer Panels
+                    _TimerWindowsOrdered[i] = new Blish_HUD.Controls.Panel
+                    {
+                        Parent = _TimerWindow,
+                        Size = new Point(390, 30),
+                        Location = new Point(0, 95 + (i * 30)),
+                    };
+
+                    // Notes Icon
+                    AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
+                    _notesIcon[i] = new Image
+                    {
+                        Texture = notesTexture,
+                        Location = new Point(10, 0),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        //Visible = false,
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    _notesIcon[i].MouseEntered += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(10 - 2, 0 - 2);
+                        noteIcon.Size = new Point(36, 36);
+                        noteIcon.Opacity = 1f;
+                    };
+                    _notesIcon[i].MouseLeft += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(10, 0);
+                        noteIcon.Size = new Point(32, 32);
+                        noteIcon.Opacity = 0.7f;
+                    };
+                    _notesIcon[i].Click += async (s, e) => await NotesIcon_Click(index);
+
+                    // Timer Event Description
+                    _timerLabelDescriptions[i].Size = new Point(100, 30);
+                    _timerLabelDescriptions[i].Location = new Point(40, 0);
+                    _timerLabelDescriptions[i].Parent = _TimerWindowsOrdered[i];
+
+                    // Timer label
+                    _timerLabels[i] = new Blish_HUD.Controls.Label
+                    {
+                        Text = _timerDurationDefaults[i].ToString(@"mm\:ss"),
+                        Size = new Point(100, 30),
+                        Location = new Point(110, 0),
+                        HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
+                        Font = GameService.Content.DefaultFont16,
+                        TextColor = Color.GreenYellow,
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+
+                    // Reset button
+                    _resetButtons[i] = new StandardButton
+                    {
+                        Text = "Start",
+                        Size = new Point(50, 30),
+                        Location = new Point(190, 0),
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    _resetButtons[i].Click += (s, e) => ResetButton_Click(index);
+
+                    // Reset button
+                    _stopButtons[i] = new StandardButton
+                    {
+                        Text = "Stop",
+                        Size = new Point(50, 30),
+                        Location = new Point(240, 0),
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    _stopButtons[i].Click += (s, e) => stopButtons_Click(index);
+
+                    // Override Timer dropdown
+                    _customDropdownTimers[i] = new Dropdown
+                    {
+                        Items = { "Default", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" },
+                        Size = new Point(80, 30),
+                        Location = new Point(290, 0),
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
+
+
+                    if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
+                    {
+                        _notesIcon[i].Hide();
+                    }
+                    else
+                    {
+                        _notesIcon[i].Show();
+                    }
+                }
+                #endregion
+
+                #region Timer Settings Window
+
+                _SettingsWindow = new TabbedWindow2(
+                    NoTexture,
+                    new Rectangle(0, 0, 1000, 700), // The windowRegion
+                    new Rectangle(0, 0, 1000, 700)) // The contentRegion
+                {
+                    Parent = GameService.Graphics.SpriteScreen,
+                    Title = "Settings",
+                    Location = new Point(300, 300),
+                    SavesPosition = true,
+                    Visible = false,
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
+                };
+
+                AsyncTexture2D clockTexture = AsyncTexture2D.FromAssetId(440023);
+                _SettingsWindow.Tabs.Add(new Tab(
+                    clockTexture,
+                    () => new TimerSettingsTabView(),
+                    "Timers"
+                ));
+                AsyncTexture2D listTexture = AsyncTexture2D.FromAssetId(156909);
+                _SettingsWindow.Tabs.Add(new Tab(
+                    listTexture,
+                    () => new ListSettingsTabView(),
+                    "List"
+                ));
+
+                AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
+                Image settingsIcon = new Image
+                {
+                    Texture = geartexture,
+                    Location = new Point(340, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    //Visible = false,
+                    Parent = _TimerWindow
+                };
+                settingsIcon.MouseEntered += (sender, e) => {
+                    settingsIcon.Location = new Point(340 - 4, 30 - 4);
+                    settingsIcon.Size = new Point(40, 40);
+                    settingsIcon.Opacity = 1f;
+                };
+                settingsIcon.MouseLeft += (s, e) => {
+                    settingsIcon.Location = new Point(340, 30);
+                    settingsIcon.Size = new Point(32, 32);
+                    settingsIcon.Opacity = 0.7f;
+                };
+                settingsIcon.Click += SettingsIcon_Click;
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to load Time UI: {ex.Message}");
+            }
+
             #region Load Backup Timer JSON
 
             List<EventData> eventDataList = new List<EventData>();
             string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
-            string jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
+            jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
             if (File.Exists(jsonFilePath))
             {
                 try
@@ -1278,44 +1315,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 catch (Exception ex)
                 {
-                    //Logger.Warn($"Failed to load JSON file: {ex.Message}");
+                    Logger.Info($"Failed to load Event_Timers JSON file: {ex.Message}");
                 }
             }
             else
             {
-                Logger.Info("No Timers JSON file found.");
-            }
-
-            #endregion
-
-            #region Load Notes
-
-            List<NotesData> eventNotes = new List<NotesData>();
-            jsonFilePath = @"Defaults\Default_Notes.json";
-            Stream json = ContentsManager.GetFileStream(jsonFilePath);
-            try
-            {
-                using (StreamReader reader = new StreamReader(json))
-                {
-                    string jsonContent = await reader.ReadToEndAsync();
-                    eventNotes = JsonSerializer.Deserialize<List<NotesData>>(jsonContent, _jsonOptions);
-                    //Logger.Info($"Loaded {eventNotes.Count} events from {jsonFilePath}");
-                }
-
-                var notesData = eventNotes;
-                for (int i = 0; i < TimerRowNum; i++)
-                {
-                    if (notesData[i].Description == _timerLabelDescriptions[i].Text)
-                    {
-                        //Logger.Info($"Waypoint: {notesData[i].Waypoint} Notes: {notesData[i].Notes}");
-                        _Waypoints[i] = notesData[i].Waypoint;
-                        _Notes.Add(notesData[i].Notes);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Warn($"Failed to load JSON file: {ex.Message}");
+                Logger.Info("No Timers Event_Timers JSON file found.");
             }
 
             #endregion

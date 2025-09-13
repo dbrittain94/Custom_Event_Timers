@@ -151,10 +151,12 @@
     <None Include="mgfxc.runtimeconfig.dev.json" />
     <None Include="mgfxc.runtimeconfig.json" />
     <None Include="packages.config" />
-    <None Include="ref\Defaults\Default_Notes.json" />
+    <None Include="ref\Defaults\Default_Timer_Notes.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaubleFarmModule.cs" />
+    <Compile Include="ListSettingsTabView.cs" />
+    <Compile Include="TimerSettingsTabView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AsyncClipboardService, Version=1.7.1.0, Culture=neutral, processorArchitecture=MSIL">
