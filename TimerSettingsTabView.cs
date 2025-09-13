@@ -33,11 +33,17 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<KeyBinding> _timerKeybind;
         private SettingEntry<int> _timerMinutesDefault;
         private SettingEntry<int> _timerSecondsDefault;
+        private SettingEntry<string> _timerNoteOneDefault;
+        private SettingEntry<string> _timerNoteTwoDefault;
+        private SettingEntry<string> _timerNoteThreeDefault;
+        private SettingEntry<string> _timerNoteFourDefault;
         private ViewContainer _settingsViewContainer;
+        private SettingCollection _MainSettings;
 
         protected override void Build(Container buildPanel)
         {
             _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
+            _MainSettings = _BaubleFarmModule._settings;
             _NoTexture = new AsyncTexture2D();
             _cancelTexture = AsyncTexture2D.FromAssetId(2175782);
             _timerSettingsPanel = new Blish_HUD.Controls.Panel
@@ -146,6 +152,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Texture = _cancelTexture,
                     Size = new Point(26, 26),
                     Location = new Point(240, 0),
+                    //Visible = false,
                     Parent = _timerEventsPanels[i]
                 };
                 _cancelButton[i].Click += (s, e) => CancelEvent_Click(i);
@@ -160,20 +167,25 @@ namespace roguishpanda.AB_Bauble_Farm
                 _settingsViewContainer.Clear();
                 _settingsViewContainer.Dispose();
             }
-            _settings = new SettingCollection();
+            //_settings = new SettingCollection();
+            SettingCollection TimerCollector = _MainSettings.AddSubCollection(_Descriptions[senderIndex] + "TimerInfo");
             _timerKeybind = new SettingEntry<KeyBinding>();
-            _timerKeybind = _settings.DefineSetting(_Descriptions[senderIndex] + "Keybind", new KeyBinding(Keys.None), () => _Descriptions[senderIndex] + " Keybind", () => "Keybind is used to control " + _Descriptions[senderIndex] + " Timer");
-            _timerMinutesDefault = _settings.DefineSetting(_Descriptions[senderIndex] + "TimerMinutes", 0, () => _Descriptions[senderIndex] + " Timer (minutes)", () => "Timer is used to control " + _Descriptions[senderIndex] + " Timer (Minutes)");
+            _timerKeybind = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "Keybind", new KeyBinding(Keys.None), () => "Keybind", () => "Keybind is used to control start/stop for timer");
+            _timerMinutesDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "TimerMinutes", 10, () => "Timer (minutes)", () => "Use to control minutes on the timer");
             _timerMinutesDefault.SetRange(1, 59);
-            _timerSecondsDefault = _settings.DefineSetting(_Descriptions[senderIndex] + "TimerSeconds", 0, () => _Descriptions[senderIndex] + " Timer (seconds)", () => "Timer is used to control " + _Descriptions[senderIndex] + " Timer (Seconds)");
+            _timerSecondsDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "TimerSeconds", 30, () => "Timer (seconds)", () => "Use to control seconds on the timer");
             _timerSecondsDefault.SetRange(1, 59);
+            _timerNoteOneDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteOne", "", () => "Note #1", () => "Use to control the note #1 for notes macro");
+            _timerNoteTwoDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteTwo", "", () => "Note #2", () => "Use to control the note #2 for notes macro");
+            _timerNoteThreeDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteThree", "", () => "Note #3", () => "Use to control the note #3 for notes macro");
+            _timerNoteFourDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteFour", "", () => "Note #4", () => "Use to control the note #4 for notes macro");
             _settingsViewContainer = new ViewContainer
             {
                 Parent = _timerSettingsPanel,
-                Location = new Point(500, 200),
-                Size = new Point(400, 200)
+                Location = new Point(400, 100),
+                Size = new Point(400, 400)
             };
-            var settingsView = new SettingsView(_settings);
+            var settingsView = new SettingsView(TimerCollector);
             _settingsViewContainer.Show(settingsView);
         }
     }

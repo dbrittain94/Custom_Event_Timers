@@ -151,7 +151,7 @@
     <None Include="mgfxc.runtimeconfig.dev.json" />
     <None Include="mgfxc.runtimeconfig.json" />
     <None Include="packages.config" />
-    <None Include="ref\Defaults\Default_Timer_Notes.json" />
+    <None Include="ref\Defaults\Default_Timers.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaubleFarmModule.cs" />

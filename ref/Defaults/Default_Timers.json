@@ -2,109 +2,85 @@
   {
     "ID": 0,
     "Description": "SVET",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 10,
-    "TimerSeconds": 0,
+    "Minutes": 8,
+    "Seconds": 45,
     "Notes": [ "[&BAIIAAA=]", "SVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
   },
   {
     "ID": 1,
     "Description": "EVET",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 10,
-    "TimerSeconds": 0,
+    "Minutes": 8,
+    "Seconds": 45,
     "Notes": [ "[&BGwIAAA=]", "EVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
   },
   {
     "ID": 2,
     "Description": "NVET",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 10,
-    "TimerSeconds": 0,
+    "Minutes": 8,
+    "Seconds": 45,
     "Notes": [ "[&BN0HAAA=]", "NVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
   },
   {
     "ID": 3,
     "Description": "WVET",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 10,
-    "TimerSeconds": 0,
+    "Minutes": 8,
+    "Seconds": 45,
     "Notes": [ "[&BAYIAAA=]", "WVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
   },
   {
     "ID": 4,
     "Description": "SAP",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 8,
-    "TimerSeconds": 0,
+    "Minutes": 8,
+    "Seconds": 20,
     "Notes": [ "[&BEkIAAA=]", "SAP", "Please hold right before the entrance to first sap.", "There are 3 sap events. Target 1 Corpse Taker until dead. Then, attack the sap for credit." ]
   },
   {
     "ID": 5,
     "Description": "BALTH",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 8,
-    "TimerSeconds": 0,
+    "Minutes": 9,
+    "Seconds": 30,
     "Notes": [ "[&BAIIAAA=]", "Follow to Balthazar", "Hold at the doorway before entering the Rest!!", "Wait for all friends and my call to enter." ]
   },
   {
     "ID": 6,
     "Description": "WYVERN",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 13,
-    "TimerSeconds": 0,
+    "Minutes": 11,
+    "Seconds": 30,
     "Notes": [ "[&BEkIAAA=]", "WYVERN", "Prep CC for when wyvern turns around." ]
   },
   {
     "ID": 7,
     "Description": "BRAMBLE",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 13,
-    "TimerSeconds": 0,
+    "Minutes": 10,
+    "Seconds": 20,
     "Notes": [ "[&BN0HAAA=]", "BRAMBLE", "Loot first. Then kill." ]
   },
   {
     "ID": 8,
     "Description": "OOZE",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 14,
-    "TimerSeconds": 0,
+    "Minutes": 14,
+    "Seconds": 0,
     "Notes": [ "[&BAYIAAA=]", "OOZE", "Take the north walkway if you do not have mount", "Hold at entrance of cave until whole group is together." ]
   },
   {
     "ID": 9,
     "Description": "GUZZLER",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 13,
-    "TimerSeconds": 0,
+    "Minutes": 9,
+    "Seconds": 30,
     "Notes": [ "[&BN0HAAA=]", "GUZZLER", "Throw rocks or CC with Turtle mount to remove layers." ]
   },
   {
     "ID": 10,
     "Description": "TM",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 10,
-    "TimerSeconds": 0,
+    "Minutes": 9,
+    "Seconds": 30,
     "Notes": [ "[&BGwIAAA=]", "Follow to TM" ]
   },
   {
     "ID": 11,
     "Description": "STONEHEADS",
-    "ModifierKeys": 0,
-    "PrimaryKey": 0,
-    "TimerMinutes": 12,
-    "TimerSeconds": 0,
+    "Minutes": 10,
+    "Seconds": 20,
     "Notes": [ "[&BAIIAAA=]", "STONEHEADS", "Attack Alpha. Then Beta. One is always invulnerable at given time", "Kill rolly dudes when they spawn" ]
   }
 ]
