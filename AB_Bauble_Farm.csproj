@@ -156,6 +156,7 @@
   <ItemGroup>
     <Compile Include="BaubleFarmModule.cs" />
     <Compile Include="ListSettingsTabView.cs" />
+    <Compile Include="ModuleSettingsView.cs" />
     <Compile Include="TimerSettingsTabView.cs" />
   </ItemGroup>
   <ItemGroup>

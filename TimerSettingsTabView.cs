@@ -104,6 +104,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _timerEventLabels = new Label[TimerRowNum];
             _cancelButton = new Image[TimerRowNum];
             LoadEventTable(TimerRowNum);
+            LoadDefaults(TimerRowNum);
         }
 
         private void Assigner_Click(object sender, MouseEventArgs e)
@@ -140,9 +141,9 @@ namespace roguishpanda.AB_Bauble_Farm
             _cancelButton = new Image[TimerRowNum];
             LoadEventTable(TimerRowNum);
         }
-        public void LoadEventTable(int RowCount)
+        public void LoadEventTable(int TotalEvents)
         {
-            for (int i = 0; i < TimerRowNum; i++)
+            for (int i = 0; i < TotalEvents; i++)
             {
                 // Package Panels
                 _timerEventsPanels[i] = new Blish_HUD.Controls.Panel
@@ -202,15 +203,19 @@ namespace roguishpanda.AB_Bauble_Farm
             _timerMinutesDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "TimerMinutes", 10, () => "Timer (minutes)", () => "Use to control minutes on the timer");
             _timerMinutesDefault.SetRange(1, 59);
             _MinutesLabelDisplay.Text = _timerMinutesDefault.Value.ToString() + " Minutes";
-            _timerMinutesDefault.SettingChanged += (s2, e2) => LoadTimeDefault(senderIndex);
+            _timerMinutesDefault.SettingChanged += (s2, e2) => LoadTimeCustomized(senderIndex);
             _timerSecondsDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "TimerSeconds", 30, () => "Timer (seconds)", () => "Use to control seconds on the timer");
             _timerSecondsDefault.SetRange(1, 59);
             _SecondsLabelDisplay.Text = _timerSecondsDefault.Value.ToString() + " Seconds";
-            _timerSecondsDefault.SettingChanged += (s2, e2) => LoadTimeDefault(senderIndex);
-            _timerNoteOneDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteOne", "", () => "Note #1", () => "Use to control the note #1 for notes macro");
-            _timerNoteTwoDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteTwo", "", () => "Note #2", () => "Use to control the note #2 for notes macro");
-            _timerNoteThreeDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteThree", "", () => "Note #3", () => "Use to control the note #3 for notes macro");
-            _timerNoteFourDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteFour", "", () => "Note #4", () => "Use to control the note #4 for notes macro");
+            _timerSecondsDefault.SettingChanged += (s2, e2) => LoadTimeCustomized(senderIndex);
+            _timerNoteOneDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteOne", "", () => "Note #1", () => "Use to control the note #1");
+            _timerNoteOneDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+            _timerNoteTwoDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteTwo", "", () => "Note #2", () => "Use to control the note #2");
+            _timerNoteTwoDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+            _timerNoteThreeDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteThree", "", () => "Note #3", () => "Use to control the note #3");
+            _timerNoteThreeDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+            _timerNoteFourDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteFour", "", () => "Note #4", () => "Use to control the note #4");
+            _timerNoteFourDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
             _settingsViewContainer = new ViewContainer
             {
                 Parent = _timerSettingsPanel,
@@ -220,8 +225,109 @@ namespace roguishpanda.AB_Bauble_Farm
             var settingsView = new SettingsView(TimerCollector);
             _settingsViewContainer.Show(settingsView);
             _EventLabelDisplay.Text = Description[senderIndex].Text;
+
+            //// Re-color panels
+            for (int i = 0; i < TimerRowNum; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    _timerEventsPanels[i].BackgroundColor = new Color(0, 0, 0, 0.5f);
+                }
+                else
+                {
+                    _timerEventsPanels[i].BackgroundColor = new Color(0, 0, 0, 0.2f);
+                }
+            }
+            //// Change color of selected
+            _timerEventsPanels[senderIndex].BackgroundColor = new Color(0, 0, 0, 1.0f);
         }
-        private void LoadTimeDefault(int Index)
+        private void LoadDefaults(int TotalEvents)
+        {
+            for (int i = 0; i < TotalEvents; i++)
+            {
+                SettingCollection TimerCollector = _MainSettings.AddSubCollection(_BaubleFarmModule._timerLabelDescriptions[i].Text + "TimerInfo");
+                SettingEntry<int> MintuesSettingEntry = null;
+                TimerCollector.TryGetSetting(_BaubleFarmModule._timerLabelDescriptions[i].Text + "TimerMinutes", out MintuesSettingEntry);
+                SettingEntry<int> SecondsSettingEntry = null;
+                TimerCollector.TryGetSetting(_BaubleFarmModule._timerLabelDescriptions[i].Text + "TimerSeconds", out SecondsSettingEntry);
+                SettingEntry<string> NotesOneSettingEntry = null;
+                TimerCollector.TryGetSetting(_BaubleFarmModule._timerLabelDescriptions[i].Text + "NoteOne", out NotesOneSettingEntry);
+                SettingEntry<string> NotesTwoSettingEntry = null;
+                TimerCollector.TryGetSetting(_BaubleFarmModule._timerLabelDescriptions[i].Text + "NoteTwo", out NotesTwoSettingEntry);
+                SettingEntry<string> NotesThreeSettingEntry = null;
+                TimerCollector.TryGetSetting(_BaubleFarmModule._timerLabelDescriptions[i].Text + "NoteThree", out NotesThreeSettingEntry);
+                SettingEntry<string> NotesFourSettingEntry = null;
+                TimerCollector.TryGetSetting(_BaubleFarmModule._timerLabelDescriptions[i].Text + "NoteFour", out NotesFourSettingEntry);
+
+                double Minutes = _BaubleFarmModule._TimerMinutes[i];
+                double Seconds = _BaubleFarmModule._TimerSeconds[i];
+                if (MintuesSettingEntry != null)
+                {
+                    double TempMinutes = MintuesSettingEntry.Value;
+                    if (TempMinutes != 0)
+                    {
+                        Minutes = TempMinutes;
+                    }
+                }
+                if (SecondsSettingEntry != null)
+                {
+                    double TempSeconds = SecondsSettingEntry.Value;
+                    if (TempSeconds != 0)
+                    {
+                        Seconds = TempSeconds;
+                    }
+                }
+                MintuesSettingEntry.Value = Convert.ToInt32(Minutes);
+                SecondsSettingEntry.Value = Convert.ToInt32(Seconds);
+
+                List<string> NotesList = new List<string>();
+                if (NotesOneSettingEntry != null)
+                {
+                    string Notes = NotesOneSettingEntry.Value;
+                    if (_BaubleFarmModule._Notes[i].Count >= 0)
+                    {
+                        if (Notes == "" && _BaubleFarmModule._Notes[i][0] != null)
+                        {
+                            NotesOneSettingEntry.Value = _BaubleFarmModule._Notes[i][0];
+                        }
+                    }
+                }
+                if (NotesTwoSettingEntry != null)
+                {
+                    string Notes = NotesTwoSettingEntry.Value;
+                    if (_BaubleFarmModule._Notes[i].Count > 1)
+                    {
+                        if (Notes == "" && _BaubleFarmModule._Notes[i][1] != null)
+                        {
+                            NotesTwoSettingEntry.Value = _BaubleFarmModule._Notes[i][1];
+                        }
+                    }
+                }
+                if (NotesThreeSettingEntry != null)
+                {
+                    string Notes = NotesThreeSettingEntry.Value;
+                    if (_BaubleFarmModule._Notes[i].Count > 2)
+                    {
+                        if (Notes == "" && _BaubleFarmModule._Notes[i][2] != null)
+                        {
+                            NotesThreeSettingEntry.Value = _BaubleFarmModule._Notes[i][2];
+                        }
+                    }
+                }
+                if (NotesFourSettingEntry != null)
+                {
+                    string Notes = NotesFourSettingEntry.Value;
+                    if (_BaubleFarmModule._Notes[i].Count > 3)
+                    {
+                        if (Notes == "" && _BaubleFarmModule._Notes[i][3] != null)
+                        {
+                            NotesFourSettingEntry.Value = _BaubleFarmModule._Notes[i][3];
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadTimeCustomized(int Index)
         {
             TimeSpan Minutes = TimeSpan.FromMinutes(_timerMinutesDefault.Value);
             TimeSpan Seconds = TimeSpan.FromSeconds(_timerSecondsDefault.Value);
@@ -229,6 +335,47 @@ namespace roguishpanda.AB_Bauble_Farm
             _SecondsLabelDisplay.Text = _timerSecondsDefault.Value.ToString() + " Seconds";
             _BaubleFarmModule._timerDurationDefaults[Index] = Minutes + Seconds;
             _BaubleFarmModule._timerLabels[Index].Text = _BaubleFarmModule._timerDurationDefaults[Index].ToString(@"mm\:ss");
+        }
+        private void LoadNotesCustomized(int Index)
+        {
+            List<string> NotesList = new List<string>();
+            if (_timerNoteOneDefault != null)
+            {
+                string Notes = _timerNoteOneDefault.Value;
+                if (Notes != "")
+                {
+                    NotesList.Add(Notes);
+                }
+            }
+            if (_timerNoteTwoDefault != null)
+            {
+                string Notes = _timerNoteTwoDefault.Value;
+                if (Notes != "")
+                {
+                    NotesList.Add(Notes);
+                }
+            }
+            if (_timerNoteThreeDefault != null)
+            {
+                string Notes = _timerNoteThreeDefault.Value;
+                if (Notes != "")
+                {
+                    NotesList.Add(Notes);
+                }
+            }
+            if (_timerNoteFourDefault != null)
+            {
+                string Notes = _timerNoteFourDefault.Value;
+                if (Notes != "")
+                {
+                    NotesList.Add(Notes);
+                }
+            }
+            if (NotesList.Count > 0)
+            {
+                _BaubleFarmModule._Notes[Index].Clear();
+                _BaubleFarmModule._Notes[Index].AddRange(NotesList);
+            }
         }
     }
 }

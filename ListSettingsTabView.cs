@@ -1,6 +1,8 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
+using Blish_HUD.Settings;
+using Blish_HUD.Settings.UI.Views;
 using Microsoft.Xna.Framework;
 
 namespace roguishpanda.AB_Bauble_Farm
@@ -8,6 +10,8 @@ namespace roguishpanda.AB_Bauble_Farm
     public class ListSettingsTabView : View
     {
         private BaubleFarmModule _BaubleFarmModule;
+        private ViewContainer _settingsViewContainer;
+
         protected override void Build(Container buildPanel)
         {
             _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
@@ -20,14 +24,15 @@ namespace roguishpanda.AB_Bauble_Farm
                 BackgroundTexture = BaubleFarmModule.ModuleInstance._asyncTimertexture
             };
 
-            Blish_HUD.Controls.Label label = new Blish_HUD.Controls.Label
+            SettingCollection SettingsCollection = _BaubleFarmModule._SettingsCollection;
+            _settingsViewContainer = new ViewContainer
             {
-                Text = "Under Construction",
-                Font = GameService.Content.DefaultFont32,
-                Size = new Point(400, 60),
-                Location = new Point(425, 275),
-                Parent = buildPanel
+                Parent = listSettingsPanel,
+                Location = new Point(100, 100),
+                Size = new Point(700, 700)
             };
+            var settingsView = new SettingsView(SettingsCollection);
+            _settingsViewContainer.Show(settingsView);
         }
     }
 }

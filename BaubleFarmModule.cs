@@ -19,6 +19,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -90,6 +91,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public SettingEntry<KeyBinding> _stoneheadKeybind;
         public SettingEntry<KeyBinding> _postNotesKeybind;
         public SettingEntry<KeyBinding> _cancelNotesKeybind;
+        public SettingCollection _SettingsCollection;
         public SettingEntry<bool> _InOrdercheckboxDefault;
         public SettingEntry<float> _OpacityDefault;
         public SettingEntry<int> _timerLowDefault;
@@ -118,37 +120,40 @@ namespace roguishpanda.AB_Bauble_Farm
 
         protected override void DefineSettings(SettingCollection settings)
         {
-            _InOrdercheckboxDefault = settings.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time.");
+            _SettingsCollection = settings.AddSubCollection("MainSettings");
 
-            _OpacityDefault = settings.DefineSetting("OpacityDefault", 1.0f, () => "Window Opacity", () => "Changing the opacity will adjust how translucent the windows are.");
+            _InOrdercheckboxDefault = _SettingsCollection.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time.");
+
+            _OpacityDefault = _SettingsCollection.DefineSetting("OpacityDefault", 1.0f, () => "Window Opacity", () => "Changing the opacity will adjust how translucent the windows are.");
             _OpacityDefault.SetRange(0.1f, 1.0f);
             _OpacityDefault.SettingChanged += ChangeOpacity_Activated;
 
-            _toggleTimerWindowKeybind = settings.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.L),() => "Timer Window",() => "Keybind to show or hide the Timer window.");
+            _toggleTimerWindowKeybind = _SettingsCollection.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.L),() => "Timer Window",() => "Keybind to show or hide the Timer window.");
             _toggleTimerWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
-            _toggleInfoWindowKeybind = settings.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
+            _toggleInfoWindowKeybind = _SettingsCollection.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
             _toggleInfoWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
-            _postNotesKeybind = settings.DefineSetting("PostNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.B), () => "Post Notes", () => "Keybind to confirm posting notes in chat.");
+            _postNotesKeybind = _SettingsCollection.DefineSetting("PostNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.B), () => "Post Notes", () => "Keybind to confirm posting notes in chat.");
             _postNotesKeybind.Value.BlockSequenceFromGw2 = true;
             _postNotesKeybind.Value.Enabled = true;
             _postNotesKeybind.Value.BindingChanged += PostNotes_BindingChanged;
 
-            _cancelNotesKeybind = settings.DefineSetting("CancelNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.N), () => "Cancel Notes", () => "Keybind to cancel posting notes in chat.");
+            _cancelNotesKeybind = _SettingsCollection.DefineSetting("CancelNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.N), () => "Cancel Notes", () => "Keybind to cancel posting notes in chat.");
             _cancelNotesKeybind.Value.BlockSequenceFromGw2 = true;
             _cancelNotesKeybind.Value.Enabled = true;
             _cancelNotesKeybind.Value.BindingChanged += CancelNotes_BindingChanged;
 
-            _timerLowDefault = settings.DefineSetting("LowTimerDefaultTimer",30,() => "Low Timer",() => "Set timer for when timer gets below certain threshold in seconds.");
+            _timerLowDefault = _SettingsCollection.DefineSetting("LowTimerDefaultTimer",30,() => "Low Timer",() => "Set timer for when timer gets below certain threshold in seconds.");
             _timerLowDefault.SetRange(1, 120);
 
             _settings = settings;
         }
+        public override IView GetSettingsView() => new ModuleSettingsView();
 
         private void CancelNotes_BindingChanged(object sender, EventArgs e)
         {
@@ -228,6 +233,7 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             for (int i = 0; i < TotalEvents; i++)
             {
+                int count = i;
                 SettingCollection TimerCollector = _settings.AddSubCollection(_timerLabelDescriptions[i].Text + "TimerInfo");
                 SettingEntry<KeyBinding> KeybindSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "Keybind", out KeybindSettingEntry);
@@ -248,6 +254,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     KeybindSettingEntry.Value.BlockSequenceFromGw2 = true;
                     KeybindSettingEntry.Value.Enabled = true;
+                    KeybindSettingEntry.Value.Activated += (s, e) => timerKeybinds(count);
                 }
 
                 TimeSpan Minutes = TimeSpan.FromMinutes(_TimerMinutes[i]);
@@ -270,20 +277,14 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 _timerDurationDefaults[i] = Minutes + Seconds;
                 _timerLabels[i].Text = _timerDurationDefaults[i].ToString(@"mm\:ss");
-
+                
+                List<string> NotesList = new List<string>();
                 if (NotesOneSettingEntry != null)
                 {
                     string Notes = NotesOneSettingEntry.Value;
                     if (Notes != "")
                     {
-                        if (_Notes[i].Count > 0)
-                        {
-                            _Notes[i][0] = NotesOneSettingEntry.Value;
-                        }
-                        else
-                        {
-                            _Notes[i].Add(NotesOneSettingEntry.Value);
-                        }
+                        NotesList.Add(Notes);
                     }
                 }
                 if (NotesTwoSettingEntry != null)
@@ -291,14 +292,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     string Notes = NotesTwoSettingEntry.Value;
                     if (Notes != "")
                     {
-                        if (_Notes[i].Count > 1)
-                        {
-                            _Notes[i][1] = NotesTwoSettingEntry.Value;
-                        }
-                        else
-                        {
-                            _Notes[i].Add(NotesTwoSettingEntry.Value);
-                        }
+                        NotesList.Add(Notes);
                     }
                 }
                 if (NotesThreeSettingEntry != null)
@@ -306,14 +300,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     string Notes = NotesThreeSettingEntry.Value;
                     if (Notes != "")
                     {
-                        if (_Notes[i].Count > 2)
-                        {
-                            _Notes[i][2] = NotesThreeSettingEntry.Value;
-                        }
-                        else
-                        {
-                            _Notes[i].Add(NotesThreeSettingEntry.Value);
-                        }
+                        NotesList.Add(Notes);
                     }
                 }
                 if (NotesFourSettingEntry != null)
@@ -321,15 +308,13 @@ namespace roguishpanda.AB_Bauble_Farm
                     string Notes = NotesFourSettingEntry.Value;
                     if (Notes != "")
                     {
-                        if (_Notes[i].Count > 3)
-                        {
-                            _Notes[i][3] = NotesFourSettingEntry.Value;
-                        }
-                        else
-                        {
-                            _Notes[i].Add(NotesFourSettingEntry.Value);
-                        }
+                        NotesList.Add(Notes);
                     }
+                }
+                if (NotesList.Count > 0)
+                {
+                    _Notes[i].Clear();
+                    _Notes[i].AddRange(NotesList);
                 }
             }
         }
