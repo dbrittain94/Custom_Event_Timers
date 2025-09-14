@@ -25,6 +25,9 @@ namespace roguishpanda.AB_Bauble_Farm
         private FlowPanel _timerPackagePanel;
         private int TimerRowNum;
         private KeybindingAssignmentWindow _assignerWindow;
+        private Label _MinutesLabelDisplay;
+        private Label _SecondsLabelDisplay;
+        private Label _EventLabelDisplay;
         private List<string> _Descriptions;
         private Image[] _cancelButton;
         private AsyncTexture2D _cancelTexture;
@@ -44,6 +47,7 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
             _MainSettings = _BaubleFarmModule._settings;
+            TimerRowNum = _BaubleFarmModule.TimerRowNum;
             _NoTexture = new AsyncTexture2D();
             _cancelTexture = AsyncTexture2D.FromAssetId(2175782);
             _timerSettingsPanel = new Blish_HUD.Controls.Panel
@@ -67,12 +71,35 @@ namespace roguishpanda.AB_Bauble_Farm
                 Text = "Create Event",
                 Size = new Point(100, 40),
                 Location = new Point(100, 520),
+                Visible = false,
                 Parent = _timerSettingsPanel
             };
             buttonCreateEvent.Click += CreateEvent_Click;
 
+            _MinutesLabelDisplay = new Blish_HUD.Controls.Label
+            {
+                Size = new Point(100, 40),
+                Location = new Point(880, 120),
+                Font = GameService.Content.DefaultFont16,
+                Parent = _timerSettingsPanel
+            };
+            _SecondsLabelDisplay = new Blish_HUD.Controls.Label
+            {
+                Size = new Point(100, 40),
+                Location = new Point(880, 140),
+                Font = GameService.Content.DefaultFont16,
+                Parent = _timerSettingsPanel
+            };
+            _EventLabelDisplay = new Blish_HUD.Controls.Label
+            {
+                Size = new Point(180, 40),
+                Location = new Point(420, 70),
+                Font = GameService.Content.DefaultFont32,
+                TextColor = Color.GreenYellow,
+                Parent = _timerSettingsPanel
+            };
+
             _Descriptions = new List<string>{ "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER", "TM", "STONEHEADS" };
-            TimerRowNum = 12;
             _timerEventsPanels = new Panel[TimerRowNum];
             _timerEventLabels = new Label[TimerRowNum];
             _cancelButton = new Image[TimerRowNum];
@@ -138,7 +165,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 // Package label
                 _timerEventLabels[i] = new Blish_HUD.Controls.Label
                 {
-                    Text = _Descriptions[i],
+                    Text = _BaubleFarmModule._timerLabelDescriptions[i].Text,
                     Size = new Point(100, 40),
                     Location = new Point(20, 0),
                     HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Left,
@@ -152,7 +179,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Texture = _cancelTexture,
                     Size = new Point(26, 26),
                     Location = new Point(240, 0),
-                    //Visible = false,
+                    Visible = false,
                     Parent = _timerEventsPanels[i]
                 };
                 _cancelButton[i].Click += (s, e) => CancelEvent_Click(i);
@@ -162,31 +189,46 @@ namespace roguishpanda.AB_Bauble_Farm
         private void TimerSettingsTabView_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
             int senderIndex = Array.IndexOf(_timerEventsPanels, sender);
+            Label[] Description = _BaubleFarmModule._timerLabelDescriptions;
             if (_settingsViewContainer != null)
             {
                 _settingsViewContainer.Clear();
                 _settingsViewContainer.Dispose();
             }
             //_settings = new SettingCollection();
-            SettingCollection TimerCollector = _MainSettings.AddSubCollection(_Descriptions[senderIndex] + "TimerInfo");
+            SettingCollection TimerCollector = _MainSettings.AddSubCollection(Description[senderIndex].Text + "TimerInfo");
             _timerKeybind = new SettingEntry<KeyBinding>();
-            _timerKeybind = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "Keybind", new KeyBinding(Keys.None), () => "Keybind", () => "Keybind is used to control start/stop for timer");
-            _timerMinutesDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "TimerMinutes", 10, () => "Timer (minutes)", () => "Use to control minutes on the timer");
+            _timerKeybind = TimerCollector.DefineSetting(Description[senderIndex].Text + "Keybind", new KeyBinding(Keys.None), () => "Keybind", () => "Keybind is used to control start/stop for timer");
+            _timerMinutesDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "TimerMinutes", 10, () => "Timer (minutes)", () => "Use to control minutes on the timer");
             _timerMinutesDefault.SetRange(1, 59);
-            _timerSecondsDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "TimerSeconds", 30, () => "Timer (seconds)", () => "Use to control seconds on the timer");
+            _MinutesLabelDisplay.Text = _timerMinutesDefault.Value.ToString() + " Minutes";
+            _timerMinutesDefault.SettingChanged += (s2, e2) => LoadTimeDefault(senderIndex);
+            _timerSecondsDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "TimerSeconds", 30, () => "Timer (seconds)", () => "Use to control seconds on the timer");
             _timerSecondsDefault.SetRange(1, 59);
-            _timerNoteOneDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteOne", "", () => "Note #1", () => "Use to control the note #1 for notes macro");
-            _timerNoteTwoDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteTwo", "", () => "Note #2", () => "Use to control the note #2 for notes macro");
-            _timerNoteThreeDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteThree", "", () => "Note #3", () => "Use to control the note #3 for notes macro");
-            _timerNoteFourDefault = TimerCollector.DefineSetting(_Descriptions[senderIndex] + "NoteFour", "", () => "Note #4", () => "Use to control the note #4 for notes macro");
+            _SecondsLabelDisplay.Text = _timerSecondsDefault.Value.ToString() + " Seconds";
+            _timerSecondsDefault.SettingChanged += (s2, e2) => LoadTimeDefault(senderIndex);
+            _timerNoteOneDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteOne", "", () => "Note #1", () => "Use to control the note #1 for notes macro");
+            _timerNoteTwoDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteTwo", "", () => "Note #2", () => "Use to control the note #2 for notes macro");
+            _timerNoteThreeDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteThree", "", () => "Note #3", () => "Use to control the note #3 for notes macro");
+            _timerNoteFourDefault = TimerCollector.DefineSetting(Description[senderIndex].Text + "NoteFour", "", () => "Note #4", () => "Use to control the note #4 for notes macro");
             _settingsViewContainer = new ViewContainer
             {
                 Parent = _timerSettingsPanel,
                 Location = new Point(400, 100),
-                Size = new Point(400, 400)
+                Size = new Point(500, 400)
             };
             var settingsView = new SettingsView(TimerCollector);
             _settingsViewContainer.Show(settingsView);
+            _EventLabelDisplay.Text = Description[senderIndex].Text;
+        }
+        private void LoadTimeDefault(int Index)
+        {
+            TimeSpan Minutes = TimeSpan.FromMinutes(_timerMinutesDefault.Value);
+            TimeSpan Seconds = TimeSpan.FromSeconds(_timerSecondsDefault.Value);
+            _MinutesLabelDisplay.Text = _timerMinutesDefault.Value.ToString() + " Minutes";
+            _SecondsLabelDisplay.Text = _timerSecondsDefault.Value.ToString() + " Seconds";
+            _BaubleFarmModule._timerDurationDefaults[Index] = Minutes + Seconds;
+            _BaubleFarmModule._timerLabels[Index].Text = _BaubleFarmModule._timerDurationDefaults[Index].ToString(@"mm\:ss");
         }
     }
 }

@@ -224,18 +224,13 @@ namespace roguishpanda.AB_Bauble_Farm
                 stopButtons_Click(timerIndex);
             }
         }
-        private void LoadTimerDefaults(int TotalEvents)
+        public void LoadTimerDefaults(int TotalEvents)
         {
             for (int i = 0; i < TotalEvents; i++)
             {
                 SettingCollection TimerCollector = _settings.AddSubCollection(_timerLabelDescriptions[i].Text + "TimerInfo");
                 SettingEntry<KeyBinding> KeybindSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "Keybind", out KeybindSettingEntry);
-                if (KeybindSettingEntry != null)
-                {
-                    KeybindSettingEntry.Value.BlockSequenceFromGw2 = true;
-                    KeybindSettingEntry.Value.Enabled = true;
-                }
                 SettingEntry<int> MintuesSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "TimerMinutes", out MintuesSettingEntry);
                 SettingEntry<int> SecondsSettingEntry = null;
@@ -248,6 +243,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteThree", out NotesThreeSettingEntry);
                 SettingEntry<string> NotesFourSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteFour", out NotesFourSettingEntry);
+
+                if (KeybindSettingEntry != null)
+                {
+                    KeybindSettingEntry.Value.BlockSequenceFromGw2 = true;
+                    KeybindSettingEntry.Value.Enabled = true;
+                }
 
                 TimeSpan Minutes = TimeSpan.FromMinutes(_TimerMinutes[i]);
                 TimeSpan Seconds = TimeSpan.FromSeconds(_TimerSeconds[i]);
@@ -267,9 +268,69 @@ namespace roguishpanda.AB_Bauble_Farm
                         Seconds = TempSeconds;
                     }
                 }
-
                 _timerDurationDefaults[i] = Minutes + Seconds;
-                _timerLabels[i].Text = _timerDurationDefaults[i].ToString(@"mm\:ss"); ;
+                _timerLabels[i].Text = _timerDurationDefaults[i].ToString(@"mm\:ss");
+
+                if (NotesOneSettingEntry != null)
+                {
+                    string Notes = NotesOneSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        if (_Notes[i].Count > 0)
+                        {
+                            _Notes[i][0] = NotesOneSettingEntry.Value;
+                        }
+                        else
+                        {
+                            _Notes[i].Add(NotesOneSettingEntry.Value);
+                        }
+                    }
+                }
+                if (NotesTwoSettingEntry != null)
+                {
+                    string Notes = NotesTwoSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        if (_Notes[i].Count > 1)
+                        {
+                            _Notes[i][1] = NotesTwoSettingEntry.Value;
+                        }
+                        else
+                        {
+                            _Notes[i].Add(NotesTwoSettingEntry.Value);
+                        }
+                    }
+                }
+                if (NotesThreeSettingEntry != null)
+                {
+                    string Notes = NotesThreeSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        if (_Notes[i].Count > 2)
+                        {
+                            _Notes[i][2] = NotesThreeSettingEntry.Value;
+                        }
+                        else
+                        {
+                            _Notes[i].Add(NotesThreeSettingEntry.Value);
+                        }
+                    }
+                }
+                if (NotesFourSettingEntry != null)
+                {
+                    string Notes = NotesFourSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        if (_Notes[i].Count > 3)
+                        {
+                            _Notes[i][3] = NotesFourSettingEntry.Value;
+                        }
+                        else
+                        {
+                            _Notes[i].Add(NotesFourSettingEntry.Value);
+                        }
+                    }
+                }
             }
         }
         protected override void Initialize()
@@ -779,7 +840,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 _TimerWindowsOrdered = new Blish_HUD.Controls.Panel[TimerRowNum];
                 _timerDurationOverride = new TimeSpan[TimerRowNum];
                 _timerDurationDefaults = new TimeSpan[TimerRowNum];
-                _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
                 _ModifierKeys = new int[TimerRowNum];
                 _PrimaryKey = new int[TimerRowNum];
                 _TimerMinutes = new double[TimerRowNum];
@@ -788,9 +848,8 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 for (int i = 0; i < TimerRowNum; i++)
                 {
-                    _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
-
                     _Notes.Add(timerNotesData[i].Notes);
+                    _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
                     _TimerMinutes[i] = timerNotesData[i].Minutes;
                     _TimerSeconds[i] = timerNotesData[i].Seconds;
