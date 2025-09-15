@@ -107,6 +107,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public double[] _TimerSeconds;
         public int[] _TimerID;
         public SettingCollection _settings;
+        public List<NotesData> _eventNotes;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -123,6 +124,9 @@ namespace roguishpanda.AB_Bauble_Farm
             _SettingsCollection = settings.AddSubCollection("MainSettings");
 
             _InOrdercheckboxDefault = _SettingsCollection.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time.");
+
+            _timerLowDefault = _SettingsCollection.DefineSetting("LowTimerDefaultTimer", 30, () => "Low Timer", () => "Set timer for when timer gets below certain threshold in seconds.");
+            _timerLowDefault.SetRange(1, 120);
 
             _OpacityDefault = _SettingsCollection.DefineSetting("OpacityDefault", 1.0f, () => "Window Opacity", () => "Changing the opacity will adjust how translucent the windows are.");
             _OpacityDefault.SetRange(0.1f, 1.0f);
@@ -147,9 +151,6 @@ namespace roguishpanda.AB_Bauble_Farm
             _cancelNotesKeybind.Value.BlockSequenceFromGw2 = true;
             _cancelNotesKeybind.Value.Enabled = true;
             _cancelNotesKeybind.Value.BindingChanged += CancelNotes_BindingChanged;
-
-            _timerLowDefault = _SettingsCollection.DefineSetting("LowTimerDefaultTimer",30,() => "Low Timer",() => "Set timer for when timer gets below certain threshold in seconds.");
-            _timerLowDefault.SetRange(1, 120);
 
             _settings = settings;
         }
@@ -794,24 +795,48 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             //eventDataList = new List<EventData>();
         }
+        private void CreateJsonEventsDefaults()
+        {
+            try
+            {
+                string jsonFilePath = @"Defaults\Event_Defaults.json";
+                Stream json = ContentsManager.GetFileStream(jsonFilePath);
+
+                string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
+                string jsonFilePath2 = Path.Combine(moduleDir, "Event_Defaults.json");
+                using (var fileStream = File.Create(jsonFilePath2))
+                {
+                    json.CopyTo(fileStream);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to copy JSON event default file: {ex.Message}");
+            }
+            //eventDataList = new List<EventData>();
+        }
         protected override async Task LoadAsync()
         {
             #region Initialize Default Data
 
-            List<NotesData> eventNotes = new List<NotesData>();
-            string jsonFilePath = @"Defaults\Default_Timers.json";
-            Stream json = ContentsManager.GetFileStream(jsonFilePath);
             try
             {
-                using (StreamReader reader = new StreamReader(json))
+                _eventNotes = new List<NotesData>();
+                string moduleDir2 = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
+                string jsonFilePath2 = Path.Combine(moduleDir2, "Event_Defaults.json");
+                if (!File.Exists(jsonFilePath2))
+                {
+                    CreateJsonEventsDefaults();
+                }
+                using (StreamReader reader = new StreamReader(jsonFilePath2))
                 {
                     string jsonContent = await reader.ReadToEndAsync();
-                    eventNotes = JsonSerializer.Deserialize<List<NotesData>>(jsonContent, _jsonOptions);
-                    //Logger.Info($"Loaded {eventNotes.Count} events from {jsonFilePath}");
+                    _eventNotes = JsonSerializer.Deserialize<List<NotesData>>(jsonContent, _jsonOptions);
+                    //Logger.Info($"Loaded {_eventDataList.Count} events from {jsonFilePath}");
                 }
 
-                var timerNotesData = eventNotes;
-                int Count = eventNotes.Count();
+                var timerNotesData = _eventNotes;
+                int Count = _eventNotes.Count();
                 TimerRowNum = Count;
                 _timerStartTimes = new DateTime?[TimerRowNum];
                 _Notes = new List<List<string>>();
@@ -845,7 +870,7 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             catch (Exception ex)
             {
-                Logger.Warn($"Failed to load Default_Timers JSON file: {ex.Message}");
+                Logger.Warn($"Failed to load Event_Defaults JSON file: {ex.Message}");
             }
 
             // Initialize all timers as not started
@@ -855,7 +880,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerLabels[i] = new Blish_HUD.Controls.Label();
                 _timerStartTimes[i] = null; // Not started
                 _timerRunning[i] = false;
-
             }
 
             LoadTimerDefaults(TimerRowNum);
@@ -1157,8 +1181,8 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 _SettingsWindow = new TabbedWindow2(
                     NoTexture,
-                    new Rectangle(0, 0, 1000, 700), // The windowRegion
-                    new Rectangle(0, 0, 1000, 700)) // The contentRegion
+                    new Rectangle(0, 0, 1050, 600), // The windowRegion
+                    new Rectangle(0, 0, 1050, 600)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "Settings",
@@ -1214,7 +1238,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
             List<EventData> eventDataList = new List<EventData>();
             string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
-            jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
+            string jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
             if (File.Exists(jsonFilePath))
             {
                 try
