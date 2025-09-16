@@ -1,6 +1,6 @@
 {
   "name": "Shiny Baubles",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "namespace": "roguishpanda.AB_Bauble_Farm",
   "package": "AB_Bauble_Farm.dll",
   "manifest_version": 1,

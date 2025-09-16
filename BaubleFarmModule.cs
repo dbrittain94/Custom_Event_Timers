@@ -538,7 +538,11 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 for (int i = 0; i < notes.Count; i++)
                 {
-                    ClipboardPaste(notes[i]);
+                    string message = notes[i];
+                    if (message != null && message.Length > 0)
+                    {
+                        ClipboardPaste(notes[i]);
+                    }
                 }
             }
         }
@@ -1181,8 +1185,8 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 _SettingsWindow = new TabbedWindow2(
                     NoTexture,
-                    new Rectangle(0, 0, 1050, 600), // The windowRegion
-                    new Rectangle(0, 0, 1050, 600)) // The contentRegion
+                    new Rectangle(0, 0, 1050, 650), // The windowRegion
+                    new Rectangle(0, 0, 1050, 650)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "Settings",
@@ -1430,6 +1434,15 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             _InfoWindow?.Dispose();
             _InfoWindow = null;
+        }
+
+        public void Restart()
+        {
+            // First, unload the module. This runs your clean-up code.
+            Unload();
+            ModuleInstance = this;
+            // Then, re-initialize it. This should be a full re-initialization.
+            Task task = LoadAsync();
         }
     }
 }
