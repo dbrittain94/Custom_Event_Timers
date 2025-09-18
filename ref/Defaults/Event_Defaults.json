@@ -1,86 +1,150 @@
 [
   {
-    "ID": 0,
+    "ID": 1,
     "Description": "SVET",
     "Minutes": 8,
     "Seconds": 45,
-    "Notes": [ "[&BAIIAAA=] SVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
-  },
-  {
-    "ID": 1,
-    "Description": "EVET",
-    "Minutes": 8,
-    "Seconds": 45,
-    "Notes": [ "[&BGwIAAA=] EVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
+    "Notes": [
+      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+    ],
+    "Waypoints": [
+      "[\u0026BAIIAAA=] SVET"
+    ]
   },
   {
     "ID": 2,
-    "Description": "NVET",
+    "Description": "EVET",
     "Minutes": 8,
     "Seconds": 45,
-    "Notes": [ "[&BN0HAAA=] NVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
+    "Notes": [
+      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+    ],
+    "Waypoints": [
+      "[\u0026BGwIAAA=] EVET"
+    ]
   },
   {
     "ID": 3,
-    "Description": "WVET",
+    "Description": "NVET",
     "Minutes": 8,
     "Seconds": 45,
-    "Notes": [ "[&BAYIAAA=] WVET", "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends." ]
+    "Notes": [
+      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+    ],
+    "Waypoints": [
+      "[\u0026BN0HAAA=] NVET"
+    ]
   },
   {
     "ID": 4,
-    "Description": "SAP",
+    "Description": "WVET",
     "Minutes": 8,
-    "Seconds": 20,
-    "Notes": [ "[&BEkIAAA=] SAP", "Please hold right before the entrance to first sap.", "There are 3 sap events. Target 1 Corpse Taker until dead. Then, attack the sap for credit." ]
+    "Seconds": 45,
+    "Notes": [
+      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+    ],
+    "Waypoints": [
+      "[\u0026BAYIAAA=] WVET"
+    ]
   },
   {
     "ID": 5,
-    "Description": "BALTH",
-    "Minutes": 9,
-    "Seconds": 30,
-    "Notes": [ "[&BAIIAAA=] BALTH", "Hold at the doorway before entering the Rest!!", "Wait for all friends and my call to enter." ]
+    "Description": "SAP",
+    "Minutes": 8,
+    "Seconds": 20,
+    "Notes": [
+      "Please hold right before the entrance to first sap.",
+      "There are 3 sap events. Target 1 Corpse Taker until dead. Then, attack the sap for credit."
+    ],
+    "Waypoints": [
+      "[\u0026BEkIAAA=] SAP"
+    ]
   },
   {
     "ID": 6,
-    "Description": "WYVERN",
-    "Minutes": 11,
+    "Description": "BALTH",
+    "Minutes": 9,
     "Seconds": 30,
-    "Notes": [ "[&BEkIAAA=] WYVERN", "Prep CC for when wyvern turns around." ]
+    "Notes": [
+      "Hold at the doorway before entering the Rest!!",
+      "Wait for all friends and my call to enter."
+    ],
+    "Waypoints": [
+      "[\u0026BAIIAAA=] BALTH"
+    ]
   },
   {
     "ID": 7,
-    "Description": "BRAMBLE",
-    "Minutes": 10,
-    "Seconds": 20,
-    "Notes": [ "[&BN0HAAA=] BRAMBLE", "Loot first. Then kill." ]
+    "Description": "WYVERN",
+    "Minutes": 11,
+    "Seconds": 30,
+    "Notes": [
+      "Prep CC for when wyvern turns around."
+    ],
+    "Waypoints": [
+      "[\u0026BEkIAAA=] WYVERN"
+    ]
   },
   {
     "ID": 8,
-    "Description": "OOZE",
-    "Minutes": 14,
-    "Seconds": 0,
-    "Notes": [ "[&BAYIAAA=] OOZE", "Take the north walkway if you do not have mount", "Hold at entrance of cave until whole group is together." ]
+    "Description": "BRAMBLE",
+    "Minutes": 10,
+    "Seconds": 20,
+    "Notes": [
+      "Prep CC"
+    ],
+    "Waypoints": [
+      "[\u0026BN0HAAA=] BRAMBLE"
+    ]
   },
   {
     "ID": 9,
-    "Description": "GUZZLER",
-    "Minutes": 9,
-    "Seconds": 30,
-    "Notes": [ "[&BN0HAAA=] GUZZLER", "Throw rocks or CC with Turtle mount to remove layers." ]
+    "Description": "OOZE",
+    "Minutes": 14,
+    "Seconds": 0,
+    "Notes": [
+      "Take the north walkway if you do not have mount",
+      "Hold at entrance of cave until whole group is together."
+    ],
+    "Waypoints": [
+      "[\u0026BAYIAAA=] OOZE"
+    ]
   },
   {
     "ID": 10,
-    "Description": "TM",
+    "Description": "GUZZLER",
     "Minutes": 9,
     "Seconds": 30,
-    "Notes": [ "[&BGwIAAA=] TM" ]
+    "Notes": [
+      "Throw rocks or CC with Turtle mount to remove layers."
+    ],
+    "Waypoints": [
+      "[\u0026BN0HAAA=] GUZZLER"
+    ]
   },
   {
     "ID": 11,
+    "Description": "TM",
+    "Minutes": 9,
+    "Seconds": 30,
+    "Notes": [
+      "You need stealth detection mastery to see the TM. AOE area for credit."
+    ],
+    "Waypoints": [
+      "[\u0026BGwIAAA=] TM"
+    ]
+  },
+  {
+    "ID": 12,
     "Description": "STONEHEADS",
     "Minutes": 10,
     "Seconds": 20,
-    "Notes": [ "[&BAIIAAA=] STONEHEADS", "Attack Alpha. Then Beta. One is always invulnerable at given time", "Kill rollers when they spawn halway through." ]
+    "Notes": [
+      "Attack Alpha. Then Beta. One is always invulnerable at given time",
+      "Kill rollers when they spawn halfway through."
+    ],
+    "Waypoints": [
+      "[\u0026BAIIAAA=] STONEHEADS"
+    ]
   }
 ]

@@ -43,6 +43,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public double Minutes { get; set; }
         public double Seconds { get; set; }
         public List<string> Notes { get; set; }
+        public List<string> Waypoints { get; set; }
     }
 
     [Export(typeof(Blish_HUD.Modules.Module))]
@@ -65,6 +66,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Label _startTimeValue;
         public Blish_HUD.Controls.Label _endTimeValue;
         public List<List<string>> _Notes;
+        public List<List<string>> _Waypoints;
         public Checkbox _InOrdercheckbox;
         public DateTime elapsedDateTime;
         public DateTime initialDateTime;
@@ -101,6 +103,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Panel _inputPanel;
         public Blish_HUD.Controls.Label _instructionLabel;
         public Image[] _notesIcon;
+        public Image[] _waypointIcon;
         public int[] _ModifierKeys;
         public int[] _PrimaryKey;
         public double[] _TimerMinutes;
@@ -160,16 +163,18 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             if (_cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
             {
-                foreach (var image in _notesIcon)
+                for (int i = 0; i < _notesIcon.Count(); i++)
                 {
-                    image.Hide();
+                    _notesIcon[i].Hide();
+                    _waypointIcon[i].Hide();
                 }
             }
             else
             {
-                foreach (var image in _notesIcon)
+                for (int i = 0; i < _notesIcon.Count(); i++)
                 {
-                    image.Show();
+                    _notesIcon[i].Show();
+                    _waypointIcon[i].Show();
                 }
             }
         }
@@ -178,16 +183,18 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             if ( _postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
             {
-                foreach (var image in _notesIcon)
+                for (int i = 0; i < _notesIcon.Count(); i++)
                 {
-                    image.Hide();
+                    _notesIcon[i].Hide();
+                    _waypointIcon[i].Hide();
                 }
             }
             else
             {
-                foreach (var image in _notesIcon)
+                for (int i = 0; i < _notesIcon.Count(); i++)
                 {
-                    image.Show();
+                    _notesIcon[i].Show();
+                    _waypointIcon[i].Show();
                 }
             }
         }
@@ -527,7 +534,13 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             List<string> notes = _Notes[index];
 
-            ShowInputPanel();
+            for (int i = 0; i < _notesIcon.Count(); i++)
+            {
+                _notesIcon[i].Enabled = false;
+                _waypointIcon[i].Enabled = false;
+            }
+
+            ShowInputPanel("Notes");
             bool wasKeybindPressed = await WaitForKeybindAsync();
             await WaitForShiftKeyUpAsync();
             _inputPanel?.Hide();
@@ -545,28 +558,69 @@ namespace roguishpanda.AB_Bauble_Farm
                     }
                 }
             }
+
+            for (int i = 0; i < _notesIcon.Count(); i++)
+            {
+                _notesIcon[i].Enabled = true;
+                _waypointIcon[i].Enabled = true;
+            }
         }
-        private void ShowInputPanel()
+        private async Task WaypointIcon_Click(int index)
+        {
+            List<string> waypoints = _Waypoints[index];
+
+            for (int i = 0; i < _waypointIcon.Count(); i++)
+            {
+                _notesIcon[i].Enabled = false;
+                _waypointIcon[i].Enabled = false;
+            }
+
+            ShowInputPanel("Waypoint");
+            bool wasKeybindPressed = await WaitForKeybindAsync();
+            await WaitForShiftKeyUpAsync();
+            _inputPanel?.Hide();
+            _inputPanel = null;
+            Thread.Sleep(1000);
+
+            if (wasKeybindPressed)
+            {
+                for (int i = 0; i < waypoints.Count; i++)
+                {
+                    string message = waypoints[i];
+                    if (message != null && message.Length > 0)
+                    {
+                        ClipboardPaste(waypoints[i]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < _waypointIcon.Count(); i++)
+            {
+                _notesIcon[i].Enabled = true;
+                _waypointIcon[i].Enabled = true;
+            }
+        }
+        private void ShowInputPanel(string Title)
         {
             _inputPanel = new Blish_HUD.Controls.Panel()
             {
                 Parent = GameService.Graphics.SpriteScreen,
-                Width = 500,
-                Height = 50,
+                Width = 300,
+                Height = 40,
                 BackgroundColor = Color.Black,
                 Opacity = 0.9f
             };
-            _inputPanel.Location = new Point((GameService.Graphics.SpriteScreen.Size.X - _inputPanel.Size.X) / 2, (GameService.Graphics.SpriteScreen.Size.Y - _inputPanel.Size.Y) / 2);
+            _inputPanel.Location = new Point((GameService.Graphics.SpriteScreen.Size.X - _inputPanel.Size.X) / 2, 30);
 
             _instructionLabel = new Blish_HUD.Controls.Label()
             {
-                Text = "Press (" + _postNotesKeybind.Value.GetBindingDisplayText() + ") to continue... OR (" + _cancelNotesKeybind.Value.GetBindingDisplayText() + ") to cancel",
-                Size = new Point(500, 20),
+                Text = "------" + Title + "------\n Press (" + _postNotesKeybind.Value.GetBindingDisplayText() + ") to continue... OR (" + _cancelNotesKeybind.Value.GetBindingDisplayText() + ") to cancel",
+                Size = new Point(500, 40),
                 HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
                 Parent = _inputPanel,
-                Font = GameService.Content.DefaultFont16
+                Font = GameService.Content.DefaultFont12
             };
-            _instructionLabel.Location = new Point((_inputPanel.Size.X - _instructionLabel.Size.X) / 2, (_inputPanel.Size.Y - _instructionLabel.Size.Y) / 2);
+            _instructionLabel.Location = new Point((_inputPanel.Size.X - _instructionLabel.Size.X) / 2, ((_inputPanel.Size.Y/2) - _instructionLabel.Size.Y) / 2);
         }
         private Task<bool> WaitForKeybindAsync()
         {
@@ -844,9 +898,11 @@ namespace roguishpanda.AB_Bauble_Farm
                 TimerRowNum = Count;
                 _timerStartTimes = new DateTime?[TimerRowNum];
                 _Notes = new List<List<string>>();
+                _Waypoints = new List<List<string>>();
                 _timerRunning = new bool[TimerRowNum];
                 _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
                 _notesIcon = new Image[TimerRowNum];
+                _waypointIcon = new Image[TimerRowNum];
                 _timerLabels = new Blish_HUD.Controls.Label[TimerRowNum];
                 _resetButtons = new StandardButton[TimerRowNum];
                 _stopButtons = new StandardButton[TimerRowNum];
@@ -863,6 +919,14 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     _Notes.Add(timerNotesData[i].Notes);
+                    if (timerNotesData[i].Waypoints != null)
+                    {
+                        _Waypoints.Add(timerNotesData[i].Waypoints);
+                    }
+                    else
+                    {
+                        _Waypoints.Add(new List<string>());
+                    }
                     _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
                     _TimerMinutes[i] = timerNotesData[i].Minutes;
@@ -1039,7 +1103,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Stop All Timers",
                     Size = new Point(120, 30),
-                    Location = new Point(20, 30),
+                    Location = new Point(0, 30),
                     Parent = _TimerWindow
                 };
                 _stopButton.Click += (s, e) => StopButton_Click();
@@ -1048,7 +1112,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Order by Timer",
                     Size = new Point(120, 30),
-                    Location = new Point(150, 30),
+                    Location = new Point(130, 30),
                     Parent = _TimerWindow
                 };
                 _InOrdercheckbox.Checked = _InOrdercheckboxDefault.Value;
@@ -1058,7 +1122,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Events",
                     Size = new Point(120, 30),
-                    Location = new Point(40, 65),
+                    Location = new Point(60, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
@@ -1068,7 +1132,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Timer",
                     Size = new Point(120, 30),
-                    Location = new Point(140, 65),
+                    Location = new Point(160, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
@@ -1078,7 +1142,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Override (min)",
                     Size = new Point(120, 30),
-                    Location = new Point(280, 65),
+                    Location = new Point(300, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
@@ -1100,12 +1164,37 @@ namespace roguishpanda.AB_Bauble_Farm
                         Location = new Point(0, 95 + (i * 30)),
                     };
 
+                    // WAypoint Icon
+                    AsyncTexture2D waypointTexture = AsyncTexture2D.FromAssetId(102348);
+                    _waypointIcon[i] = new Image
+                    {
+                        Texture = waypointTexture,
+                        Location = new Point(0, 0),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        //Visible = false,
+                        Parent = _TimerWindowsOrdered[i]
+                    };
+                    _waypointIcon[i].MouseEntered += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(0 - 2, 0 - 2);
+                        noteIcon.Size = new Point(36, 36);
+                        noteIcon.Opacity = 1f;
+                    };
+                    _waypointIcon[i].MouseLeft += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(0, 0);
+                        noteIcon.Size = new Point(32, 32);
+                        noteIcon.Opacity = 0.7f;
+                    };
+                    _waypointIcon[i].Click += async (s, e) => await WaypointIcon_Click(index);
+
                     // Notes Icon
                     AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
                     _notesIcon[i] = new Image
                     {
                         Texture = notesTexture,
-                        Location = new Point(10, 0),
+                        Location = new Point(30, 0),
                         Size = new Point(32, 32),
                         Opacity = 0.7f,
                         //Visible = false,
@@ -1113,13 +1202,13 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
                     _notesIcon[i].MouseEntered += (sender, e) => {
                         Image noteIcon = sender as Image;
-                        noteIcon.Location = new Point(10 - 2, 0 - 2);
+                        noteIcon.Location = new Point(30 - 2, 0 - 2);
                         noteIcon.Size = new Point(36, 36);
                         noteIcon.Opacity = 1f;
                     };
                     _notesIcon[i].MouseLeft += (sender, e) => {
                         Image noteIcon = sender as Image;
-                        noteIcon.Location = new Point(10, 0);
+                        noteIcon.Location = new Point(30, 0);
                         noteIcon.Size = new Point(32, 32);
                         noteIcon.Opacity = 0.7f;
                     };
@@ -1127,13 +1216,13 @@ namespace roguishpanda.AB_Bauble_Farm
 
                     // Timer Event Description
                     _timerLabelDescriptions[i].Size = new Point(100, 30);
-                    _timerLabelDescriptions[i].Location = new Point(40, 0);
+                    _timerLabelDescriptions[i].Location = new Point(60, 0);
                     _timerLabelDescriptions[i].Parent = _TimerWindowsOrdered[i];
 
                     // Timer label
                     _timerLabels[i].Text = _timerDurationDefaults[i].ToString(@"mm\:ss");
                     _timerLabels[i].Size = new Point(100, 30);
-                    _timerLabels[i].Location = new Point(110, 0);
+                    _timerLabels[i].Location = new Point(130, 0);
                     _timerLabels[i].HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center;
                     _timerLabels[i].Font = GameService.Content.DefaultFont16;
                     _timerLabels[i].TextColor = Color.GreenYellow;
@@ -1144,7 +1233,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     {
                         Text = "Start",
                         Size = new Point(50, 30),
-                        Location = new Point(190, 0),
+                        Location = new Point(210, 0),
                         Parent = _TimerWindowsOrdered[i]
                     };
                     _resetButtons[i].Click += (s, e) => ResetButton_Click(index);
@@ -1154,7 +1243,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     {
                         Text = "Stop",
                         Size = new Point(50, 30),
-                        Location = new Point(240, 0),
+                        Location = new Point(260, 0),
                         Parent = _TimerWindowsOrdered[i]
                     };
                     _stopButtons[i].Click += (s, e) => stopButtons_Click(index);
@@ -1164,7 +1253,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     {
                         Items = { "Default", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" },
                         Size = new Point(80, 30),
-                        Location = new Point(290, 0),
+                        Location = new Point(310, 0),
                         Parent = _TimerWindowsOrdered[i]
                     };
                     _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
@@ -1173,10 +1262,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
                     {
                         _notesIcon[i].Hide();
+                        _waypointIcon[i].Hide();
                     }
                     else
                     {
                         _notesIcon[i].Show();
+                        _waypointIcon[i].Show();
                     }
                 }
                 #endregion
@@ -1213,19 +1304,19 @@ namespace roguishpanda.AB_Bauble_Farm
                 Image settingsIcon = new Image
                 {
                     Texture = geartexture,
-                    Location = new Point(340, 30),
+                    Location = new Point(360, 30),
                     Size = new Point(32, 32),
                     Opacity = 0.7f,
                     //Visible = false,
                     Parent = _TimerWindow
                 };
                 settingsIcon.MouseEntered += (sender, e) => {
-                    settingsIcon.Location = new Point(340 - 4, 30 - 4);
+                    settingsIcon.Location = new Point(360 - 4, 30 - 4);
                     settingsIcon.Size = new Point(40, 40);
                     settingsIcon.Opacity = 1f;
                 };
                 settingsIcon.MouseLeft += (s, e) => {
-                    settingsIcon.Location = new Point(340, 30);
+                    settingsIcon.Location = new Point(360, 30);
                     settingsIcon.Size = new Point(32, 32);
                     settingsIcon.Opacity = 0.7f;
                 };
