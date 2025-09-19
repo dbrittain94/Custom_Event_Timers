@@ -725,12 +725,12 @@ namespace roguishpanda.AB_Bauble_Farm
             DateTime oneWeekAheadnext = nextThirdWeekIntervalStartDate.AddDays(7);
             string FarmStatus = "";
             Color Statuscolor = Color.Red;
-            if (currentIntervalStartDate >= currentTime && currentTime <= oneWeekAheadcurrent)
+            if (currentIntervalStartDate >= currentTime || currentTime <= oneWeekAheadcurrent)
             {
                 NextBaubleStartDate = currentIntervalStartDate;
                 EndofBaubleWeek = oneWeekAheadcurrent;
                 FarmStatus = "ON";
-                Statuscolor = Color.Green;
+                Statuscolor = Color.LimeGreen;
             }
             else
             {
