@@ -5,10 +5,10 @@
     "Minutes": 8,
     "Seconds": 45,
     "Notes": [
-      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+      "1-2 taps on vets. Only need 3k damage for gold."
     ],
     "Waypoints": [
-      "[\u0026BAIIAAA=] SVET"
+      "[\u0026BAIIAAA=] svet"
     ]
   },
   {
@@ -17,10 +17,10 @@
     "Minutes": 8,
     "Seconds": 45,
     "Notes": [
-      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+      "1-2 taps on vets. Only need 3k damage for gold."
     ],
     "Waypoints": [
-      "[\u0026BGwIAAA=] EVET"
+      "[\u0026BGwIAAA=] evet"
     ]
   },
   {
@@ -29,10 +29,10 @@
     "Minutes": 8,
     "Seconds": 45,
     "Notes": [
-      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+      "1-2 taps on vets. Only need 3k damage for gold."
     ],
     "Waypoints": [
-      "[\u0026BN0HAAA=] NVET"
+      "[\u0026BN0HAAA=] nvet"
     ]
   },
   {
@@ -41,10 +41,10 @@
     "Minutes": 8,
     "Seconds": 45,
     "Notes": [
-      "Please limit damage to 3500. You only need that much damage for gold. Leave some for friends."
+      "1-2 taps on vets. Only need 3k damage for gold."
     ],
     "Waypoints": [
-      "[\u0026BAYIAAA=] WVET"
+      "[\u0026BAYIAAA=] wvet"
     ]
   },
   {
@@ -57,7 +57,7 @@
       "There are 3 sap events. Target 1 Corpse Taker until dead. Then, attack the sap for credit."
     ],
     "Waypoints": [
-      "[\u0026BEkIAAA=] SAP"
+      "[\u0026BEkIAAA=] sap"
     ]
   },
   {
@@ -70,7 +70,7 @@
       "Wait for all friends and my call to enter."
     ],
     "Waypoints": [
-      "[\u0026BAIIAAA=] BALTH"
+      "[\u0026BAIIAAA=] balth"
     ]
   },
   {
@@ -94,7 +94,7 @@
       "Prep CC"
     ],
     "Waypoints": [
-      "[\u0026BN0HAAA=] BRAMBLE"
+      "[\u0026BN0HAAA=] bramble"
     ]
   },
   {
@@ -107,7 +107,7 @@
       "Hold at entrance of cave until whole group is together."
     ],
     "Waypoints": [
-      "[\u0026BAYIAAA=] OOZE"
+      "[\u0026BAYIAAA=] ooze"
     ]
   },
   {
@@ -119,7 +119,7 @@
       "Throw rocks or CC with Turtle mount to remove layers."
     ],
     "Waypoints": [
-      "[\u0026BN0HAAA=] GUZZLER"
+      "[\u0026BN0HAAA=] guzzler"
     ]
   },
   {
@@ -144,7 +144,7 @@
       "Kill rollers when they spawn halfway through."
     ],
     "Waypoints": [
-      "[\u0026BAIIAAA=] STONEHEADS"
+      "[\u0026BAIIAAA=] stoneheads"
     ]
   }
 ]

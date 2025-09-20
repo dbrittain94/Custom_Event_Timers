@@ -737,6 +737,11 @@ namespace roguishpanda.AB_Bauble_Farm
                         WaypointList.Add(Waypoint);
                     }
                 }
+                if (WaypointList.Count > 0)
+                {
+                    _BaubleFarmModule._Waypoints[Index].Clear();
+                    _BaubleFarmModule._Waypoints[Index].AddRange(WaypointList);
+                }
             }
             catch (Exception ex)
             {

@@ -249,6 +249,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "TimerMinutes", out MintuesSettingEntry);
                 SettingEntry<int> SecondsSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "TimerSeconds", out SecondsSettingEntry);
+                SettingEntry<string> WaypointSettingEntry = null;
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "Waypoint", out WaypointSettingEntry);
                 SettingEntry<string> NotesOneSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteOne", out NotesOneSettingEntry);
                 SettingEntry<string> NotesTwoSettingEntry = null;
@@ -285,7 +287,22 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 _timerDurationDefaults[i] = Minutes + Seconds;
                 _timerLabels[i].Text = _timerDurationDefaults[i].ToString(@"mm\:ss");
-                
+
+                List<string> WaypointList = new List<string>();
+                if (WaypointSettingEntry != null)
+                {
+                    string Waypoints = WaypointSettingEntry.Value;
+                    if (Waypoints != "")
+                    {
+                        WaypointList.Add(Waypoints);
+                    }
+                }
+                if (WaypointList.Count > 0)
+                {
+                    _Waypoints[i].Clear();
+                    _Waypoints[i].AddRange(WaypointList);
+                }
+
                 List<string> NotesList = new List<string>();
                 if (NotesOneSettingEntry != null)
                 {
@@ -565,7 +582,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _waypointIcon[i].Enabled = true;
             }
         }
-        private async Task WaypointIcon_Click(int index)
+        private void WaypointIcon_Click(int index)
         {
             List<string> waypoints = _Waypoints[index];
 
@@ -575,15 +592,15 @@ namespace roguishpanda.AB_Bauble_Farm
                 _waypointIcon[i].Enabled = false;
             }
 
-            ShowInputPanel("Waypoint");
-            bool wasKeybindPressed = await WaitForKeybindAsync();
-            await WaitForShiftKeyUpAsync();
-            _inputPanel?.Hide();
-            _inputPanel = null;
-            Thread.Sleep(1000);
+            //ShowInputPanel("Waypoint");
+            //bool wasKeybindPressed = await WaitForKeybindAsync();
+            //await WaitForShiftKeyUpAsync();
+            //_inputPanel?.Hide();
+            //_inputPanel = null;
+            //Thread.Sleep(1000);
 
-            if (wasKeybindPressed)
-            {
+            //if (wasKeybindPressed)
+            //{
                 for (int i = 0; i < waypoints.Count; i++)
                 {
                     string message = waypoints[i];
@@ -592,7 +609,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         ClipboardPaste(waypoints[i]);
                     }
                 }
-            }
+            //}
 
             for (int i = 0; i < _waypointIcon.Count(); i++)
             {
@@ -1187,7 +1204,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         noteIcon.Size = new Point(32, 32);
                         noteIcon.Opacity = 0.7f;
                     };
-                    _waypointIcon[i].Click += async (s, e) => await WaypointIcon_Click(index);
+                    _waypointIcon[i].Click += (s, e) => WaypointIcon_Click(index);
 
                     // Notes Icon
                     AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
