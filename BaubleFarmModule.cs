@@ -1162,6 +1162,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Location = new Point(300, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
+                    Visible = false,
                     TextColor = Color.DodgerBlue,
                     Parent = _TimerWindow
                 };
@@ -1271,6 +1272,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         Items = { "Default", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" },
                         Size = new Point(80, 30),
                         Location = new Point(310, 0),
+                        Visible = false,
                         Parent = _TimerWindowsOrdered[i]
                     };
                     _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
@@ -1321,19 +1323,19 @@ namespace roguishpanda.AB_Bauble_Farm
                 Image settingsIcon = new Image
                 {
                     Texture = geartexture,
-                    Location = new Point(360, 30),
+                    Location = new Point(280, 30),
                     Size = new Point(32, 32),
                     Opacity = 0.7f,
                     //Visible = false,
                     Parent = _TimerWindow
                 };
                 settingsIcon.MouseEntered += (sender, e) => {
-                    settingsIcon.Location = new Point(360 - 4, 30 - 4);
+                    settingsIcon.Location = new Point(280 - 4, 30 - 4);
                     settingsIcon.Size = new Point(40, 40);
                     settingsIcon.Opacity = 1f;
                 };
                 settingsIcon.MouseLeft += (s, e) => {
-                    settingsIcon.Location = new Point(360, 30);
+                    settingsIcon.Location = new Point(280, 30);
                     settingsIcon.Size = new Point(32, 32);
                     settingsIcon.Opacity = 0.7f;
                 };
