@@ -29,19 +29,38 @@ using System.Windows.Forms;
 
 namespace roguishpanda.AB_Bauble_Farm
 {
-    public class EventData
+    public class PackageData
+    {
+        public string PackageName { get; set; }
+        public List<StaticDetailData> StaticDetailData { get; set; }
+        public List<TimerDetailData> TimerDetailData { get; set; }
+    }
+    public class TimerLogData
     {
         public int ID { get; set; }
         public string Description { get; set; }
         public DateTime? StartTime { get; set; }
         public bool IsActive { get; set; }
     }
-    public class NotesData
+    public class StaticLogData
+    {
+        public int ID { get; set; }
+        public string Description { get; set; }
+        public bool IsActive { get; set; }
+    }
+    public class TimerDetailData
     {
         public int ID { get; set; }
         public string Description { get; set; }
         public double Minutes { get; set; }
         public double Seconds { get; set; }
+        public List<string> Notes { get; set; }
+        public List<string> Waypoints { get; set; }
+    }
+    public class StaticDetailData
+    {
+        public int ID { get; set; }
+        public string Description { get; set; }
         public List<string> Notes { get; set; }
         public List<string> Waypoints { get; set; }
     }
@@ -93,7 +112,8 @@ namespace roguishpanda.AB_Bauble_Farm
         public SettingEntry<KeyBinding> _stoneheadKeybind;
         public SettingEntry<KeyBinding> _postNotesKeybind;
         public SettingEntry<KeyBinding> _cancelNotesKeybind;
-        public SettingCollection _SettingsCollection;
+        public SettingCollection _MainSettingsCollection;
+        public SettingCollection _PackageSettingsCollection;
         public SettingEntry<bool> _InOrdercheckboxDefault;
         public SettingEntry<float> _OpacityDefault;
         public SettingEntry<int> _timerLowDefault;
@@ -109,8 +129,10 @@ namespace roguishpanda.AB_Bauble_Farm
         public double[] _TimerMinutes;
         public double[] _TimerSeconds;
         public int[] _TimerID;
+        public SettingEntry<string> _CurrentPackageSelection;
         public SettingCollection _settings;
-        public List<NotesData> _eventNotes;
+        public List<PackageData> _PackageData;
+        public List<TimerDetailData> _eventNotes;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -124,36 +146,39 @@ namespace roguishpanda.AB_Bauble_Farm
 
         protected override void DefineSettings(SettingCollection settings)
         {
-            _SettingsCollection = settings.AddSubCollection("MainSettings");
+            _MainSettingsCollection = settings.AddSubCollection("MainSettings");
+            _PackageSettingsCollection = settings.AddSubCollection("PackageSettings");
 
-            _InOrdercheckboxDefault = _SettingsCollection.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time.");
+            _InOrdercheckboxDefault = _MainSettingsCollection.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time.");
 
-            _timerLowDefault = _SettingsCollection.DefineSetting("LowTimerDefaultTimer", 30, () => "Low Timer", () => "Set timer for when timer gets below certain threshold in seconds.");
+            _timerLowDefault = _MainSettingsCollection.DefineSetting("LowTimerDefaultTimer", 30, () => "Low Timer", () => "Set timer for when timer gets below certain threshold in seconds.");
             _timerLowDefault.SetRange(1, 120);
 
-            _OpacityDefault = _SettingsCollection.DefineSetting("OpacityDefault", 1.0f, () => "Window Opacity", () => "Changing the opacity will adjust how translucent the windows are.");
+            _OpacityDefault = _MainSettingsCollection.DefineSetting("OpacityDefault", 1.0f, () => "Window Opacity", () => "Changing the opacity will adjust how translucent the windows are.");
             _OpacityDefault.SetRange(0.1f, 1.0f);
             _OpacityDefault.SettingChanged += ChangeOpacity_Activated;
 
-            _toggleTimerWindowKeybind = _SettingsCollection.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.L),() => "Timer Window",() => "Keybind to show or hide the Timer window.");
+            _toggleTimerWindowKeybind = _MainSettingsCollection.DefineSetting("TimerKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.L),() => "Timer Window",() => "Keybind to show or hide the Timer window.");
             _toggleTimerWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
-            _toggleInfoWindowKeybind = _SettingsCollection.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
+            _toggleInfoWindowKeybind = _MainSettingsCollection.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
             _toggleInfoWindowKeybind.Value.BlockSequenceFromGw2 = true;
             _toggleInfoWindowKeybind.Value.Enabled = true;
             _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
 
-            _postNotesKeybind = _SettingsCollection.DefineSetting("PostNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.B), () => "Post Notes", () => "Keybind to confirm posting notes in chat.");
+            _postNotesKeybind = _MainSettingsCollection.DefineSetting("PostNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.B), () => "Post Notes", () => "Keybind to confirm posting notes in chat.");
             _postNotesKeybind.Value.BlockSequenceFromGw2 = true;
             _postNotesKeybind.Value.Enabled = true;
             _postNotesKeybind.Value.BindingChanged += PostNotes_BindingChanged;
 
-            _cancelNotesKeybind = _SettingsCollection.DefineSetting("CancelNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.N), () => "Cancel Notes", () => "Keybind to cancel posting notes in chat.");
+            _cancelNotesKeybind = _MainSettingsCollection.DefineSetting("CancelNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.N), () => "Cancel Notes", () => "Keybind to cancel posting notes in chat.");
             _cancelNotesKeybind.Value.BlockSequenceFromGw2 = true;
             _cancelNotesKeybind.Value.Enabled = true;
             _cancelNotesKeybind.Value.BindingChanged += CancelNotes_BindingChanged;
+
+            _CurrentPackageSelection = _PackageSettingsCollection.DefineSetting("CurrentPackageSelection", "Default", () => "Current Package", () => "This is the current package selection.");
 
             _settings = settings;
         }
@@ -697,6 +722,17 @@ namespace roguishpanda.AB_Bauble_Farm
                 await tcs.Task;
             }
         }
+        private void InfoIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
+        {
+            if (_InfoWindow.Visible == true)
+            {
+                _InfoWindow.Hide();
+            }
+            else
+            {
+                _InfoWindow.Show();
+            }
+        }
         private void SettingsIcon_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
             if (_SettingsWindow.Visible == true)
@@ -715,12 +751,12 @@ namespace roguishpanda.AB_Bauble_Farm
             if (_TimerWindow.Visible)
             {
                 _TimerWindow.Hide();
-                _InfoWindow.Hide();
+                //_InfoWindow.Hide();
             }
             else
             {
                 _TimerWindow.Show();
-                _InfoWindow.Show();
+                //_InfoWindow.Show();
             }
         }
         private (DateTime NextBaubleStartDate, DateTime EndofBaubleWeek, string FarmStatus, Color Statuscolor) GetBaubleInformation()
@@ -840,7 +876,7 @@ namespace roguishpanda.AB_Bauble_Farm
         private void UpdateJsonEvents()
         {
             /// Backup timers in case of DC, disconnect, or crash
-            List<EventData> eventDataList = new List<EventData>();
+            List<TimerLogData> eventDataList = new List<TimerLogData>();
             string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
             string jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
             for (int i = 0; i < TimerRowNum; i++)
@@ -850,7 +886,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     startTime = _timerStartTimes[i];
                 }
-                eventDataList.Add(new EventData
+                eventDataList.Add(new TimerLogData
                 {
                     ID = i,
                     Description = $"{_timerLabelDescriptions[i].Text}",
@@ -874,11 +910,11 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             try
             {
-                string jsonFilePath = @"Defaults\Event_Defaults.json";
+                string jsonFilePath = @"Defaults\Package_Defaults.json";
                 Stream json = ContentsManager.GetFileStream(jsonFilePath);
 
                 string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
-                string jsonFilePath2 = Path.Combine(moduleDir, "Event_Defaults.json");
+                string jsonFilePath2 = Path.Combine(moduleDir, "Package_Defaults.json");
                 using (var fileStream = File.Create(jsonFilePath2))
                 {
                     json.CopyTo(fileStream);
@@ -896,9 +932,10 @@ namespace roguishpanda.AB_Bauble_Farm
 
             try
             {
-                _eventNotes = new List<NotesData>();
+                _PackageData = new List<PackageData>();
+                _eventNotes = new List<TimerDetailData>();
                 string moduleDir2 = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
-                string jsonFilePath2 = Path.Combine(moduleDir2, "Event_Defaults.json");
+                string jsonFilePath2 = Path.Combine(moduleDir2, "Package_Defaults.json");
                 if (!File.Exists(jsonFilePath2))
                 {
                     CreateJsonEventsDefaults();
@@ -906,11 +943,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 using (StreamReader reader = new StreamReader(jsonFilePath2))
                 {
                     string jsonContent = await reader.ReadToEndAsync();
-                    _eventNotes = JsonSerializer.Deserialize<List<NotesData>>(jsonContent, _jsonOptions);
+                    _PackageData = JsonSerializer.Deserialize<List<PackageData>>(jsonContent, _jsonOptions);
                     //Logger.Info($"Loaded {_eventDataList.Count} events from {jsonFilePath}");
                 }
 
-                var timerNotesData = _eventNotes;
+                _eventNotes = _PackageData[0].TimerDetailData;
+                var timerNotesData = _PackageData[0].TimerDetailData;
                 int Count = _eventNotes.Count();
                 TimerRowNum = Count;
                 _timerStartTimes = new DateTime?[TimerRowNum];
@@ -936,14 +974,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     _Notes.Add(timerNotesData[i].Notes);
-                    if (timerNotesData[i].Waypoints != null)
-                    {
-                        _Waypoints.Add(timerNotesData[i].Waypoints);
-                    }
-                    else
-                    {
-                        _Waypoints.Add(new List<string>());
-                    }
+                    _Waypoints.Add(timerNotesData[i].Waypoints);
                     _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
                     _TimerMinutes[i] = timerNotesData[i].Minutes;
@@ -955,7 +986,7 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             catch (Exception ex)
             {
-                Logger.Warn($"Failed to load Event_Defaults JSON file: {ex.Message}");
+                Logger.Warn($"Failed to load Package_Defaults JSON file: {ex.Message}");
             }
 
             // Initialize all timers as not started
@@ -1306,18 +1337,52 @@ namespace roguishpanda.AB_Bauble_Farm
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
                 };
 
+                AsyncTexture2D packageTexture = AsyncTexture2D.FromAssetId(156701);
+                _SettingsWindow.Tabs.Add(new Tab(
+                    packageTexture,
+                    () => new PackageSettingsTabView(),
+                    "Packages"
+                ));
+                AsyncTexture2D staticTexture = AsyncTexture2D.FromAssetId(156909);
+                _SettingsWindow.Tabs.Add(new Tab(
+                    staticTexture,
+                    () => new StaticEventSettingsTabView(),
+                    "Static Events"
+                ));
                 AsyncTexture2D clockTexture = AsyncTexture2D.FromAssetId(155156);
                 _SettingsWindow.Tabs.Add(new Tab(
                     clockTexture,
                     () => new TimerSettingsTabView(),
-                    "Timers"
+                    "Timer Events"
                 ));
                 AsyncTexture2D listTexture = AsyncTexture2D.FromAssetId(157109);
                 _SettingsWindow.Tabs.Add(new Tab(
                     listTexture,
                     () => new ListSettingsTabView(),
-                    "List"
+                    "General Settings"
                 ));
+
+                AsyncTexture2D infoTexture = AsyncTexture2D.FromAssetId(440023);
+                Image infoIcon = new Image
+                {
+                    Texture = infoTexture,
+                    Location = new Point(250, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    //Visible = false,
+                    Parent = _TimerWindow
+                };
+                infoIcon.MouseEntered += (sender, e) => {
+                    infoIcon.Location = new Point(250 - 4, 30 - 4);
+                    infoIcon.Size = new Point(40, 40);
+                    infoIcon.Opacity = 1f;
+                };
+                infoIcon.MouseLeft += (s, e) => {
+                    infoIcon.Location = new Point(250, 30);
+                    infoIcon.Size = new Point(32, 32);
+                    infoIcon.Opacity = 0.7f;
+                };
+                infoIcon.Click += InfoIcon_Click;
 
                 AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
                 Image settingsIcon = new Image
@@ -1350,7 +1415,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
             #region Load Backup Timer JSON
 
-            List<EventData> eventDataList = new List<EventData>();
+            List<TimerLogData> eventDataList = new List<TimerLogData>();
             string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
             string jsonFilePath = Path.Combine(moduleDir, "Event_Timers.json");
             if (File.Exists(jsonFilePath))
@@ -1360,7 +1425,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     using (StreamReader reader = new StreamReader(jsonFilePath))
                     {
                         string jsonContent = await reader.ReadToEndAsync();
-                        eventDataList = JsonSerializer.Deserialize<List<EventData>>(jsonContent, _jsonOptions);
+                        eventDataList = JsonSerializer.Deserialize<List<TimerLogData>>(jsonContent, _jsonOptions);
                         //Logger.Info($"Loaded {_eventDataList.Count} events from {jsonFilePath}");
                     }
 
@@ -1400,6 +1465,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
             #endregion
         }
+
         protected override void Update(GameTime gameTime)
         {
             #region Bauble Information Updates

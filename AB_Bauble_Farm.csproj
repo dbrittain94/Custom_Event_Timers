@@ -152,11 +152,14 @@
     <None Include="mgfxc.runtimeconfig.json" />
     <None Include="packages.config" />
     <None Include="ref\Defaults\Event_Defaults.json" />
+    <None Include="ref\Defaults\Package_Defaults.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaubleFarmModule.cs" />
     <Compile Include="ListSettingsTabView.cs" />
     <Compile Include="ModuleSettingsView.cs" />
+    <Compile Include="PackageSettingsTabView.cs" />
+    <Compile Include="StaticEventSettingsTabView.cs" />
     <Compile Include="TimerSettingsTabView.cs" />
   </ItemGroup>
   <ItemGroup>

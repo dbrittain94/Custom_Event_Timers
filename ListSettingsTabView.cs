@@ -7,6 +7,7 @@ using Blish_HUD.Settings.UI.Views;
 using Microsoft.Xna.Framework;
 using System;
 using System.Linq;
+using System.Runtime;
 
 namespace roguishpanda.AB_Bauble_Farm
 {
@@ -20,7 +21,7 @@ namespace roguishpanda.AB_Bauble_Farm
         private Label _OpacityLabelDisplay;
         private SettingEntry<int> _LowTimerSettingEntry;
         private SettingEntry<float> _OpacityDefaultSettingEntry;
-        private SettingCollection _MainSettings;
+        private SettingCollection _Settings;
 
         protected override void Build(Container buildPanel)
         {
@@ -34,7 +35,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 BackgroundTexture = BaubleFarmModule.ModuleInstance._asyncTimertexture
             };
 
-            SettingCollection SettingsCollection = _BaubleFarmModule._SettingsCollection;
+            SettingCollection SettingsCollection = _BaubleFarmModule._MainSettingsCollection;
             _settingsViewContainer = new ViewContainer
             {
                 Parent = listSettingsPanel,
@@ -61,8 +62,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 Parent = listSettingsPanel
             };
 
-            _MainSettings = _BaubleFarmModule._settings;
-            SettingCollection TimerCollector = _MainSettings.AddSubCollection("MainSettings");
+            _Settings = _BaubleFarmModule._settings;
+            SettingCollection TimerCollector = _Settings.AddSubCollection("MainSettings");
             if (TimerCollector != null)
             {
                 _LowTimerSettingEntry = null;

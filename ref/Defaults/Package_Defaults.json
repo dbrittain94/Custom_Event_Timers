@@ -1,0 +1,156 @@
+[
+  {
+    "PackageName": "Default",
+    "StaticDetailData": [],
+    "TimerDetailData": [
+      {
+        "ID": 1,
+        "Description": "SVET",
+        "Minutes": 8,
+        "Seconds": 45,
+        "Notes": [
+          "2-3 taps on vets. Only need 3.5k damage for gold."
+        ],
+        "Waypoints": [
+          "[\u0026BAIIAAA=] svet"
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "EVET",
+        "Minutes": 8,
+        "Seconds": 45,
+        "Notes": [
+          "2-3 taps on vets. Only need 3.5k damage for gold."
+        ],
+        "Waypoints": [
+          "[\u0026BGwIAAA=] evet"
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "NVET",
+        "Minutes": 8,
+        "Seconds": 45,
+        "Notes": [
+          "2-3 taps on vets. Only need 3.5k damage for gold."
+        ],
+        "Waypoints": [
+          "[\u0026BN0HAAA=] nvet"
+        ]
+      },
+      {
+        "ID": 4,
+        "Description": "WVET",
+        "Minutes": 8,
+        "Seconds": 45,
+        "Notes": [
+          "2-3 taps on vets. Only need 3.5k damage for gold."
+        ],
+        "Waypoints": [
+          "[\u0026BAYIAAA=] wvet"
+        ]
+      },
+      {
+        "ID": 5,
+        "Description": "SAP",
+        "Minutes": 8,
+        "Seconds": 20,
+        "Notes": [
+          "Please hold right before the entrance to first sap.",
+          "There are 3 sap events. Target 1 Corpse Taker until dead. Then, attack the sap for credit."
+        ],
+        "Waypoints": [
+          "[\u0026BEkIAAA=] sap"
+        ]
+      },
+      {
+        "ID": 6,
+        "Description": "BALTH",
+        "Minutes": 9,
+        "Seconds": 30,
+        "Notes": [
+          "Hold at the doorway before entering the Rest!!",
+          "Wait for all friends and my call to enter."
+        ],
+        "Waypoints": [
+          "[\u0026BAIIAAA=] balth"
+        ]
+      },
+      {
+        "ID": 7,
+        "Description": "WYVERN",
+        "Minutes": 11,
+        "Seconds": 30,
+        "Notes": [
+          "Prep CC for when wyvern turns around."
+        ],
+        "Waypoints": [
+          "[\u0026BEkIAAA=] WYVERN"
+        ]
+      },
+      {
+        "ID": 8,
+        "Description": "BRAMBLE",
+        "Minutes": 10,
+        "Seconds": 20,
+        "Notes": [
+          "Prep CC"
+        ],
+        "Waypoints": [
+          "[\u0026BN0HAAA=] bramble"
+        ]
+      },
+      {
+        "ID": 9,
+        "Description": "OOZE",
+        "Minutes": 14,
+        "Seconds": 0,
+        "Notes": [
+          "Take the north walkway if you do not have mount",
+          "Hold at entrance of cave until whole group is together."
+        ],
+        "Waypoints": [
+          "[\u0026BAYIAAA=] ooze"
+        ]
+      },
+      {
+        "ID": 10,
+        "Description": "GUZZLER",
+        "Minutes": 9,
+        "Seconds": 30,
+        "Notes": [
+          "Throw rocks or CC with Turtle mount to remove layers."
+        ],
+        "Waypoints": [
+          "[\u0026BN0HAAA=] guzzler"
+        ]
+      },
+      {
+        "ID": 11,
+        "Description": "TM",
+        "Minutes": 9,
+        "Seconds": 30,
+        "Notes": [
+          "You need stealth detection mastery to see the TM. AOE area for credit."
+        ],
+        "Waypoints": [
+          "[\u0026BGwIAAA=] TM"
+        ]
+      },
+      {
+        "ID": 12,
+        "Description": "STONEHEADS",
+        "Minutes": 10,
+        "Seconds": 20,
+        "Notes": [
+          "Attack Alpha. Then Beta. One is always invulnerable at given time",
+          "Kill rollers when they spawn halfway through."
+        ],
+        "Waypoints": [
+          "[\u0026BAIIAAA=] stoneheads"
+        ]
+      }
+    ]
+  }
+]

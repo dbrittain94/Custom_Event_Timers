@@ -27,14 +27,14 @@ namespace roguishpanda.AB_Bauble_Farm
         private BaubleFarmModule _BaubleFarmModule;
         private AsyncTexture2D _NoTexture;
         private Panel[] _timerEventsPanels;
-        private Label[] _timerEventLabels;
+        private TextBox[] _timerEventTextbox;
         private FlowPanel _timerPackagePanel;
         private TextBox _textNewEvent;
         private Label _CreateEventAlert;
         private StandardButton _buttonRestartModule;
         private Label _MinutesLabelDisplay;
         private Label _SecondsLabelDisplay;
-        private Label _EventLabelDisplay;
+        private Label _CurrentEventLabel;
         private Panel _timerEventsTitlePanel;
         private Label _timerEventsTitleLabel;
         private Image[] _cancelButton;
@@ -51,10 +51,12 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<string> _timerNoteFourDefault;
         private ViewContainer _settingsViewContainer;
         private SettingCollection _MainSettings;
-        private List<NotesData> _eventNotes;
+        private List<TimerDetailData> _eventNotes;
+        private List<PackageData> _PackageData;
         private int TimerRowNum;
         private StandardButton _buttonSaveEvents;
         private StandardButton _buttonReloadEvents;
+        private SettingEntry<string> _PackageSettingEntry;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -64,7 +66,8 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
             _MainSettings = _BaubleFarmModule._settings;
-            _eventNotes = new List<NotesData>(_BaubleFarmModule._eventNotes);
+            _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._eventNotes);
+            _PackageData = new List<PackageData>(_BaubleFarmModule._PackageData);
             TimerRowNum = _BaubleFarmModule.TimerRowNum;
             _NoTexture = new AsyncTexture2D();
             _cancelTexture = AsyncTexture2D.FromAssetId(2175782);
@@ -114,7 +117,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Save",
                 Size = new Point(140, 40),
-                Location = new Point(100, 590),
+                Location = new Point(530, 450),
                 Visible = false,
                 Parent = _timerSettingsPanel
             };
@@ -123,7 +126,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Reload",
                 Size = new Point(140, 40),
-                Location = new Point(250, 590),
+                Location = new Point(680, 450),
                 Visible = false,
                 Parent = _timerSettingsPanel
             };
@@ -131,7 +134,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _CreateEventAlert = new Label
             {
                 Size = new Point(400, 40),
-                Location = new Point(460, 540),
+                Location = new Point(530, 490),
                 Font = GameService.Content.DefaultFont16,
                 TextColor = Color.Red,
                 Visible = false,
@@ -141,7 +144,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Restart Module",
                 Size = new Point(200, 40),
-                Location = new Point(460, 590),
+                Location = new Point(530, 450),
                 Visible = false,
                 Parent = _timerSettingsPanel
             };
@@ -161,12 +164,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 Font = GameService.Content.DefaultFont16,
                 Parent = _timerSettingsPanel
             };
-            _EventLabelDisplay = new Blish_HUD.Controls.Label
+            _CurrentEventLabel = new Blish_HUD.Controls.Label
             {
-                Size = new Point(180, 40),
+                Size = new Point(300, 40),
                 Location = new Point(420, 60),
                 Font = GameService.Content.DefaultFont32,
-                TextColor = Color.GreenYellow,
+                TextColor = Color.LimeGreen,
                 Parent = _timerSettingsPanel
             };
 
@@ -189,13 +192,32 @@ namespace roguishpanda.AB_Bauble_Farm
             };
 
             _timerEventsPanels = new Panel[TimerRowNum];
-            _timerEventLabels = new Label[TimerRowNum];
+            _timerEventTextbox = new TextBox[TimerRowNum];
             _cancelButton = new Image[TimerRowNum];
             LoadEventTable(TimerRowNum);
             LoadDefaults(TimerRowNum);
             if (TimerRowNum != 0)
             {
                 TimerSettings_Click(_timerEventsPanels[0], null);
+            }
+        }
+
+        private void CurrentEvent_TextChanged(int Index)
+        {
+            try
+            {
+                string NewDescription = _timerEventTextbox[Index].Text;
+                _CurrentEventLabel.Text = NewDescription;
+                _eventNotes[Index].Description = NewDescription;
+
+                _buttonSaveEvents.Visible = true;
+                _buttonReloadEvents.Visible = true;
+                _buttonRestartModule.Visible = false;
+                _CreateEventAlert.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to rename event: {ex.Message}");
             }
         }
 
@@ -239,13 +261,14 @@ namespace roguishpanda.AB_Bauble_Farm
                 _CreateEventAlert.Visible = true;
                 _CreateEventAlert.TextColor = Color.LimeGreen;
 
-                NotesData notesData = new NotesData()
+                TimerDetailData notesData = new TimerDetailData()
                 {
                     ID = NewID,
                     Description = _textNewEvent.Text,
                     Minutes = 8,
                     Seconds = 30,
                     Notes = new List<string>() { "" },
+                    Waypoints = new List<string>() { "" },
                 };
                 _eventNotes.Add(notesData);
 
@@ -253,7 +276,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     _timerEventsPanels[i].Dispose();
-                    _timerEventLabels[i].Dispose();
+                    _timerEventTextbox[i].Dispose();
                     _cancelButton[i].Dispose();
                 }
                 if (_settingsViewContainer != null)
@@ -265,7 +288,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 // Initialize new UI Info
                 TimerRowNum = _eventNotes.Count();
                 _timerEventsPanels = new Panel[TimerRowNum];
-                _timerEventLabels = new Label[TimerRowNum];
+                _timerEventTextbox = new TextBox[TimerRowNum];
                 _cancelButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
                 LoadDefaults(TimerRowNum);
@@ -277,7 +300,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _buttonRestartModule.Visible = false;
                 _MinutesLabelDisplay.Visible = true;
                 _SecondsLabelDisplay.Visible = true;
-                _EventLabelDisplay.Visible = true;
+                _CurrentEventLabel.Visible = true;
             }
             catch (Exception ex)
             {
@@ -286,12 +309,34 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private void CreateEventJson()
         {
-            List<EventData> eventDataList = new List<EventData>();
+            string CurrentPackage = "";
+            SettingCollection PackageSettings = _MainSettings.AddSubCollection("PackageSettings");
+            if (PackageSettings != null)
+            {
+                _PackageSettingEntry = null;
+                PackageSettings.TryGetSetting("CurrentPackageSelection", out _PackageSettingEntry);
+                if (_PackageSettingEntry != null)
+                {
+                    CurrentPackage = _PackageSettingEntry.Value.ToString();
+                }
+            }
+            var package = _PackageData.FirstOrDefault(p => p.PackageName == CurrentPackage); // Need to swap out Default with current package setting
+            if (package != null)
+            {
+                package.TimerDetailData = _eventNotes;
+            }
+            else
+            {
+                throw new ArgumentException($"No PackageData found with PackageName: {CurrentPackage}"); // Need to swap out Default with current package setting
+            }
+            List<PackageData> newPackageData = new List<PackageData>();
+            newPackageData.Add(package);
+
             string moduleDir = _BaubleFarmModule.DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
-            string jsonFilePath = Path.Combine(moduleDir, "Event_Defaults.json");
+            string jsonFilePath = Path.Combine(moduleDir, "Package_Defaults.json");
             try
             {
-                string jsonContent = JsonSerializer.Serialize(_eventNotes, _jsonOptions);
+                string jsonContent = JsonSerializer.Serialize(newPackageData, _jsonOptions);
                 File.WriteAllText(jsonFilePath, jsonContent);
                 _CreateEventAlert.Text = "Events have been saved! Restart Module to reset timer UI";
                 _CreateEventAlert.Visible = true;
@@ -314,24 +359,25 @@ namespace roguishpanda.AB_Bauble_Farm
                 string Description = _eventNotes[Index].Description;
                 int ID = _eventNotes[Index].ID;
                 _eventNotes.RemoveAll(note => note.Description == Description && note.ID == ID);
-                _eventNotes = _eventNotes.Select((note, index) => new NotesData
+                _eventNotes = _eventNotes.Select((note, index) => new TimerDetailData
                 {
                     ID = index + 1,
                     Description = note.Description,
                     Minutes = note.Minutes,
                     Seconds = note.Seconds,
-                    Notes = note.Notes
+                    Notes = note.Notes,
+                    Waypoints = note.Waypoints,
                 }).ToList();
                 if (_eventNotes.Count <= 0)
                 {
                     _timerEventsPanels[0].Dispose();
-                    _timerEventLabels[0].Dispose();
+                    _timerEventTextbox[0].Dispose();
                     _cancelButton[0].Dispose();
                     _settingsViewContainer.Clear();
                     _settingsViewContainer.Dispose();
                     _MinutesLabelDisplay.Visible = false;
                     _SecondsLabelDisplay.Visible = false;
-                    _EventLabelDisplay.Visible = false;
+                    _CurrentEventLabel.Visible = false;
                     _buttonSaveEvents.Visible = true;
                     _buttonReloadEvents.Visible = true;
                     _buttonRestartModule.Visible = false;
@@ -343,7 +389,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     _timerEventsPanels[i].Dispose();
-                    _timerEventLabels[i].Dispose();
+                    _timerEventTextbox[i].Dispose();
                     _cancelButton[i].Dispose();
                 }
                 _settingsViewContainer.Clear();
@@ -352,7 +398,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 // Initialize new UI Info
                 TimerRowNum = _eventNotes.Count();
                 _timerEventsPanels = new Panel[TimerRowNum];
-                _timerEventLabels = new Label[TimerRowNum];
+                _timerEventTextbox = new TextBox[TimerRowNum];
                 _cancelButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
                 LoadDefaults(TimerRowNum);
@@ -364,7 +410,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _buttonReloadEvents.Visible = true;
                 _buttonRestartModule.Visible = false;
                 _CreateEventAlert.Visible = true;
-                _CreateEventAlert.Text = "Events have deleted!";
+                _CreateEventAlert.Text = "Event was deleted!";
                 _CreateEventAlert.TextColor = Color.LimeGreen;
             }
             catch (Exception ex)
@@ -377,13 +423,13 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 // Reload events from original UI
-                _eventNotes = new List<NotesData>(_BaubleFarmModule._eventNotes);
+                _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._eventNotes);
 
                 // Clear old UI info
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     _timerEventsPanels[i].Dispose();
-                    _timerEventLabels[i].Dispose();
+                    _timerEventTextbox[i].Dispose();
                     _cancelButton[i].Dispose();
                 }
                 _settingsViewContainer.Clear();
@@ -392,7 +438,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 // Initialize new UI Info
                 TimerRowNum = _eventNotes.Count();
                 _timerEventsPanels = new Panel[TimerRowNum];
-                _timerEventLabels = new Label[TimerRowNum];
+                _timerEventTextbox = new TextBox[TimerRowNum];
                 _cancelButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
                 LoadDefaults(TimerRowNum);
@@ -402,7 +448,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _CreateEventAlert.Visible = true;
                 _MinutesLabelDisplay.Visible = true;
                 _SecondsLabelDisplay.Visible = true;
-                _EventLabelDisplay.Visible = true;
+                _CurrentEventLabel.Visible = true;
                 _CreateEventAlert.Text = "Events have reloaded!";
                 _CreateEventAlert.TextColor = Color.LimeGreen;
             }
@@ -418,6 +464,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 var eventNotes = _eventNotes;
                 for (int i = 0; i < TotalEvents; i++)
                 {
+                    int Index = i;
                     _timerEventsPanels[i] = new Blish_HUD.Controls.Panel
                     {
                         Parent = _timerPackagePanel,
@@ -435,16 +482,18 @@ namespace roguishpanda.AB_Bauble_Farm
                         _timerEventsPanels[i].BackgroundColor = new Color(0, 0, 0, 0.2f);
                     }
 
-                    _timerEventLabels[i] = new Blish_HUD.Controls.Label
+                    _timerEventTextbox[i] = new Blish_HUD.Controls.TextBox
                     {
                         Text = eventNotes[i].Description,
-                        Size = new Point(100, 40),
-                        Location = new Point(40, 0),
+                        Size = new Point(150, 30),
+                        Location = new Point(40, 5),
                         HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Left,
                         Font = GameService.Content.DefaultFont16,
-                        TextColor = Color.GreenYellow,
+                        HideBackground = true,
+                        ForeColor = Color.LimeGreen,
                         Parent = _timerEventsPanels[i]
                     };
+                    _timerEventTextbox[i].TextChanged += (s, e) => CurrentEvent_TextChanged(Index);
 
                     _cancelButton[i] = new Image
                     {
@@ -454,7 +503,6 @@ namespace roguishpanda.AB_Bauble_Farm
                         //Visible = false,
                         Parent = _timerEventsPanels[i]
                     };
-                    int Index = i;
                     _cancelButton[i].Click += (s, e) => CancelEvent_Click(Index);
                 }
             }
@@ -561,11 +609,11 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Parent = _timerSettingsPanel,
                     Location = new Point(410, 110),
-                    Size = new Point(500, 400)
+                    Size = new Point(500, 300)
                 };
                 var settingsView = new SettingsView(TimerCollector);
                 _settingsViewContainer.Show(settingsView);
-                _EventLabelDisplay.Text = _eventNotes[senderIndex].Description;
+                _CurrentEventLabel.Text = _eventNotes[senderIndex].Description;
                 //// Re-color panels
                 for (int i = 0; i < TimerRowNum; i++)
                 {
@@ -722,7 +770,13 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 _BaubleFarmModule._timerDurationDefaults[Index] = Minutes + Seconds;
                 _BaubleFarmModule._timerLabels[Index].Text = _BaubleFarmModule._timerDurationDefaults[Index].ToString(@"mm\:ss");
+                _eventNotes[Index].Minutes = Minutes.TotalMinutes;
+                _eventNotes[Index].Seconds = Seconds.TotalSeconds;
             }
+
+            _textNewEvent.Text = "";
+            _buttonSaveEvents.Visible = true;
+            _buttonRestartModule.Visible = false;
         }
         private void LoadWaypointCustomized(int Index)
         {
@@ -741,7 +795,13 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     _BaubleFarmModule._Waypoints[Index].Clear();
                     _BaubleFarmModule._Waypoints[Index].AddRange(WaypointList);
+                    _eventNotes[Index].Waypoints.Clear();
+                    _eventNotes[Index].Waypoints.AddRange(WaypointList);
                 }
+
+                _textNewEvent.Text = "";
+                _buttonSaveEvents.Visible = true;
+                _buttonRestartModule.Visible = false;
             }
             catch (Exception ex)
             {
@@ -789,7 +849,13 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     _BaubleFarmModule._Notes[Index].Clear();
                     _BaubleFarmModule._Notes[Index].AddRange(NotesList);
+                    _eventNotes[Index].Notes.Clear();
+                    _eventNotes[Index].Notes.AddRange(NotesList);
                 }
+
+                _textNewEvent.Text = "";
+                _buttonSaveEvents.Visible = true;
+                _buttonRestartModule.Visible = false;
             }
             catch (Exception ex)
             {
