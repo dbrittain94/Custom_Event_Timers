@@ -28,7 +28,7 @@ namespace roguishpanda.AB_Bauble_Farm
         private AsyncTexture2D _NoTexture;
         private Panel[] _timerEventsPanels;
         private TextBox[] _timerEventTextbox;
-        private FlowPanel _timerPackagePanel;
+        private Panel _timerPackagePanel;
         private TextBox _textNewEvent;
         private Label _CreateEventAlert;
         private StandardButton _buttonRestartModule;
@@ -45,10 +45,12 @@ namespace roguishpanda.AB_Bauble_Farm
         private SettingEntry<int> _timerMinutesDefault;
         private SettingEntry<int> _timerSecondsDefault;
         private SettingEntry<string> _timerWaypoint;
+        private SettingEntry<bool> _timerBroadcastNoteOneDefault;
         private SettingEntry<string> _timerNoteOneDefault;
         private SettingEntry<string> _timerNoteTwoDefault;
         private SettingEntry<string> _timerNoteThreeDefault;
         private SettingEntry<string> _timerNoteFourDefault;
+        private SettingEntry<bool> _timerBroadcastNoteFourDefault;
         private ViewContainer _settingsViewContainer;
         private SettingCollection _MainSettings;
         private List<TimerDetailData> _eventNotes;
@@ -57,6 +59,8 @@ namespace roguishpanda.AB_Bauble_Farm
         private StandardButton _buttonSaveEvents;
         private StandardButton _buttonReloadEvents;
         private SettingEntry<string> _PackageSettingEntry;
+        private SettingEntry<bool> _timerBroadcastNoteTwoDefault;
+        private SettingEntry<bool> _timerBroadcastNoteThreeDefault;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -80,7 +84,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 CanScroll = true,
                 BackgroundTexture = BaubleFarmModule.ModuleInstance._asyncTimertexture
             };
-            _timerPackagePanel = new Blish_HUD.Controls.FlowPanel
+            _timerPackagePanel = new Blish_HUD.Controls.Panel
             {
                 Parent = _timerSettingsPanel,
                 Size = new Point(300, 400), // Match the panel to the content region
@@ -605,15 +609,61 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 _timerNoteFourDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "NoteFour", NoteFour, () => "Note #4", () => "Use to control the note #4");
                 _timerNoteFourDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+
+                bool BroadcastNoteOne = false;
+                if (_eventNotes[senderIndex].Broadcast != null)
+                {
+                    if (_eventNotes[senderIndex].Broadcast.Count > 0)
+                    {
+                        BroadcastNoteOne = _eventNotes[senderIndex].Broadcast[0];
+                    }
+                }
+                _timerBroadcastNoteOneDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteOne", BroadcastNoteOne, () => "Broadcast Note #1", () => "Use to broadcast note #1");
+                _timerBroadcastNoteOneDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+
+                bool BroadcastNoteTwo = false;
+                if (_eventNotes[senderIndex].Broadcast != null)
+                {
+                    if (_eventNotes[senderIndex].Broadcast.Count > 1)
+                    {
+                        BroadcastNoteTwo = _eventNotes[senderIndex].Broadcast[1];
+                    }
+                }
+                _timerBroadcastNoteTwoDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteTwo", BroadcastNoteTwo, () => "Broadcast Note #2", () => "Use to broadcast note #2");
+                _timerBroadcastNoteTwoDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+
+                bool BroadcastNoteThree = false;
+                if (_eventNotes[senderIndex].Broadcast != null)
+                {
+                    if (_eventNotes[senderIndex].Broadcast.Count > 2)
+                    {
+                        BroadcastNoteThree = _eventNotes[senderIndex].Broadcast[2];
+                    }
+                }
+                _timerBroadcastNoteThreeDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteThree", BroadcastNoteThree, () => "Broadcast Note #3", () => "Use to broadcast note #3");
+                _timerBroadcastNoteThreeDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+
+                bool BroadcastNoteFour = false;
+                if (_eventNotes[senderIndex].Broadcast != null)
+                {
+                    if (_eventNotes[senderIndex].Broadcast.Count > 3)
+                    {
+                        BroadcastNoteFour = _eventNotes[senderIndex].Broadcast[3];
+                    }
+                }
+                _timerBroadcastNoteFourDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteFour", BroadcastNoteFour, () => "Broadcast Note #4", () => "Use to broadcast note #4");
+                _timerBroadcastNoteFourDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
+
                 _settingsViewContainer = new ViewContainer
                 {
                     Parent = _timerSettingsPanel,
                     Location = new Point(410, 110),
-                    Size = new Point(500, 300)
+                    Size = new Point(500, 350)
                 };
                 var settingsView = new SettingsView(TimerCollector);
                 _settingsViewContainer.Show(settingsView);
                 _CurrentEventLabel.Text = _eventNotes[senderIndex].Description;
+
                 //// Re-color panels
                 for (int i = 0; i < TimerRowNum; i++)
                 {
@@ -658,6 +708,14 @@ namespace roguishpanda.AB_Bauble_Farm
                         TimerCollector.TryGetSetting(eventNotes[i].Description + "NoteThree", out NotesThreeSettingEntry);
                         SettingEntry<string> NotesFourSettingEntry = null;
                         TimerCollector.TryGetSetting(eventNotes[i].Description + "NoteFour", out NotesFourSettingEntry);
+                        SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteOne", out NotesOneSettingEntry);
+                        SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteTwo", out NotesTwoSettingEntry);
+                        SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteThree", out NotesThreeSettingEntry);
+                        SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteFour", out NotesFourSettingEntry);
 
                         double Minutes = eventNotes[i].Minutes;
                         double Seconds = eventNotes[i].Seconds;
@@ -751,6 +809,51 @@ namespace roguishpanda.AB_Bauble_Farm
                                 }
                             }
                         }
+
+                        if (BroadcastNotesOneSettingEntry != null)
+                        {
+                            bool Broadcast = BroadcastNotesOneSettingEntry.Value;
+                            if (eventNotes[i].Broadcast != null)
+                            {
+                                if (eventNotes[i].Broadcast.Count > 0)
+                                {
+                                    BroadcastNotesOneSettingEntry.Value = eventNotes[i].Broadcast[0];
+                                }
+                            }
+                        }
+                        if (BroadcastNotesTwoSettingEntry != null)
+                        {
+                            bool Broadcast = BroadcastNotesTwoSettingEntry.Value;
+                            if (eventNotes[i].Broadcast != null)
+                            {
+                                if (eventNotes[i].Broadcast.Count > 1)
+                                {
+                                    BroadcastNotesTwoSettingEntry.Value = eventNotes[i].Broadcast[1];
+                                }
+                            }
+                        }
+                        if (BroadcastNotesThreeSettingEntry != null)
+                        {
+                            bool Broadcast = BroadcastNotesThreeSettingEntry.Value;
+                            if (eventNotes[i].Broadcast != null)
+                            {
+                                if (eventNotes[i].Broadcast.Count > 2)
+                                {
+                                    BroadcastNotesThreeSettingEntry.Value = eventNotes[i].Broadcast[2];
+                                }
+                            }
+                        }
+                        if (BroadcastNotesFourSettingEntry != null)
+                        {
+                            bool Broadcast = BroadcastNotesFourSettingEntry.Value;
+                            if (eventNotes[i].Broadcast != null)
+                            {
+                                if (eventNotes[i].Broadcast.Count > 3)
+                                {
+                                    BroadcastNotesFourSettingEntry.Value = eventNotes[i].Broadcast[3];
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -813,6 +916,7 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 List<string> NotesList = new List<string>();
+                List<bool> BroadcastNotesList = new List<bool>();
                 if (_timerNoteOneDefault != null)
                 {
                     string Notes = _timerNoteOneDefault.Value;
@@ -845,12 +949,58 @@ namespace roguishpanda.AB_Bauble_Farm
                         NotesList.Add(Notes);
                     }
                 }
+
+                if (_timerBroadcastNoteOneDefault != null)
+                {
+                    bool BroadcastNotes = _timerBroadcastNoteOneDefault.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (_timerBroadcastNoteTwoDefault != null)
+                {
+                    bool BroadcastNotes = _timerBroadcastNoteTwoDefault.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (_timerBroadcastNoteThreeDefault != null)
+                {
+                    bool BroadcastNotes = _timerBroadcastNoteThreeDefault.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (_timerBroadcastNoteFourDefault != null)
+                {
+                    bool BroadcastNotes = _timerBroadcastNoteFourDefault.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+
                 if (NotesList.Count > 0)
                 {
                     _BaubleFarmModule._Notes[Index].Clear();
                     _BaubleFarmModule._Notes[Index].AddRange(NotesList);
                     _eventNotes[Index].Notes.Clear();
                     _eventNotes[Index].Notes.AddRange(NotesList);
+
+                    if (BroadcastNotesList.Count > 0)
+                    {
+                        _BaubleFarmModule._Broadcast[Index].Clear();
+                        _BaubleFarmModule._Broadcast[Index].AddRange(BroadcastNotesList);
+                        _eventNotes[Index].Broadcast.Clear();
+                        _eventNotes[Index].Broadcast.AddRange(BroadcastNotesList);
+                    }
                 }
 
                 _textNewEvent.Text = "";

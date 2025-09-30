@@ -55,6 +55,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public double Minutes { get; set; }
         public double Seconds { get; set; }
         public List<string> Notes { get; set; }
+        public List<bool> Broadcast { get; set; }
         public List<string> Waypoints { get; set; }
     }
     public class StaticDetailData
@@ -62,6 +63,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public int ID { get; set; }
         public string Description { get; set; }
         public List<string> Notes { get; set; }
+        public List<bool> Broadcast { get; set; }
         public List<string> Waypoints { get; set; }
     }
 
@@ -85,6 +87,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Label _startTimeValue;
         public Blish_HUD.Controls.Label _endTimeValue;
         public List<List<string>> _Notes;
+        public List<List<bool>> _Broadcast;
         public List<List<string>> _Waypoints;
         public Checkbox _InOrdercheckbox;
         public DateTime elapsedDateTime;
@@ -284,6 +287,14 @@ namespace roguishpanda.AB_Bauble_Farm
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteThree", out NotesThreeSettingEntry);
                 SettingEntry<string> NotesFourSettingEntry = null;
                 TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteFour", out NotesFourSettingEntry);
+                SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteOne", out BroadcastNotesOneSettingEntry);
+                SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteTwo", out BroadcastNotesTwoSettingEntry);
+                SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteThree", out BroadcastNotesThreeSettingEntry);
+                SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteFour", out BroadcastNotesFourSettingEntry);
 
                 if (KeybindSettingEntry != null)
                 {
@@ -329,6 +340,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
 
                 List<string> NotesList = new List<string>();
+                List<bool> BroadcastNotesList = new List<bool>();
                 if (NotesOneSettingEntry != null)
                 {
                     string Notes = NotesOneSettingEntry.Value;
@@ -361,10 +373,52 @@ namespace roguishpanda.AB_Bauble_Farm
                         NotesList.Add(Notes);
                     }
                 }
+                if (BroadcastNotesOneSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesOneSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (BroadcastNotesTwoSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesTwoSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (BroadcastNotesThreeSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesThreeSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (BroadcastNotesFourSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesFourSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+
                 if (NotesList.Count > 0)
                 {
                     _Notes[i].Clear();
                     _Notes[i].AddRange(NotesList);
+                }
+                if (BroadcastNotesList.Count > 0)
+                {
+                    _Broadcast[i].Clear();
+                    _Broadcast[i].AddRange(BroadcastNotesList);
                 }
             }
         }
@@ -373,6 +427,7 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         // Constants for SendInput
         private const uint KEYEVENTF_KEYUP = 0x0002;
+        private const uint VK_SHIFT = 0x10; // Virtual key code for Shift
         private const uint VK_RETURN = 0x0D; // Virtual key code for Enter
         private const uint VK_CONTROL = 0x11; // Virtual key code for Ctrl
 
@@ -463,6 +518,89 @@ namespace roguishpanda.AB_Bauble_Farm
 
             SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
             Thread.Sleep(10); // Small delay to ensure input is processed
+        }
+
+        // Send multiple keys
+        private static void SendTwoKeys(uint keyone, uint keytwo)
+        {
+            INPUT[] inputs = new INPUT[4];
+
+            // Keyone down
+            inputs[0] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)keyone,
+                        wScan = (ushort)MapVirtualKey(keyone, 0),
+                        dwFlags = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+            SendInput(1, new[] { inputs[0] }, Marshal.SizeOf(typeof(INPUT))); // Ctrl down
+            Thread.Sleep(50);
+
+            // Keytwo down
+            inputs[1] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)keytwo,
+                        wScan = (ushort)MapVirtualKey(keytwo, 0),
+                        dwFlags = 0,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+            SendInput(1, new[] { inputs[1] }, Marshal.SizeOf(typeof(INPUT))); // V down
+            Thread.Sleep(50);
+
+            // Keytwo up
+            inputs[2] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)keytwo,
+                        wScan = (ushort)MapVirtualKey(keytwo, 0),
+                        dwFlags = KEYEVENTF_KEYUP,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+            SendInput(1, new[] { inputs[2] }, Marshal.SizeOf(typeof(INPUT))); // V up
+            Thread.Sleep(50);
+
+            // Keyone up
+            inputs[3] = new INPUT
+            {
+                type = 1, // INPUT_KEYBOARD
+                u = new INPUTUNION
+                {
+                    ki = new KEYBDINPUT
+                    {
+                        wVk = (ushort)keyone,
+                        wScan = (ushort)MapVirtualKey(keyone, 0),
+                        dwFlags = KEYEVENTF_KEYUP,
+                        time = 0,
+                        dwExtraInfo = IntPtr.Zero
+                    }
+                }
+            };
+
+            SendInput(1, new[] { inputs[3] }, Marshal.SizeOf(typeof(INPUT))); // Ctrl up
+            Thread.Sleep(50);
         }
 
         // Simulate Ctrl+V (paste)
@@ -557,10 +695,19 @@ namespace roguishpanda.AB_Bauble_Farm
             thread.Start();
             thread.Join(); // Wait for clipboard operation to complete
         }
-        private void ClipboardPaste(string Message)
+        private void ClipboardPaste(string Message, bool Broadcast)
         {
-            // Press Enter
-            SendKey(VK_RETURN);
+            if (Broadcast == true)
+            {
+                // Press Shift + Return to broadcast
+                SendTwoKeys(VK_SHIFT, VK_RETURN);
+                Thread.Sleep(100);
+            }
+            else
+            {
+                // Press Enter
+                SendKey(VK_RETURN);
+            }
             Thread.Sleep(100);
             // Copy "hello" to clipboard
             CopyToClipboard(Message);
@@ -596,7 +743,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     string message = notes[i];
                     if (message != null && message.Length > 0)
                     {
-                        ClipboardPaste(notes[i]);
+                        ClipboardPaste(notes[i], _eventNotes[index].Broadcast[i]);
                     }
                 }
             }
@@ -631,7 +778,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     string message = waypoints[i];
                     if (message != null && message.Length > 0)
                     {
-                        ClipboardPaste(waypoints[i]);
+                        ClipboardPaste(waypoints[i], false);
                     }
                 }
             //}
@@ -953,6 +1100,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 TimerRowNum = Count;
                 _timerStartTimes = new DateTime?[TimerRowNum];
                 _Notes = new List<List<string>>();
+                _Broadcast = new List<List<bool>>();
                 _Waypoints = new List<List<string>>();
                 _timerRunning = new bool[TimerRowNum];
                 _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
@@ -974,6 +1122,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     _Notes.Add(timerNotesData[i].Notes);
+                    _Broadcast.Add(timerNotesData[i].Broadcast);
                     _Waypoints.Add(timerNotesData[i].Waypoints);
                     _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
