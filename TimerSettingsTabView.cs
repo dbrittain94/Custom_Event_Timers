@@ -38,8 +38,12 @@ namespace roguishpanda.AB_Bauble_Farm
         private Panel _timerEventsTitlePanel;
         private Label _timerEventsTitleLabel;
         private Image[] _cancelButton;
+        private Image[] _upArrowButton;
+        private Image[] _downArrowButton;
         private AsyncTexture2D _cancelTexture;
         private AsyncTexture2D _addTexture;
+        private Texture2D _upArrowTexture;
+        private Texture2D _downArrowTexture;
         private Panel _timerSettingsPanel;
         private SettingEntry<KeyBinding> _timerKeybind;
         private SettingEntry<int> _timerMinutesDefault;
@@ -76,6 +80,8 @@ namespace roguishpanda.AB_Bauble_Farm
             _NoTexture = new AsyncTexture2D();
             _cancelTexture = AsyncTexture2D.FromAssetId(2175782);
             _addTexture = AsyncTexture2D.FromAssetId(155911);
+            _upArrowTexture = _BaubleFarmModule.ContentsManager.GetTexture(@"png\517181.png");
+            _downArrowTexture = _BaubleFarmModule.ContentsManager.GetTexture(@"png\517181-180.png");
             _timerSettingsPanel = new Blish_HUD.Controls.Panel
             {
                 Parent = buildPanel,
@@ -198,6 +204,8 @@ namespace roguishpanda.AB_Bauble_Farm
             _timerEventsPanels = new Panel[TimerRowNum];
             _timerEventTextbox = new TextBox[TimerRowNum];
             _cancelButton = new Image[TimerRowNum];
+            _upArrowButton = new Image[TimerRowNum];
+            _downArrowButton = new Image[TimerRowNum];
             LoadEventTable(TimerRowNum);
             LoadDefaults(TimerRowNum);
             if (TimerRowNum != 0)
@@ -282,6 +290,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _timerEventsPanels[i].Dispose();
                     _timerEventTextbox[i].Dispose();
                     _cancelButton[i].Dispose();
+                    _upArrowButton[i].Dispose();
+                    _downArrowButton[i].Dispose();
                 }
                 if (_settingsViewContainer != null)
                 {
@@ -294,6 +304,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerEventsPanels = new Panel[TimerRowNum];
                 _timerEventTextbox = new TextBox[TimerRowNum];
                 _cancelButton = new Image[TimerRowNum];
+                _upArrowButton = new Image[TimerRowNum];
+                _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
                 LoadDefaults(TimerRowNum);
                 TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
@@ -324,14 +336,14 @@ namespace roguishpanda.AB_Bauble_Farm
                     CurrentPackage = _PackageSettingEntry.Value.ToString();
                 }
             }
-            var package = _PackageData.FirstOrDefault(p => p.PackageName == CurrentPackage); // Need to swap out Default with current package setting
+            var package = _PackageData.FirstOrDefault(p => p.PackageName == CurrentPackage); 
             if (package != null)
             {
                 package.TimerDetailData = _eventNotes;
             }
             else
             {
-                throw new ArgumentException($"No PackageData found with PackageName: {CurrentPackage}"); // Need to swap out Default with current package setting
+                throw new ArgumentException($"No PackageData found with PackageName: {CurrentPackage}");
             }
             List<PackageData> newPackageData = new List<PackageData>();
             newPackageData.Add(package);
@@ -355,7 +367,6 @@ namespace roguishpanda.AB_Bauble_Farm
             _buttonReloadEvents.Visible = false;
             _buttonRestartModule.Visible = true;
         }
-
         private void CancelEvent_Click(int Index)
         {
             try
@@ -377,6 +388,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _timerEventsPanels[0].Dispose();
                     _timerEventTextbox[0].Dispose();
                     _cancelButton[0].Dispose();
+                    _upArrowButton[0].Dispose();
+                    _downArrowButton[0].Dispose();
                     _settingsViewContainer.Clear();
                     _settingsViewContainer.Dispose();
                     _MinutesLabelDisplay.Visible = false;
@@ -395,6 +408,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _timerEventsPanels[i].Dispose();
                     _timerEventTextbox[i].Dispose();
                     _cancelButton[i].Dispose();
+                    _upArrowButton[i].Dispose();
+                    _downArrowButton[i].Dispose();
                 }
                 _settingsViewContainer.Clear();
                 _settingsViewContainer.Dispose();
@@ -404,6 +419,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerEventsPanels = new Panel[TimerRowNum];
                 _timerEventTextbox = new TextBox[TimerRowNum];
                 _cancelButton = new Image[TimerRowNum];
+                _upArrowButton = new Image[TimerRowNum];
+                _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
                 LoadDefaults(TimerRowNum);
                 TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
@@ -422,6 +439,50 @@ namespace roguishpanda.AB_Bauble_Farm
                 Logger.Warn($"Failed to remove event: {ex.Message}");
             }
         }
+        private void MoveEvent_Click(int Index, int Direction)
+        {
+            try
+            {
+                string Description = _eventNotes[Index].Description;
+                int ID = _eventNotes[Index].ID;
+                TimerDetailData temp = _eventNotes[Index];
+                _eventNotes[Index] = _eventNotes[Index + Direction];
+                _eventNotes[Index + Direction] = temp;
+
+                // Clear old UI info
+                for (int i = 0; i < TimerRowNum; i++)
+                {
+                    _timerEventsPanels[i].Dispose();
+                    _timerEventTextbox[i].Dispose();
+                    _cancelButton[i].Dispose();
+                    _upArrowButton[i].Dispose();
+                    _downArrowButton[i].Dispose();
+                }
+                _settingsViewContainer.Clear();
+                _settingsViewContainer.Dispose();
+
+                // Initialize new UI Info
+                TimerRowNum = _eventNotes.Count();
+                _timerEventsPanels = new Panel[TimerRowNum];
+                _timerEventTextbox = new TextBox[TimerRowNum];
+                _cancelButton = new Image[TimerRowNum];
+                _upArrowButton = new Image[TimerRowNum];
+                _downArrowButton = new Image[TimerRowNum];
+                LoadEventTable(TimerRowNum);
+                LoadDefaults(TimerRowNum);
+                TimerSettings_Click(_timerEventsPanels[Index + Direction], null);
+                _buttonSaveEvents.Visible = true;
+                _buttonReloadEvents.Visible = true;
+                _buttonRestartModule.Visible = false;
+                //_CreateEventAlert.Visible = true;
+                //_CreateEventAlert.Text = "Event was moved!";
+                //_CreateEventAlert.TextColor = Color.LimeGreen;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to move event: {ex.Message}");
+            }
+        }
         private void ReloadEvents()
         {
             try
@@ -435,6 +496,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _timerEventsPanels[i].Dispose();
                     _timerEventTextbox[i].Dispose();
                     _cancelButton[i].Dispose();
+                    _upArrowButton[i].Dispose();
+                    _downArrowButton[i].Dispose();
                 }
                 _settingsViewContainer.Clear();
                 _settingsViewContainer.Dispose();
@@ -444,6 +507,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerEventsPanels = new Panel[TimerRowNum];
                 _timerEventTextbox = new TextBox[TimerRowNum];
                 _cancelButton = new Image[TimerRowNum];
+                _upArrowButton = new Image[TimerRowNum];
+                _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
                 LoadDefaults(TimerRowNum);
                 TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
@@ -490,7 +555,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     {
                         Text = eventNotes[i].Description,
                         Size = new Point(150, 30),
-                        Location = new Point(40, 5),
+                        Location = new Point(30, 5),
                         HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Left,
                         Font = GameService.Content.DefaultFont16,
                         HideBackground = true,
@@ -504,10 +569,28 @@ namespace roguishpanda.AB_Bauble_Farm
                         Texture = _cancelTexture,
                         Size = new Point(16, 16),
                         Location = new Point(10, 10),
-                        //Visible = false,
+                        Visible = false,
                         Parent = _timerEventsPanels[i]
                     };
                     _cancelButton[i].Click += (s, e) => CancelEvent_Click(Index);
+                    _upArrowButton[i] = new Image
+                    {
+                        Texture = _upArrowTexture,
+                        Size = new Point(20, 20),
+                        Location = new Point(240, 4),
+                        Visible = false,
+                        Parent = _timerEventsPanels[i]
+                    };
+                    _upArrowButton[i].Click += (s, e) => MoveEvent_Click(Index, -1);
+                    _downArrowButton[i] = new Image
+                    {
+                        Texture = _downArrowTexture,
+                        Size = new Point(20, 20),
+                        Location = new Point(240, 20),
+                        Visible = false,
+                        Parent = _timerEventsPanels[i]
+                    };
+                    _downArrowButton[i].Click += (s, e) => MoveEvent_Click(Index, 1);
                 }
             }
             catch (Exception ex)
@@ -678,6 +761,23 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 //// Change color of selected
                 _timerEventsPanels[senderIndex].BackgroundColor = new Color(0, 0, 0, 1.0f);
+
+                for (int i = 0; i < TimerRowNum; i++)
+                {
+                    _cancelButton[i].Visible = false;
+                    _upArrowButton[i].Visible = false;
+                    _downArrowButton[i].Visible = false;
+                }
+
+                _cancelButton[senderIndex].Visible = true;
+                if (senderIndex != 0)
+                {
+                    _upArrowButton[senderIndex].Visible = true;
+                }
+                if ((senderIndex + 1) != TimerRowNum)
+                {
+                    _downArrowButton[senderIndex].Visible = true;
+                }
             }
             catch (Exception ex)
             {
