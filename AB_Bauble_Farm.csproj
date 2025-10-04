@@ -339,7 +339,6 @@
     <Content Include="mgfxc.pdb" />
     <Content Include="ref\png\517181-180.png" />
     <Content Include="ref\png\517181.png" />
-    <Content Include="ref\png\pen.png" />
     <Content Include="SharpDX.D3DCompiler.dll" />
     <Content Include="SharpDX.D3DCompiler.xml" />
     <Content Include="SharpDX.dll" />

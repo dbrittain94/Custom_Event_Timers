@@ -2,6 +2,7 @@
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
+using Blish_HUD.Input;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
 using Blish_HUD.Settings.UI.Views;
@@ -23,21 +24,24 @@ namespace roguishpanda.AB_Bauble_Farm
         private static readonly Logger Logger = Logger.GetLogger<BaubleFarmModule>();
         private BaubleFarmModule _BaubleFarmModule;
         private List<PackageData> _PackageData;
-        private Texture2D _penUpdateTexture;
         private Panel _timerEventsTitlePanel;
         private Label _timerEventsTitleLabel;
         private Label _PackageLabelDisplay;
-        private Label _PackageRenameLabel;
-        private TextBox _PackageTextBox;
+        private Label _PackageCreateLabel;
+        private TextBox _PackageCreateTextBox;
+        private StandardButton _ButtonCreate;
+        private TextBox _PackageRenameTextBox;
         private Label _DefaultPackageLabel;
-        private Image _renamePenImage;
         private SettingEntry<string> _PackageSettingEntry;
         private SettingCollection _Settings;
-        private StandardButton _ButtonRename;
+        private StandardButton _ButtonSaveRename;
+        private StandardButton _ButtonLoadRename;
         private Label _PackageLoadLabel;
         private Dropdown _PackageLoadDropdown;
         private StandardButton _ButtonLoad;
-        private Label _PackageRenameAlert;
+        private Label _PackageCreateAlert;
+        private StandardButton _buttonRestartModule;
+        private StandardButton _ButtonDelete;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -57,7 +61,6 @@ namespace roguishpanda.AB_Bauble_Farm
             };
 
             AsyncTexture2D TitleTexture = AsyncTexture2D.FromAssetId(1234872);
-            _penUpdateTexture = _BaubleFarmModule.ContentsManager.GetTexture(@"png\pen.png");
             _timerEventsTitlePanel = new Blish_HUD.Controls.Panel
             {
                 Parent = listSettingsPanel,
@@ -93,24 +96,42 @@ namespace roguishpanda.AB_Bauble_Farm
                 Visible = true,
                 Parent = listSettingsPanel
             };
-            _renamePenImage = new Blish_HUD.Controls.Image
+            _PackageRenameTextBox = new Blish_HUD.Controls.TextBox
             {
-                Size = new Point(20, 20),
-                Location = new Point(240, 120),
-                Texture = _penUpdateTexture,
+                Size = new Point(120, 30),
+                Location = new Point(260, 110),
+                Font = GameService.Content.DefaultFont16,
+                Visible = false,
+                Parent = listSettingsPanel
+            };
+            _ButtonLoadRename = new Blish_HUD.Controls.StandardButton
+            {
+                Text = "Rename",
+                Size = new Point(80, 30),
+                Location = new Point(440, 110),
                 Visible = true,
                 Parent = listSettingsPanel
             };
-            _PackageRenameLabel = new Blish_HUD.Controls.Label
+            _ButtonLoadRename.Click += _ButtonLoadRename_Click; ;
+            _ButtonSaveRename = new StandardButton()
             {
-                Text = "Rename Package:",
+                Text = "Save",
+                Size = new Point(80, 30),
+                Location = new Point(440, 110),
+                Visible = false,
+                Parent = listSettingsPanel
+            };
+            _ButtonSaveRename.Click += _ButtonSaveRename_Click;
+            _PackageCreateLabel = new Blish_HUD.Controls.Label
+            {
+                Text = "Create Package:",
                 Size = new Point(120, 40),
                 Location = new Point(110, 150),
                 Font = GameService.Content.DefaultFont16,
                 Visible = true,
                 Parent = listSettingsPanel
             };
-            _PackageTextBox = new Blish_HUD.Controls.TextBox
+            _PackageCreateTextBox = new Blish_HUD.Controls.TextBox
             {
                 Size = new Point(120, 30),
                 Location = new Point(260, 150),
@@ -118,20 +139,19 @@ namespace roguishpanda.AB_Bauble_Farm
                 Visible = true,
                 Parent = listSettingsPanel
             };
-            _PackageTextBox.TextChanged += _PackageTextBox_TextChanged;
-            _ButtonRename = new StandardButton()
+            _ButtonCreate = new StandardButton()
             {
-                Text = "Rename",
+                Text = "Create",
                 Size = new Point(80, 30),
-                Location = new Point(400, 150),
-                Visible = false,
+                Location = new Point(440, 150),
+                Visible = true,
                 Parent = listSettingsPanel
             };
-            _ButtonRename.Click += _ButtonRename_Click;
-            _PackageRenameAlert = new Label
+            _ButtonCreate.Click += _ButtonCreate_Click;
+            _PackageCreateAlert = new Label
             {
                 Size = new Point(400, 40),
-                Location = new Point(400, 150),
+                Location = new Point(530, 150),
                 Font = GameService.Content.DefaultFont16,
                 Visible = false,
                 Parent = listSettingsPanel
@@ -154,7 +174,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 Parent = listSettingsPanel
             };
             Task task = LoadPackageDropdownOptions();
-            _PackageLoadDropdown.ValueChanged += _PackageLoadDropdown_ValueChanged;
             _ButtonLoad = new StandardButton()
             {
                 Text = "Load",
@@ -163,6 +182,26 @@ namespace roguishpanda.AB_Bauble_Farm
                 Visible = false,
                 Parent = listSettingsPanel
             };
+            _ButtonLoad.Click += _ButtonLoad_Click;
+            _ButtonDelete = new StandardButton()
+            {
+                Text = "Delete",
+                Size = new Point(80, 30),
+                Location = new Point(530, 200),
+                Visible = false,
+                Parent = listSettingsPanel
+            };
+            _ButtonDelete.Click += _ButtonDelete_Click;
+
+            _buttonRestartModule = new StandardButton
+            {
+                Text = "Restart Module",
+                Size = new Point(200, 40),
+                Location = new Point(110, 350),
+                Visible = false,
+                Parent = listSettingsPanel
+            };
+            _buttonRestartModule.Click += RestartModule_Click;
 
             SettingCollection SettingsCollection = _BaubleFarmModule._PackageSettingsCollection;
 
@@ -177,12 +216,76 @@ namespace roguishpanda.AB_Bauble_Farm
                     _DefaultPackageLabel.Text = _PackageSettingEntry.Value.ToString();
                 }
             }
-            _ButtonRename.Visible = false;
+            _ButtonSaveRename.Visible = false;
         }
+
+        private void _ButtonDelete_Click(object sender, MouseEventArgs e)
+        {
+            _PackageData = _PackageData.Where(pd => pd.PackageName != _PackageLoadDropdown.SelectedItem).ToList();
+            SavePackageJsonUpdate();
+            Task task = LoadPackageDropdownOptions();
+        }
+        private void _ButtonLoad_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
+        {
+            _PackageSettingEntry.Value = _PackageLoadDropdown.SelectedItem.ToString();
+            _DefaultPackageLabel.Text = _PackageLoadDropdown.SelectedItem.ToString();
+            Task task = LoadPackageDropdownOptions();
+            _BaubleFarmModule.Restart();
+        }
+
+        private void _ButtonCreate_Click(object sender, MouseEventArgs e)
+        {
+            // Check parameters
+            if (_PackageCreateTextBox.Text.Length < 4)
+            {
+                _PackageCreateAlert.Text = "* 4 characters mininimum required to create new package";
+                _PackageCreateAlert.Visible = true;
+                _PackageCreateAlert.TextColor = Color.Red;
+                return;
+            }
+            foreach (var Packages in _PackageData)
+            {
+                if (Packages.PackageName == _PackageCreateTextBox.Text)
+                {
+                    _PackageCreateAlert.Text = "* This package name already exists";
+                    _PackageCreateAlert.Visible = true;
+                    _PackageCreateAlert.TextColor = Color.Red;
+                    return;
+                }
+            }
+            _PackageCreateAlert.Text = "Package has been created!";
+            _PackageCreateAlert.Visible = true;
+            _PackageCreateAlert.TextColor = Color.LimeGreen;
+
+            // Create a new PackageData instance
+            PackageData newPackage = new PackageData
+            {
+                PackageName = _PackageCreateTextBox.Text,
+                StaticDetailData = new List<StaticDetailData>(), // Initialize empty list or add items
+                TimerDetailData = new List<TimerDetailData>()    // Initialize empty list or add items
+            };
+
+            _PackageData.Add(newPackage);
+            SavePackageJsonUpdate();
+            Task task = LoadPackageDropdownOptions();
+            //_buttonRestartModule.Visible = true;
+        }
+
+        private void _ButtonLoadRename_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
+        {
+            _DefaultPackageLabel.Visible = false;
+            _PackageRenameTextBox.Visible = true;
+            _ButtonLoadRename.Visible = false;
+            _ButtonSaveRename.Visible = true;
+            _PackageCreateAlert.Visible = false;
+            _PackageRenameTextBox.Text = _DefaultPackageLabel.Text;
+        }
+
         private async Task LoadPackageDropdownOptions()
         {
             try
             {
+                _PackageLoadDropdown.Items.Clear();
                 _PackageData = new List<PackageData>();
                 string moduleDir = _BaubleFarmModule.DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
                 string jsonFilePath = Path.Combine(moduleDir, "Package_Defaults.json");
@@ -195,7 +298,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < _PackageData.Count; i++)
                 {
                     string PackageName = _PackageData[i].PackageName;
-                    _PackageLoadDropdown.Items.Add(PackageName);
+                    //_PackageLoadDropdown.Items.Add(PackageName);
                     if (PackageName != _DefaultPackageLabel.Text)
                     {
                         _PackageLoadDropdown.Items.Add(PackageName);
@@ -204,15 +307,18 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 if (_PackageLoadDropdown.Items.Count > 0)
                 {
+                    _PackageLoadDropdown.SelectedItem = _PackageLoadDropdown.Items[0];
                     _PackageLoadLabel.Visible = true;
                     _PackageLoadDropdown.Visible = true;
                     _ButtonLoad.Visible = true;
+                    _ButtonDelete.Visible = true;
                 }
                 else
                 {
                     _PackageLoadLabel.Visible = false;
                     _PackageLoadDropdown.Visible = false;
                     _ButtonLoad.Visible = false;
+                    _ButtonDelete.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -221,30 +327,26 @@ namespace roguishpanda.AB_Bauble_Farm
             }
         }
 
-        private void _PackageLoadDropdown_ValueChanged(object sender, ValueChangedEventArgs e)
+        private void _ButtonSaveRename_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
-
-        }
-
-        private void _ButtonRename_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
-        {
-            _ButtonRename.Visible = false;
+            _ButtonSaveRename.Visible = false;
+            _DefaultPackageLabel.Visible = true;
+            _PackageCreateAlert.Visible = false;
+            _PackageRenameTextBox.Visible = false;
+            _ButtonLoadRename.Visible = true;
+            _ButtonSaveRename.Visible = false;
             var package = _PackageData.FirstOrDefault(p => p.PackageName == _DefaultPackageLabel.Text);
             if (package != null)
             {
-                package.PackageName = _PackageTextBox.Text;
-                _PackageSettingEntry.Value = _PackageTextBox.Text;
-                _DefaultPackageLabel.Text = _PackageTextBox.Text;
+                package.PackageName = _PackageRenameTextBox.Text;
+                _PackageSettingEntry.Value = _PackageRenameTextBox.Text;
+                _DefaultPackageLabel.Text = _PackageRenameTextBox.Text;
             }
-            RenamePackageJsonUpdate();
+            SavePackageJsonUpdate();
+            Task task = LoadPackageDropdownOptions();
+            _buttonRestartModule.Visible = true;
         }
-
-        private void _PackageTextBox_TextChanged(object sender, EventArgs e)
-        {
-            _ButtonRename.Visible = true;
-            _PackageRenameAlert.Visible = false;
-        }
-        private void RenamePackageJsonUpdate()
+        private void SavePackageJsonUpdate()
         {
             string moduleDir = _BaubleFarmModule.DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
             string jsonFilePath = Path.Combine(moduleDir, "Package_Defaults.json");
@@ -252,15 +354,18 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 string jsonContent = JsonSerializer.Serialize(_PackageData, _jsonOptions);
                 File.WriteAllText(jsonFilePath, jsonContent);
-                _PackageRenameAlert.Text = "Events have been saved! Restart Module to reset timer UI!";
-                _PackageRenameAlert.Visible = true;
-                _PackageRenameAlert.TextColor = Color.LimeGreen;
                 //Logger.Info($"Saved {_eventDataList.Count} events to {_jsonFilePath}");
             }
             catch (Exception ex)
             {
                 Logger.Warn($"Failed to save JSON file: {ex.Message}");
             }
+        }
+        private void RestartModule_Click(object sender, MouseEventArgs e)
+        {
+            _BaubleFarmModule.Restart();
+            _buttonRestartModule.Visible = false;
+            _PackageCreateAlert.Visible = false;
         }
     }
 }

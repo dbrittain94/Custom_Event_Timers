@@ -1094,8 +1094,14 @@ namespace roguishpanda.AB_Bauble_Farm
                     //Logger.Info($"Loaded {_eventDataList.Count} events from {jsonFilePath}");
                 }
 
-                _eventNotes = _PackageData[0].TimerDetailData;
-                var timerNotesData = _PackageData[0].TimerDetailData;
+                int index = 0;
+                int Defaultindex = _PackageData.FindIndex(p => p.PackageName == _CurrentPackageSelection.Value);
+                if (Defaultindex >= 0)
+                {
+                    index = Defaultindex;
+                }
+                _eventNotes = _PackageData[index].TimerDetailData;
+                var timerNotesData = _PackageData[index].TimerDetailData;
                 int Count = _eventNotes.Count();
                 TimerRowNum = Count;
                 _timerStartTimes = new DateTime?[TimerRowNum];
@@ -1486,11 +1492,11 @@ namespace roguishpanda.AB_Bauble_Farm
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
                 };
 
-                AsyncTexture2D packageTexture = AsyncTexture2D.FromAssetId(156701);
+                AsyncTexture2D clockTexture = AsyncTexture2D.FromAssetId(155156);
                 _SettingsWindow.Tabs.Add(new Tab(
-                    packageTexture,
-                    () => new PackageSettingsTabView(),
-                    "Packages"
+                    clockTexture,
+                    () => new TimerSettingsTabView(),
+                    "Timer Events"
                 ));
                 AsyncTexture2D staticTexture = AsyncTexture2D.FromAssetId(156909);
                 _SettingsWindow.Tabs.Add(new Tab(
@@ -1498,11 +1504,11 @@ namespace roguishpanda.AB_Bauble_Farm
                     () => new StaticEventSettingsTabView(),
                     "Static Events"
                 ));
-                AsyncTexture2D clockTexture = AsyncTexture2D.FromAssetId(155156);
+                AsyncTexture2D packageTexture = AsyncTexture2D.FromAssetId(156701);
                 _SettingsWindow.Tabs.Add(new Tab(
-                    clockTexture,
-                    () => new TimerSettingsTabView(),
-                    "Timer Events"
+                    packageTexture,
+                    () => new PackageSettingsTabView(),
+                    "Packages"
                 ));
                 AsyncTexture2D listTexture = AsyncTexture2D.FromAssetId(157109);
                 _SettingsWindow.Tabs.Add(new Tab(

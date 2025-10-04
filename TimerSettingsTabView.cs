@@ -281,6 +281,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Seconds = 30,
                     Notes = new List<string>() { "" },
                     Waypoints = new List<string>() { "" },
+                    Broadcast = new List<bool>() { false, false, false, false }
                 };
                 _eventNotes.Add(notesData);
 
@@ -323,6 +324,19 @@ namespace roguishpanda.AB_Bauble_Farm
                 Logger.Warn($"Failed to created event: {ex.Message}");
             }
         }
+        public void ReplacePackage(List<PackageData> packageList, PackageData newPackage)
+        {
+            for (int i = 0; i < packageList.Count; i++)
+            {
+                if (packageList[i].PackageName == newPackage.PackageName)
+                {
+                    packageList[i] = newPackage;
+                    return;
+                }
+            }
+            // Optional: Add the new package if it doesn't exist
+            packageList.Add(newPackage);
+        }
         private void CreateEventJson()
         {
             string CurrentPackage = "";
@@ -345,14 +359,13 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 throw new ArgumentException($"No PackageData found with PackageName: {CurrentPackage}");
             }
-            List<PackageData> newPackageData = new List<PackageData>();
-            newPackageData.Add(package);
+            ReplacePackage(_PackageData, package);
 
             string moduleDir = _BaubleFarmModule.DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
             string jsonFilePath = Path.Combine(moduleDir, "Package_Defaults.json");
             try
             {
-                string jsonContent = JsonSerializer.Serialize(newPackageData, _jsonOptions);
+                string jsonContent = JsonSerializer.Serialize(_PackageData, _jsonOptions);
                 File.WriteAllText(jsonFilePath, jsonContent);
                 _CreateEventAlert.Text = "Events have been saved! Restart Module to reset timer UI";
                 _CreateEventAlert.Visible = true;
@@ -382,6 +395,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Seconds = note.Seconds,
                     Notes = note.Notes,
                     Waypoints = note.Waypoints,
+                    Broadcast = note.Broadcast
                 }).ToList();
                 if (_eventNotes.Count <= 0)
                 {
@@ -973,6 +987,9 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 _BaubleFarmModule._timerDurationDefaults[Index] = Minutes + Seconds;
                 _BaubleFarmModule._timerLabels[Index].Text = _BaubleFarmModule._timerDurationDefaults[Index].ToString(@"mm\:ss");
+            }
+            if (Index < _eventNotes.Count)
+            {
                 _eventNotes[Index].Minutes = Minutes.TotalMinutes;
                 _eventNotes[Index].Seconds = Seconds.TotalSeconds;
             }
