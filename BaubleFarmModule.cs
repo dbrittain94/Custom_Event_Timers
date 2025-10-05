@@ -86,13 +86,14 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Label _statusValue;
         public Blish_HUD.Controls.Label _startTimeValue;
         public Blish_HUD.Controls.Label _endTimeValue;
-        public List<List<string>> _Notes;
-        public List<List<bool>> _Broadcast;
-        public List<List<string>> _Waypoints;
+        public List<List<string>> _timerNotes;
+        public List<List<bool>> _timerBroadcast;
+        public List<List<string>> _timerWaypoints;
         public Checkbox _InOrdercheckbox;
         public DateTime elapsedDateTime;
         public DateTime initialDateTime;
-        public int TimerRowNum = 12;
+        public int TimerRowNum = 0;
+        public int StaticRowNum = 0;
         public StandardButton _stopButton;
         public StandardButton[] _stopButtons;
         public StandardButton[] _resetButtons;
@@ -100,12 +101,23 @@ namespace roguishpanda.AB_Bauble_Farm
         public DateTime?[] _timerStartTimes; // Nullable to track if timer is started
         public bool[] _timerRunning; // Track running state
         public TimeSpan[] _timerDurationDefaults;
+        public List<List<string>> _staticNotes;
+        public List<List<bool>> _staticBroadcast;
+        public List<List<string>> _staticWaypoints;
+        public bool[] _staticRunning;
+        public Blish_HUD.Controls.Label[] _staticLabelDescriptions;
+        public Image[] _staticNotesIcon;
+        public Image[] _staticWaypointIcon;
+        public Checkbox[] _staticCheckboxes;
         public TimeSpan[] _timerDurationOverride;
         public Blish_HUD.Controls.Panel[] _TimerWindowsOrdered;
+        private Blish_HUD.Controls.Panel[] _StaticWindowsOrdered;
         public Blish_HUD.Controls.Panel _infoPanel;
         public Blish_HUD.Controls.Panel _timerPanel;
         public Blish_HUD.Controls.Panel _SettingsPanel;
         public StandardWindow _TimerWindow;
+        public StandardWindow _StaticWindow;
+        public Blish_HUD.Controls.Panel _staticPanel;
         public StandardWindow _InfoWindow;
         public TabbedWindow2 _SettingsWindow;
         public Blish_HUD.Controls.Panel _timerSettingsPanel;
@@ -125,17 +137,16 @@ namespace roguishpanda.AB_Bauble_Farm
         public AsyncTexture2D _asyncNotesSettingstexture;
         public Blish_HUD.Controls.Panel _inputPanel;
         public Blish_HUD.Controls.Label _instructionLabel;
-        public Image[] _notesIcon;
-        public Image[] _waypointIcon;
-        public int[] _ModifierKeys;
-        public int[] _PrimaryKey;
+        public Image[] _timerNotesIcon;
+        public Image[] _timerWaypointIcon;
         public double[] _TimerMinutes;
         public double[] _TimerSeconds;
         public int[] _TimerID;
         public SettingEntry<string> _CurrentPackageSelection;
         public SettingCollection _settings;
         public List<PackageData> _PackageData;
-        public List<TimerDetailData> _eventNotes;
+        public List<TimerDetailData> _timerEvents;
+        public List<StaticDetailData> _staticEvents;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -191,18 +202,18 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             if (_cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
             {
-                for (int i = 0; i < _notesIcon.Count(); i++)
+                for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
-                    _notesIcon[i].Hide();
-                    _waypointIcon[i].Hide();
+                    _timerNotesIcon[i].Hide();
+                    _timerWaypointIcon[i].Hide();
                 }
             }
             else
             {
-                for (int i = 0; i < _notesIcon.Count(); i++)
+                for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
-                    _notesIcon[i].Show();
-                    _waypointIcon[i].Show();
+                    _timerNotesIcon[i].Show();
+                    _timerWaypointIcon[i].Show();
                 }
             }
         }
@@ -211,18 +222,18 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             if ( _postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
             {
-                for (int i = 0; i < _notesIcon.Count(); i++)
+                for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
-                    _notesIcon[i].Hide();
-                    _waypointIcon[i].Hide();
+                    _timerNotesIcon[i].Hide();
+                    _timerWaypointIcon[i].Hide();
                 }
             }
             else
             {
-                for (int i = 0; i < _notesIcon.Count(); i++)
+                for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
-                    _notesIcon[i].Show();
-                    _waypointIcon[i].Show();
+                    _timerNotesIcon[i].Show();
+                    _timerWaypointIcon[i].Show();
                 }
             }
         }
@@ -335,8 +346,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 if (WaypointList.Count > 0)
                 {
-                    _Waypoints[i].Clear();
-                    _Waypoints[i].AddRange(WaypointList);
+                    _timerWaypoints[i].Clear();
+                    _timerWaypoints[i].AddRange(WaypointList);
                 }
 
                 List<string> NotesList = new List<string>();
@@ -412,13 +423,13 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 if (NotesList.Count > 0)
                 {
-                    _Notes[i].Clear();
-                    _Notes[i].AddRange(NotesList);
+                    _timerNotes[i].Clear();
+                    _timerNotes[i].AddRange(NotesList);
                 }
                 if (BroadcastNotesList.Count > 0)
                 {
-                    _Broadcast[i].Clear();
-                    _Broadcast[i].AddRange(BroadcastNotesList);
+                    _timerBroadcast[i].Clear();
+                    _timerBroadcast[i].AddRange(BroadcastNotesList);
                 }
             }
         }
@@ -719,14 +730,32 @@ namespace roguishpanda.AB_Bauble_Farm
             SendKey(VK_RETURN);
             Thread.Sleep(100);
         }
-        private async Task NotesIcon_Click(int index)
+        private async Task NotesIcon_Click(int index, string eventType)
         {
-            List<string> notes = _Notes[index];
-
-            for (int i = 0; i < _notesIcon.Count(); i++)
+            var notesText = new List<List<string>>();
+            var notesBroadcast = new List<bool>();
+            var waypointIcon = new Image[0];
+            var notesIcon = new Image[0];
+            if (eventType == "Static")
             {
-                _notesIcon[i].Enabled = false;
-                _waypointIcon[i].Enabled = false;
+                notesText = _staticNotes;
+                notesBroadcast = _staticEvents[index].Broadcast;
+                waypointIcon = _staticNotesIcon;
+                notesIcon = _staticWaypointIcon;
+            }
+            else
+            {
+                notesText = _timerNotes;
+                notesBroadcast = _timerEvents[index].Broadcast;
+                waypointIcon = _timerNotesIcon;
+                notesIcon = _timerWaypointIcon;
+            }
+            List<string> notes = notesText[index];
+
+            for (int i = 0; i < notesIcon.Count(); i++)
+            {
+                notesIcon[i].Enabled = false;
+                waypointIcon[i].Enabled = false;
             }
 
             ShowInputPanel("Notes");
@@ -743,50 +772,55 @@ namespace roguishpanda.AB_Bauble_Farm
                     string message = notes[i];
                     if (message != null && message.Length > 0)
                     {
-                        ClipboardPaste(notes[i], _eventNotes[index].Broadcast[i]);
+                        ClipboardPaste(notes[i], notesBroadcast[i]);
                     }
                 }
             }
 
-            for (int i = 0; i < _notesIcon.Count(); i++)
+            for (int i = 0; i < notesIcon.Count(); i++)
             {
-                _notesIcon[i].Enabled = true;
-                _waypointIcon[i].Enabled = true;
+                notesIcon[i].Enabled = true;
+                waypointIcon[i].Enabled = true;
             }
         }
-        private void WaypointIcon_Click(int index)
+        private void WaypointIcon_Click(int index, string eventType)
         {
-            List<string> waypoints = _Waypoints[index];
-
-            for (int i = 0; i < _waypointIcon.Count(); i++)
+            var waypointText = new List<List<string>>();
+            var waypointIcon = new Image[0];
+            var notesIcon = new Image[0];
+            if (eventType == "Static")
             {
-                _notesIcon[i].Enabled = false;
-                _waypointIcon[i].Enabled = false;
+                waypointText = _staticWaypoints;
+                waypointIcon = _staticNotesIcon;
+                notesIcon = _staticWaypointIcon;
+            }
+            else
+            {
+                waypointText = _timerWaypoints;
+                waypointIcon = _timerNotesIcon;
+                notesIcon = _timerWaypointIcon;
+            }
+            List<string> waypoints = waypointText[index];
+
+            for (int i = 0; i < waypointIcon.Count(); i++)
+            {
+                notesIcon[i].Enabled = false;
+                waypointIcon[i].Enabled = false;
             }
 
-            //ShowInputPanel("Waypoint");
-            //bool wasKeybindPressed = await WaitForKeybindAsync();
-            //await WaitForShiftKeyUpAsync();
-            //_inputPanel?.Hide();
-            //_inputPanel = null;
-            //Thread.Sleep(1000);
-
-            //if (wasKeybindPressed)
-            //{
-                for (int i = 0; i < waypoints.Count; i++)
-                {
-                    string message = waypoints[i];
-                    if (message != null && message.Length > 0)
-                    {
-                        ClipboardPaste(waypoints[i], false);
-                    }
-                }
-            //}
-
-            for (int i = 0; i < _waypointIcon.Count(); i++)
+            for (int i = 0; i < waypoints.Count; i++)
             {
-                _notesIcon[i].Enabled = true;
-                _waypointIcon[i].Enabled = true;
+                string message = waypoints[i];
+                if (message != null && message.Length > 0)
+                {
+                    ClipboardPaste(waypoints[i], false);
+                }
+            }
+
+            for (int i = 0; i < waypointIcon.Count(); i++)
+            {
+                notesIcon[i].Enabled = true;
+                waypointIcon[i].Enabled = true;
             }
         }
         private void ShowInputPanel(string Title)
@@ -898,11 +932,13 @@ namespace roguishpanda.AB_Bauble_Farm
             if (_TimerWindow.Visible)
             {
                 _TimerWindow.Hide();
+                _StaticWindow.Hide();
                 //_InfoWindow.Hide();
             }
             else
             {
                 _TimerWindow.Show();
+                _StaticWindow.Show();
                 //_InfoWindow.Show();
             }
         }
@@ -1080,7 +1116,8 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 _PackageData = new List<PackageData>();
-                _eventNotes = new List<TimerDetailData>();
+                _timerEvents = new List<TimerDetailData>();
+                _staticEvents = new List<StaticDetailData>();
                 string moduleDir2 = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
                 string jsonFilePath2 = Path.Combine(moduleDir2, "Package_Defaults.json");
                 if (!File.Exists(jsonFilePath2))
@@ -1100,18 +1137,24 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     index = Defaultindex;
                 }
-                _eventNotes = _PackageData[index].TimerDetailData;
+                _timerEvents = _PackageData[index].TimerDetailData;
+                _staticEvents = _PackageData[index].StaticDetailData;
                 var timerNotesData = _PackageData[index].TimerDetailData;
-                int Count = _eventNotes.Count();
-                TimerRowNum = Count;
+                var staticNotesData = _PackageData[index].StaticDetailData;
+                int TimerCount = _timerEvents.Count();
+                int StaticCount = _staticEvents.Count();
+                TimerRowNum = TimerCount;
+                StaticRowNum = StaticCount;
+
+                // Initialize timer UI variables
                 _timerStartTimes = new DateTime?[TimerRowNum];
-                _Notes = new List<List<string>>();
-                _Broadcast = new List<List<bool>>();
-                _Waypoints = new List<List<string>>();
+                _timerNotes = new List<List<string>>();
+                _timerBroadcast = new List<List<bool>>();
+                _timerWaypoints = new List<List<string>>();
                 _timerRunning = new bool[TimerRowNum];
                 _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
-                _notesIcon = new Image[TimerRowNum];
-                _waypointIcon = new Image[TimerRowNum];
+                _timerNotesIcon = new Image[TimerRowNum];
+                _timerWaypointIcon = new Image[TimerRowNum];
                 _timerLabels = new Blish_HUD.Controls.Label[TimerRowNum];
                 _resetButtons = new StandardButton[TimerRowNum];
                 _stopButtons = new StandardButton[TimerRowNum];
@@ -1119,24 +1162,42 @@ namespace roguishpanda.AB_Bauble_Farm
                 _TimerWindowsOrdered = new Blish_HUD.Controls.Panel[TimerRowNum];
                 _timerDurationOverride = new TimeSpan[TimerRowNum];
                 _timerDurationDefaults = new TimeSpan[TimerRowNum];
-                _ModifierKeys = new int[TimerRowNum];
-                _PrimaryKey = new int[TimerRowNum];
+
+                // Initialize static UI variables
+                _staticNotes = new List<List<string>>();
+                _staticBroadcast = new List<List<bool>>();
+                _staticWaypoints = new List<List<string>>();
+                _staticRunning = new bool[StaticRowNum];
+                _staticLabelDescriptions = new Blish_HUD.Controls.Label[StaticRowNum];
+                _staticNotesIcon = new Image[StaticRowNum];
+                _staticWaypointIcon = new Image[StaticRowNum];
+                _staticCheckboxes = new Blish_HUD.Controls.Checkbox[StaticRowNum];
+                _StaticWindowsOrdered = new Blish_HUD.Controls.Panel[StaticRowNum];
+
+                // Initialize more timer variables
                 _TimerMinutes = new double[TimerRowNum];
                 _TimerSeconds = new double[TimerRowNum];
                 _TimerID = new int[TimerRowNum];
 
                 for (int i = 0; i < TimerRowNum; i++)
                 {
-                    _Notes.Add(timerNotesData[i].Notes);
-                    _Broadcast.Add(timerNotesData[i].Broadcast);
-                    _Waypoints.Add(timerNotesData[i].Waypoints);
+                    _timerNotes.Add(timerNotesData[i].Notes);
+                    _timerBroadcast.Add(timerNotesData[i].Broadcast);
+                    _timerWaypoints.Add(timerNotesData[i].Waypoints);
                     _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
                     _TimerMinutes[i] = timerNotesData[i].Minutes;
                     _TimerSeconds[i] = timerNotesData[i].Seconds;
                     _TimerID[i] = timerNotesData[i].ID;
-
                     //Logger.Info($"Waypoint: {timerNotesData[i].Waypoint} Notes: {timerNotesData[i].Notes}");
+                }
+                for (int j = 0; j < StaticRowNum; j++)
+                {
+                    _staticNotes.Add(staticNotesData[j].Notes);
+                    _staticBroadcast.Add(staticNotesData[j].Broadcast);
+                    _staticWaypoints.Add(staticNotesData[j].Waypoints);
+                    _staticLabelDescriptions[j] = new Blish_HUD.Controls.Label();
+                    _staticLabelDescriptions[j].Text = staticNotesData[j].Description;
                 }
             }
             catch (Exception ex)
@@ -1152,16 +1213,20 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerStartTimes[i] = null; // Not started
                 _timerRunning[i] = false;
             }
-
             LoadTimerDefaults(TimerRowNum);
+
+            // Initialize all statics as not started
+            for (int i = 0; i < StaticRowNum; i++)
+            {
+                _staticRunning[i] = false;
+            }
 
             #endregion
 
 
             try
             {
-                #region Timer Window Window
-
+                #region Timer Window
                 //// Assign all textures and parameters for timer window
                 _asyncTimertexture = AsyncTexture2D.FromAssetId(155985); //GameService.Content.DatAssetCache.GetTextureFromAssetId(155985)
                 _asyncGeneralSettingstexture = AsyncTexture2D.FromAssetId(156701);
@@ -1188,7 +1253,34 @@ namespace roguishpanda.AB_Bauble_Farm
                     BackgroundColor = Color.Black,
                     Opacity = _OpacityDefault.Value
                 };
+                #endregion
 
+                #region Static Window
+                _StaticWindow = new StandardWindow(
+                    NoTexture,
+                    new Rectangle(0, 0, 320, 300), // The windowRegion
+                    new Rectangle(0, -10, 320, 300)) // The contentRegion
+                {
+                    Parent = GameService.Graphics.SpriteScreen,
+                    Title = "",
+                    SavesPosition = true,
+                    BackgroundColor = Color.Black,
+                    Opacity = _OpacityDefault.Value,
+                    //SavesSize = true,
+                    //CanResize = true,
+                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmStaticWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                };
+                /// Create texture panel for timer window
+                _staticPanel = new Blish_HUD.Controls.Panel
+                {
+                    Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
+                    Size = new Point(320, 250), // Match the panel to the content region
+                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 40), // Align with content region
+                    CanScroll = true,
+                    ShowBorder = true,
+                    BackgroundColor = Color.Black,
+                    Opacity = _OpacityDefault.Value
+                };
                 #endregion
 
                 #region Bauble Information Window
@@ -1301,7 +1393,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 #endregion
 
                 #region Timer Controls
-
                 _stopButton = new StandardButton
                 {
                     Text = "Stop All Timers",
@@ -1353,9 +1444,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     Parent = _TimerWindow
                 };
 
-                // Create UI elements for each timer
-                //string[] Descriptions = { "SVET", "EVET", "NVET", "WVET", "SAP", "BALTH", "WYVERN", "BRAMBLE", "OOZE", "GUZZLER", "TM", "STONEHEADS" };
-
+                AsyncTexture2D waypointTexture = AsyncTexture2D.FromAssetId(102348);
+                AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
                 for (int i = 0; i < TimerRowNum; i++)
                 {
                     int index = i; // Capture index for event handlers
@@ -1368,9 +1458,8 @@ namespace roguishpanda.AB_Bauble_Farm
                         Location = new Point(0, 95 + (i * 30)),
                     };
 
-                    // WAypoint Icon
-                    AsyncTexture2D waypointTexture = AsyncTexture2D.FromAssetId(102348);
-                    _waypointIcon[i] = new Image
+                    // Waypoint Icon
+                    _timerWaypointIcon[i] = new Image
                     {
                         Texture = waypointTexture,
                         Location = new Point(0, 0),
@@ -1379,23 +1468,22 @@ namespace roguishpanda.AB_Bauble_Farm
                         //Visible = false,
                         Parent = _TimerWindowsOrdered[i]
                     };
-                    _waypointIcon[i].MouseEntered += (sender, e) => {
+                    _timerWaypointIcon[i].MouseEntered += (sender, e) => {
                         Image noteIcon = sender as Image;
                         noteIcon.Location = new Point(0 - 2, 0 - 2);
                         noteIcon.Size = new Point(36, 36);
                         noteIcon.Opacity = 1f;
                     };
-                    _waypointIcon[i].MouseLeft += (sender, e) => {
+                    _timerWaypointIcon[i].MouseLeft += (sender, e) => {
                         Image noteIcon = sender as Image;
                         noteIcon.Location = new Point(0, 0);
                         noteIcon.Size = new Point(32, 32);
                         noteIcon.Opacity = 0.7f;
                     };
-                    _waypointIcon[i].Click += (s, e) => WaypointIcon_Click(index);
+                    _timerWaypointIcon[i].Click += (s, e) => WaypointIcon_Click(index, "Timer");
 
                     // Notes Icon
-                    AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
-                    _notesIcon[i] = new Image
+                    _timerNotesIcon[i] = new Image
                     {
                         Texture = notesTexture,
                         Location = new Point(30, 0),
@@ -1404,19 +1492,19 @@ namespace roguishpanda.AB_Bauble_Farm
                         //Visible = false,
                         Parent = _TimerWindowsOrdered[i]
                     };
-                    _notesIcon[i].MouseEntered += (sender, e) => {
+                    _timerNotesIcon[i].MouseEntered += (sender, e) => {
                         Image noteIcon = sender as Image;
                         noteIcon.Location = new Point(30 - 2, 0 - 2);
                         noteIcon.Size = new Point(36, 36);
                         noteIcon.Opacity = 1f;
                     };
-                    _notesIcon[i].MouseLeft += (sender, e) => {
+                    _timerNotesIcon[i].MouseLeft += (sender, e) => {
                         Image noteIcon = sender as Image;
                         noteIcon.Location = new Point(30, 0);
                         noteIcon.Size = new Point(32, 32);
                         noteIcon.Opacity = 0.7f;
                     };
-                    _notesIcon[i].Click += async (s, e) => await NotesIcon_Click(index);
+                    _timerNotesIcon[i].Click += async (s, e) => await NotesIcon_Click(index, "Timer");
 
                     // Timer Event Description
                     _timerLabelDescriptions[i].Size = new Point(100, 30);
@@ -1442,7 +1530,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
                     _resetButtons[i].Click += (s, e) => ResetButton_Click(index);
 
-                    // Reset button
+                    // Stop button
                     _stopButtons[i] = new StandardButton
                     {
                         Text = "Stop",
@@ -1466,18 +1554,116 @@ namespace roguishpanda.AB_Bauble_Farm
 
                     if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
                     {
-                        _notesIcon[i].Hide();
-                        _waypointIcon[i].Hide();
+                        _timerNotesIcon[i].Hide();
+                        _timerWaypointIcon[i].Hide();
                     }
                     else
                     {
-                        _notesIcon[i].Show();
-                        _waypointIcon[i].Show();
+                        _timerNotesIcon[i].Show();
+                        _timerWaypointIcon[i].Show();
                     }
                 }
                 #endregion
 
-                #region Timer Settings Window
+                #region Static Controls
+                Blish_HUD.Controls.Label staticEventsLabel = new Blish_HUD.Controls.Label
+                {
+                    Text = "Static Events",
+                    Size = new Point(120, 30),
+                    Location = new Point(105, 40),
+                    Font = GameService.Content.DefaultFont16,
+                    StrokeText = true,
+                    TextColor = Color.DodgerBlue,
+                    Parent = _StaticWindow
+                };
+
+                for (int j = 0; j < StaticRowNum; j++)
+                {
+                    int index = j; // Capture index for event handlers
+
+                    // Static Panels
+                    _StaticWindowsOrdered[j] = new Blish_HUD.Controls.Panel
+                    {
+                        Parent = _staticPanel,
+                        Size = new Point(390, 30),
+                        Location = new Point(0, (j * 30)),
+                    };
+
+                    // Waypoint Icon
+                    _staticWaypointIcon[j] = new Image
+                    {
+                        Texture = waypointTexture,
+                        Location = new Point(0, 0),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        //Visible = false,
+                        Parent = _StaticWindowsOrdered[j]
+                    };
+                    _staticWaypointIcon[j].MouseEntered += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(0 - 2, 0 - 2);
+                        noteIcon.Size = new Point(36, 36);
+                        noteIcon.Opacity = 1f;
+                    };
+                    _staticWaypointIcon[j].MouseLeft += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(0, 0);
+                        noteIcon.Size = new Point(32, 32);
+                        noteIcon.Opacity = 0.7f;
+                    };
+                    _staticWaypointIcon[j].Click += (s, e) => WaypointIcon_Click(index, "Static");
+
+                    // Notes Icon
+                    _staticNotesIcon[j] = new Image
+                    {
+                        Texture = notesTexture,
+                        Location = new Point(30, 0),
+                        Size = new Point(32, 32),
+                        Opacity = 0.7f,
+                        //Visible = false,
+                        Parent = _StaticWindowsOrdered[j]
+                    };
+                    _staticNotesIcon[j].MouseEntered += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(30 - 2, 0 - 2);
+                        noteIcon.Size = new Point(36, 36);
+                        noteIcon.Opacity = 1f;
+                    };
+                    _staticNotesIcon[j].MouseLeft += (sender, e) => {
+                        Image noteIcon = sender as Image;
+                        noteIcon.Location = new Point(30, 0);
+                        noteIcon.Size = new Point(32, 32);
+                        noteIcon.Opacity = 0.7f;
+                    };
+                    _staticNotesIcon[j].Click += async (s, e) => await NotesIcon_Click(index, "Static");
+
+                    // Notes Icon
+                    _staticCheckboxes[j] = new Checkbox
+                    {
+                        Location = new Point(70, 0),
+                        Size = new Point(32, 32),
+                        Parent = _StaticWindowsOrdered[j]
+                    };
+
+                    // Timer Event Description
+                    _staticLabelDescriptions[j].Size = new Point(200, 30);
+                    _staticLabelDescriptions[j].Location = new Point(100, 0);
+                    _staticLabelDescriptions[j].Parent = _StaticWindowsOrdered[j];
+
+                    if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
+                    {
+                        _staticNotesIcon[j].Hide();
+                        _staticWaypointIcon[j].Hide();
+                    }
+                    else
+                    {
+                        _staticNotesIcon[j].Show();
+                        _staticWaypointIcon[j].Show();
+                    }
+                }
+                #endregion
+
+                #region Settings Window
 
                 _SettingsWindow = new TabbedWindow2(
                     NoTexture,
@@ -1742,14 +1928,39 @@ namespace roguishpanda.AB_Bauble_Farm
 
         protected override void Unload()
         {
-            // Clean up
             ModuleInstance = null;
+            // Dispose timer UI
             for (int i = 0; i < TimerRowNum; i++)
             {
+                _timerLabelDescriptions[i]?.Dispose();
                 _resetButtons[i]?.Dispose();
+                _stopButtons[i]?.Dispose();
+                _timerWaypointIcon[i]?.Dispose();
+                _timerNotesIcon[i]?.Dispose();
                 _timerLabels[i]?.Dispose();
             }
+            _stopButton?.Dispose();
+            _InOrdercheckbox?.Dispose();
 
+            if (_toggleInfoWindowKeybind != null)
+            {
+                _toggleInfoWindowKeybind.Value.Activated -= ToggleInfoWindowKeybind_Activated;
+            }
+            _InfoWindow?.Dispose();
+            _InfoWindow = null;
+
+            // Dispose static UI
+            for (int i = 0; i < TimerRowNum; i++)
+            {
+                _staticLabelDescriptions[i]?.Dispose();
+                _staticWaypointIcon[i]?.Dispose();
+                _staticNotesIcon[i]?.Dispose();
+            }
+
+            _StaticWindow?.Dispose();
+            _StaticWindow = null;
+
+            // Dispose corner icon UI
             _cornerIcon.Click -= CornerIcon_Click;
             _cornerIcon?.Dispose();
 
@@ -1758,13 +1969,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 _toggleTimerWindowKeybind.Value.Activated -= ToggleTimerWindowKeybind_Activated;
             }
             _TimerWindow?.Dispose();
-            _TimerWindow = null;
-            if (_toggleInfoWindowKeybind != null)
-            {
-                _toggleInfoWindowKeybind.Value.Activated -= ToggleInfoWindowKeybind_Activated;
-            }
-            _InfoWindow?.Dispose();
-            _InfoWindow = null;
         }
 
         public void Restart()

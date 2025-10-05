@@ -74,7 +74,7 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
             _MainSettings = _BaubleFarmModule._settings;
-            _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._eventNotes);
+            _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._timerEvents);
             _PackageData = new List<PackageData>(_BaubleFarmModule._PackageData);
             TimerRowNum = _BaubleFarmModule.TimerRowNum;
             _NoTexture = new AsyncTexture2D();
@@ -502,7 +502,7 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 // Reload events from original UI
-                _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._eventNotes);
+                _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._timerEvents);
 
                 // Clear old UI info
                 for (int i = 0; i < TimerRowNum; i++)
@@ -1013,8 +1013,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 if (WaypointList.Count > 0)
                 {
-                    _BaubleFarmModule._Waypoints[Index].Clear();
-                    _BaubleFarmModule._Waypoints[Index].AddRange(WaypointList);
+                    _BaubleFarmModule._timerWaypoints[Index].Clear();
+                    _BaubleFarmModule._timerWaypoints[Index].AddRange(WaypointList);
                     _eventNotes[Index].Waypoints.Clear();
                     _eventNotes[Index].Waypoints.AddRange(WaypointList);
                 }
@@ -1106,15 +1106,15 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 if (NotesList.Count > 0)
                 {
-                    _BaubleFarmModule._Notes[Index].Clear();
-                    _BaubleFarmModule._Notes[Index].AddRange(NotesList);
+                    _BaubleFarmModule._timerNotes[Index].Clear();
+                    _BaubleFarmModule._timerNotes[Index].AddRange(NotesList);
                     _eventNotes[Index].Notes.Clear();
                     _eventNotes[Index].Notes.AddRange(NotesList);
 
                     if (BroadcastNotesList.Count > 0)
                     {
-                        _BaubleFarmModule._Broadcast[Index].Clear();
-                        _BaubleFarmModule._Broadcast[Index].AddRange(BroadcastNotesList);
+                        _BaubleFarmModule._timerBroadcast[Index].Clear();
+                        _BaubleFarmModule._timerBroadcast[Index].AddRange(BroadcastNotesList);
                         _eventNotes[Index].Broadcast.Clear();
                         _eventNotes[Index].Broadcast.AddRange(BroadcastNotesList);
                     }
