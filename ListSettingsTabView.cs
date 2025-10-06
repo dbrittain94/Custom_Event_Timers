@@ -50,14 +50,14 @@ namespace roguishpanda.AB_Bauble_Farm
             _LowTimerLabelDisplay = new Blish_HUD.Controls.Label
             {
                 Size = new Point(100, 40),
-                Location = new Point(580, 125),
+                Location = new Point(580, 150),
                 Font = GameService.Content.DefaultFont16,
                 Parent = listSettingsPanel
             };
             _OpacityLabelDisplay = new Blish_HUD.Controls.Label
             {
                 Size = new Point(100, 40),
-                Location = new Point(580, 150),
+                Location = new Point(580, 175),
                 Font = GameService.Content.DefaultFont16,
                 Parent = listSettingsPanel
             };

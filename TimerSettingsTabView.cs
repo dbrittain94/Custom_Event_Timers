@@ -62,9 +62,9 @@ namespace roguishpanda.AB_Bauble_Farm
         private int TimerRowNum;
         private StandardButton _buttonSaveEvents;
         private StandardButton _buttonReloadEvents;
-        private SettingEntry<string> _PackageSettingEntry;
         private SettingEntry<bool> _timerBroadcastNoteTwoDefault;
         private SettingEntry<bool> _timerBroadcastNoteThreeDefault;
+        private string _CurrentPackage;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -77,6 +77,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._timerEvents);
             _PackageData = new List<PackageData>(_BaubleFarmModule._PackageData);
             TimerRowNum = _BaubleFarmModule.TimerRowNum;
+            _CurrentPackage = _BaubleFarmModule._CurrentPackage;
             _NoTexture = new AsyncTexture2D();
             _cancelTexture = AsyncTexture2D.FromAssetId(2175782);
             _addTexture = AsyncTexture2D.FromAssetId(155911);
@@ -339,25 +340,14 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private void CreateEventJson()
         {
-            string CurrentPackage = "";
-            SettingCollection PackageSettings = _MainSettings.AddSubCollection("PackageSettings");
-            if (PackageSettings != null)
-            {
-                _PackageSettingEntry = null;
-                PackageSettings.TryGetSetting("CurrentPackageSelection", out _PackageSettingEntry);
-                if (_PackageSettingEntry != null)
-                {
-                    CurrentPackage = _PackageSettingEntry.Value.ToString();
-                }
-            }
-            var package = _PackageData.FirstOrDefault(p => p.PackageName == CurrentPackage); 
+            var package = _PackageData.FirstOrDefault(p => p.PackageName == _CurrentPackage); 
             if (package != null)
             {
                 package.TimerDetailData = _eventNotes;
             }
             else
             {
-                throw new ArgumentException($"No PackageData found with PackageName: {CurrentPackage}");
+                throw new ArgumentException($"No PackageData found with PackageName: {_CurrentPackage}");
             }
             ReplacePackage(_PackageData, package);
 
@@ -439,8 +429,9 @@ namespace roguishpanda.AB_Bauble_Farm
                 LoadDefaults(TimerRowNum);
                 TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
                 //CreateEventJson();
-                SettingCollection TimerCollector = _MainSettings.AddSubCollection(Description + "TimerInfo");
-                TimerCollector.UndefineSetting(Description + "TimerInfo");
+                SettingCollection PackageInfo = _MainSettings.AddSubCollection(_CurrentPackage + "_PackageInfo");
+                SettingCollection TimerCollector = PackageInfo.AddSubCollection(Description + "_TimerInfo");
+                TimerCollector.UndefineSetting(Description + "_TimerInfo");
                 _buttonSaveEvents.Visible = true;
                 _buttonReloadEvents.Visible = true;
                 _buttonRestartModule.Visible = false;
@@ -568,7 +559,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     _timerEventTextbox[i] = new Blish_HUD.Controls.TextBox
                     {
                         Text = eventNotes[i].Description,
-                        Size = new Point(150, 30),
+                        Size = new Point(200, 30),
                         Location = new Point(30, 5),
                         HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Left,
                         Font = GameService.Content.DefaultFont16,
@@ -625,14 +616,15 @@ namespace roguishpanda.AB_Bauble_Farm
                     _settingsViewContainer.Dispose();
                 }
 
-                SettingCollection TimerCollector = _MainSettings.AddSubCollection(_eventNotes[senderIndex].Description + "TimerInfo");
+                SettingCollection PackageInfo = _MainSettings.AddSubCollection(_CurrentPackage + "_PackageInfo");
+                SettingCollection TimerCollector = PackageInfo.AddSubCollection(_eventNotes[senderIndex].Description + "_TimerInfo");
                 _timerKeybind = new SettingEntry<KeyBinding>();
-                _timerKeybind = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "Keybind", new KeyBinding(Keys.None), () => "Keybind", () => "Keybind is used to control start/stop for timer");
-                _timerMinutesDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "TimerMinutes", Convert.ToInt32(_eventNotes[senderIndex].Minutes), () => "Timer (minutes)", () => "Use to control minutes on the timer");
+                _timerKeybind = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_Keybind", new KeyBinding(Keys.None), () => "Keybind", () => "Keybind is used to control start/stop for timer");
+                _timerMinutesDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_TimerMinutes", Convert.ToInt32(_eventNotes[senderIndex].Minutes), () => "Timer (minutes)", () => "Use to control minutes on the timer");
                 _timerMinutesDefault.SetRange(0, 59);
                 _MinutesLabelDisplay.Text = _timerMinutesDefault.Value.ToString() + " Minutes";
                 _timerMinutesDefault.SettingChanged += (s2, e2) => LoadTimeCustomized(senderIndex);
-                _timerSecondsDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "TimerSeconds", Convert.ToInt32(_eventNotes[senderIndex].Seconds), () => "Timer (seconds)", () => "Use to control seconds on the timer");
+                _timerSecondsDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_TimerSeconds", Convert.ToInt32(_eventNotes[senderIndex].Seconds), () => "Timer (seconds)", () => "Use to control seconds on the timer");
                 _timerSecondsDefault.SetRange(0, 59);
                 _SecondsLabelDisplay.Text = _timerSecondsDefault.Value.ToString() + " Seconds";
                 _timerSecondsDefault.SettingChanged += (s2, e2) => LoadTimeCustomized(senderIndex);
@@ -648,7 +640,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         }
                     }
                 }
-                _timerWaypoint = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "Waypoint", Waypoint, () => "Waypoint", () => "Use to control the note #1");
+                _timerWaypoint = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_Waypoint", Waypoint, () => "Waypoint", () => "Use to control the note #1");
                 _timerWaypoint.SettingChanged += (s2, e2) => LoadWaypointCustomized(senderIndex);
 
                 string NoteOne = "";
@@ -662,7 +654,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         }
                     }
                 }
-                _timerNoteOneDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "NoteOne", NoteOne, () => "Note #1", () => "Use to control the note #1");
+                _timerNoteOneDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_NoteOne", NoteOne, () => "Note #1", () => "Use to control the note #1");
                 _timerNoteOneDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 string NoteTwo = "";
@@ -676,7 +668,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         }
                     }
                 }
-                _timerNoteTwoDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "NoteTwo", NoteTwo, () => "Note #2", () => "Use to control the note #2");
+                _timerNoteTwoDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_NoteTwo", NoteTwo, () => "Note #2", () => "Use to control the note #2");
                 _timerNoteTwoDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 string NoteThree = "";
@@ -690,7 +682,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         }
                     }
                 }
-                _timerNoteThreeDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "NoteThree", NoteThree, () => "Note #3", () => "Use to control the note #3");
+                _timerNoteThreeDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_NoteThree", NoteThree, () => "Note #3", () => "Use to control the note #3");
                 _timerNoteThreeDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 string NoteFour = "";
@@ -704,7 +696,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         }
                     }
                 }
-                _timerNoteFourDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "NoteFour", NoteFour, () => "Note #4", () => "Use to control the note #4");
+                _timerNoteFourDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_NoteFour", NoteFour, () => "Note #4", () => "Use to control the note #4");
                 _timerNoteFourDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 bool BroadcastNoteOne = false;
@@ -715,7 +707,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         BroadcastNoteOne = _eventNotes[senderIndex].Broadcast[0];
                     }
                 }
-                _timerBroadcastNoteOneDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteOne", BroadcastNoteOne, () => "Broadcast Note #1", () => "Use to broadcast note #1");
+                _timerBroadcastNoteOneDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_BroadcastNoteOne", BroadcastNoteOne, () => "Broadcast Note #1", () => "Use to broadcast note #1");
                 _timerBroadcastNoteOneDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 bool BroadcastNoteTwo = false;
@@ -726,7 +718,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         BroadcastNoteTwo = _eventNotes[senderIndex].Broadcast[1];
                     }
                 }
-                _timerBroadcastNoteTwoDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteTwo", BroadcastNoteTwo, () => "Broadcast Note #2", () => "Use to broadcast note #2");
+                _timerBroadcastNoteTwoDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_BroadcastNoteTwo", BroadcastNoteTwo, () => "Broadcast Note #2", () => "Use to broadcast note #2");
                 _timerBroadcastNoteTwoDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 bool BroadcastNoteThree = false;
@@ -737,7 +729,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         BroadcastNoteThree = _eventNotes[senderIndex].Broadcast[2];
                     }
                 }
-                _timerBroadcastNoteThreeDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteThree", BroadcastNoteThree, () => "Broadcast Note #3", () => "Use to broadcast note #3");
+                _timerBroadcastNoteThreeDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_BroadcastNoteThree", BroadcastNoteThree, () => "Broadcast Note #3", () => "Use to broadcast note #3");
                 _timerBroadcastNoteThreeDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 bool BroadcastNoteFour = false;
@@ -748,7 +740,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         BroadcastNoteFour = _eventNotes[senderIndex].Broadcast[3];
                     }
                 }
-                _timerBroadcastNoteFourDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "BroadcastNoteFour", BroadcastNoteFour, () => "Broadcast Note #4", () => "Use to broadcast note #4");
+                _timerBroadcastNoteFourDefault = TimerCollector.DefineSetting(_eventNotes[senderIndex].Description + "_BroadcastNoteFour", BroadcastNoteFour, () => "Broadcast Note #4", () => "Use to broadcast note #4");
                 _timerBroadcastNoteFourDefault.SettingChanged += (s2, e2) => LoadNotesCustomized(senderIndex);
 
                 _settingsViewContainer = new ViewContainer
@@ -805,41 +797,43 @@ namespace roguishpanda.AB_Bauble_Farm
                 var eventNotes = _eventNotes;
                 for (int i = 0; i < TotalEvents; i++)
                 {
-                    SettingCollection TimerCollector = _MainSettings.AddSubCollection(eventNotes[i].Description + "TimerInfo");
+                    SettingCollection PackageInfo = _MainSettings.AddSubCollection(_CurrentPackage + "_PackageInfo");
+                    SettingCollection TimerCollector = PackageInfo.AddSubCollection(eventNotes[i].Description + "_TimerInfo");
                     if (TimerCollector != null && TimerCollector.Count() > 0)
                     {
-                        SettingEntry<int> MintuesSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "TimerMinutes", out MintuesSettingEntry);
+                        SettingEntry<int> MinutesSettingEntry = null;
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_TimerMinutes", out MinutesSettingEntry);
                         SettingEntry<int> SecondsSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "TimerSeconds", out SecondsSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_TimerSeconds", out SecondsSettingEntry);
                         SettingEntry<string> WaypointSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "Waypoint", out WaypointSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_Waypoint", out WaypointSettingEntry);
                         SettingEntry<string> NotesOneSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "NoteOne", out NotesOneSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_NoteOne", out NotesOneSettingEntry);
                         SettingEntry<string> NotesTwoSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "NoteTwo", out NotesTwoSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_NoteTwo", out NotesTwoSettingEntry);
                         SettingEntry<string> NotesThreeSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "NoteThree", out NotesThreeSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_NoteThree", out NotesThreeSettingEntry);
                         SettingEntry<string> NotesFourSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "NoteFour", out NotesFourSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_NoteFour", out NotesFourSettingEntry);
                         SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteOne", out NotesOneSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_BroadcastNoteOne", out NotesOneSettingEntry);
                         SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteTwo", out NotesTwoSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_BroadcastNoteTwo", out NotesTwoSettingEntry);
                         SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteThree", out NotesThreeSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_BroadcastNoteThree", out NotesThreeSettingEntry);
                         SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
-                        TimerCollector.TryGetSetting(eventNotes[i].Description + "BroadcastNoteFour", out NotesFourSettingEntry);
+                        TimerCollector.TryGetSetting(eventNotes[i].Description + "_BroadcastNoteFour", out NotesFourSettingEntry);
 
                         double Minutes = eventNotes[i].Minutes;
                         double Seconds = eventNotes[i].Seconds;
-                        if (MintuesSettingEntry != null)
+                        if (MinutesSettingEntry != null)
                         {
-                            double TempMinutes = MintuesSettingEntry.Value;
+                            double TempMinutes = MinutesSettingEntry.Value;
                             if (TempMinutes != 0)
                             {
                                 Minutes = TempMinutes;
                             }
+                            MinutesSettingEntry.Value = Convert.ToInt32(Minutes);
                         }
                         if (SecondsSettingEntry != null)
                         {
@@ -848,9 +842,8 @@ namespace roguishpanda.AB_Bauble_Farm
                             {
                                 Seconds = TempSeconds;
                             }
+                            SecondsSettingEntry.Value = Convert.ToInt32(Seconds);
                         }
-                        MintuesSettingEntry.Value = Convert.ToInt32(Minutes);
-                        SecondsSettingEntry.Value = Convert.ToInt32(Seconds);
 
                         if (WaypointSettingEntry != null)
                         {

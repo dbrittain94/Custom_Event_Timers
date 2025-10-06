@@ -111,12 +111,13 @@ namespace roguishpanda.AB_Bauble_Farm
         public Checkbox[] _staticCheckboxes;
         public TimeSpan[] _timerDurationOverride;
         public Blish_HUD.Controls.Panel[] _TimerWindowsOrdered;
-        private Blish_HUD.Controls.Panel[] _StaticWindowsOrdered;
+        public Blish_HUD.Controls.Panel[] _StaticWindowsOrdered;
         public Blish_HUD.Controls.Panel _infoPanel;
         public Blish_HUD.Controls.Panel _timerPanel;
         public Blish_HUD.Controls.Panel _SettingsPanel;
         public StandardWindow _TimerWindow;
         public StandardWindow _StaticWindow;
+        public Blish_HUD.Controls.Panel _staticBackgroundPanel;
         public Blish_HUD.Controls.Panel _staticPanel;
         public StandardWindow _InfoWindow;
         public TabbedWindow2 _SettingsWindow;
@@ -130,6 +131,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public SettingCollection _MainSettingsCollection;
         public SettingCollection _PackageSettingsCollection;
         public SettingEntry<bool> _InOrdercheckboxDefault;
+        public SettingEntry<bool> _hideStaticEventsDefault;
         public SettingEntry<float> _OpacityDefault;
         public SettingEntry<int> _timerLowDefault;
         public AsyncTexture2D _asyncTimertexture;
@@ -147,6 +149,10 @@ namespace roguishpanda.AB_Bauble_Farm
         public List<PackageData> _PackageData;
         public List<TimerDetailData> _timerEvents;
         public List<StaticDetailData> _staticEvents;
+        public Checkbox _hideStaticEventsCheckbox;
+        public StandardButton _resetStaticEventsButton;
+        public SettingEntry<string> _PackageSettingEntry;
+        public string _CurrentPackage;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true // Makes JSON human-readable
@@ -164,6 +170,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageSettingsCollection = settings.AddSubCollection("PackageSettings");
 
             _InOrdercheckboxDefault = _MainSettingsCollection.DefineSetting("InOrdercheckboxDefault", false, () => "Order by Timer", () => "Check this box if you want to order your timers by time.");
+            _hideStaticEventsDefault = _MainSettingsCollection.DefineSetting("hideStaticEventsDefault", false, () => "Hide Static Events", () => "Check this box to hide static events that are completed.");
 
             _timerLowDefault = _MainSettingsCollection.DefineSetting("LowTimerDefaultTimer", 30, () => "Low Timer", () => "Set timer for when timer gets below certain threshold in seconds.");
             _timerLowDefault.SetRange(1, 120);
@@ -264,6 +271,7 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _infoPanel.Opacity = _OpacityDefault.Value;
             _timerPanel.Opacity = _OpacityDefault.Value;
+            _staticBackgroundPanel.Opacity = _OpacityDefault.Value;
         }
         private void timerKeybinds(int timerIndex)
         {
@@ -281,31 +289,32 @@ namespace roguishpanda.AB_Bauble_Farm
             for (int i = 0; i < TotalEvents; i++)
             {
                 int count = i;
-                SettingCollection TimerCollector = _settings.AddSubCollection(_timerLabelDescriptions[i].Text + "TimerInfo");
+                SettingCollection PackageInfo = _settings.AddSubCollection(_CurrentPackage + "_PackageInfo");
+                SettingCollection TimerCollector = PackageInfo.AddSubCollection(_timerLabelDescriptions[i].Text + "_TimerInfo");
                 SettingEntry<KeyBinding> KeybindSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "Keybind", out KeybindSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_Keybind", out KeybindSettingEntry);
                 SettingEntry<int> MintuesSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "TimerMinutes", out MintuesSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_TimerMinutes", out MintuesSettingEntry);
                 SettingEntry<int> SecondsSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "TimerSeconds", out SecondsSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_TimerSeconds", out SecondsSettingEntry);
                 SettingEntry<string> WaypointSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "Waypoint", out WaypointSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_Waypoint", out WaypointSettingEntry);
                 SettingEntry<string> NotesOneSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteOne", out NotesOneSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteOne", out NotesOneSettingEntry);
                 SettingEntry<string> NotesTwoSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteTwo", out NotesTwoSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteTwo", out NotesTwoSettingEntry);
                 SettingEntry<string> NotesThreeSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteThree", out NotesThreeSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteThree", out NotesThreeSettingEntry);
                 SettingEntry<string> NotesFourSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "NoteFour", out NotesFourSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteFour", out NotesFourSettingEntry);
                 SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteOne", out BroadcastNotesOneSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteOne", out BroadcastNotesOneSettingEntry);
                 SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteTwo", out BroadcastNotesTwoSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteTwo", out BroadcastNotesTwoSettingEntry);
                 SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteThree", out BroadcastNotesThreeSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteThree", out BroadcastNotesThreeSettingEntry);
                 SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "BroadcastNoteFour", out BroadcastNotesFourSettingEntry);
+                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteFour", out BroadcastNotesFourSettingEntry);
 
                 if (KeybindSettingEntry != null)
                 {
@@ -430,6 +439,130 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     _timerBroadcast[i].Clear();
                     _timerBroadcast[i].AddRange(BroadcastNotesList);
+                }
+            }
+        }
+        public void LoadStaticDefaults(int TotalEvents)
+        {
+            for (int i = 0; i < TotalEvents; i++)
+            {
+                int count = i;
+                SettingCollection PackageInfo = _settings.AddSubCollection(_CurrentPackage + "_PackageInfo");
+                SettingCollection staticCollector = PackageInfo.AddSubCollection(_staticLabelDescriptions[i].Text + "_StaticInfo");
+                SettingEntry<string> WaypointSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_Waypoint", out WaypointSettingEntry);
+                SettingEntry<string> NotesOneSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteOne", out NotesOneSettingEntry);
+                SettingEntry<string> NotesTwoSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteTwo", out NotesTwoSettingEntry);
+                SettingEntry<string> NotesThreeSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteThree", out NotesThreeSettingEntry);
+                SettingEntry<string> NotesFourSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteFour", out NotesFourSettingEntry);
+                SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteOne", out BroadcastNotesOneSettingEntry);
+                SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteTwo", out BroadcastNotesTwoSettingEntry);
+                SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteThree", out BroadcastNotesThreeSettingEntry);
+                SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
+                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteFour", out BroadcastNotesFourSettingEntry);
+
+                List<string> WaypointList = new List<string>();
+                if (WaypointSettingEntry != null)
+                {
+                    string Waypoints = WaypointSettingEntry.Value;
+                    if (Waypoints != "")
+                    {
+                        WaypointList.Add(Waypoints);
+                    }
+                }
+                if (WaypointList.Count > 0)
+                {
+                    _staticWaypoints[i].Clear();
+                    _staticWaypoints[i].AddRange(WaypointList);
+                }
+
+                List<string> NotesList = new List<string>();
+                List<bool> BroadcastNotesList = new List<bool>();
+                if (NotesOneSettingEntry != null)
+                {
+                    string Notes = NotesOneSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        NotesList.Add(Notes);
+                    }
+                }
+                if (NotesTwoSettingEntry != null)
+                {
+                    string Notes = NotesTwoSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        NotesList.Add(Notes);
+                    }
+                }
+                if (NotesThreeSettingEntry != null)
+                {
+                    string Notes = NotesThreeSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        NotesList.Add(Notes);
+                    }
+                }
+                if (NotesFourSettingEntry != null)
+                {
+                    string Notes = NotesFourSettingEntry.Value;
+                    if (Notes != "")
+                    {
+                        NotesList.Add(Notes);
+                    }
+                }
+                if (BroadcastNotesOneSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesOneSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (BroadcastNotesTwoSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesTwoSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (BroadcastNotesThreeSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesThreeSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+                if (BroadcastNotesFourSettingEntry != null)
+                {
+                    bool BroadcastNotes = BroadcastNotesFourSettingEntry.Value;
+                    BroadcastNotesList.Add(BroadcastNotes);
+                }
+                else
+                {
+                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
+                }
+
+                if (NotesList.Count > 0)
+                {
+                    _staticNotes[i].Clear();
+                    _staticNotes[i].AddRange(NotesList);
+                }
+                if (BroadcastNotesList.Count > 0)
+                {
+                    _staticBroadcast[i].Clear();
+                    _staticBroadcast[i].AddRange(BroadcastNotesList);
                 }
             }
         }
@@ -993,7 +1126,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
             }
 
-            UpdateJsonEvents();
+            UpdateTimerJsonEvents();
         }
         private void stopButtons_Click(int timerIndex)
         {
@@ -1014,7 +1147,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _customDropdownTimers[timerIndex].Enabled = true;
             }
 
-            UpdateJsonEvents();
+            UpdateTimerJsonEvents();
         }
         private void StopButton_Click()
         {
@@ -1038,7 +1171,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
             }
 
-            UpdateJsonEvents();
+            UpdateTimerJsonEvents();
         }
         private void dropdownChanged_Click(int timerIndex)
         {
@@ -1056,7 +1189,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerLabels[timerIndex].Text = $"{_timerDurationOverride[timerIndex]:mm\\:ss}";
             }
         }
-        private void UpdateJsonEvents()
+        private void UpdateTimerJsonEvents()
         {
             /// Backup timers in case of DC, disconnect, or crash
             List<TimerLogData> eventDataList = new List<TimerLogData>();
@@ -1146,6 +1279,19 @@ namespace roguishpanda.AB_Bauble_Farm
                 TimerRowNum = TimerCount;
                 StaticRowNum = StaticCount;
 
+                // Get current package
+                _CurrentPackage = "Undefined";
+                SettingCollection PackageSettings = _settings.AddSubCollection("PackageSettings");
+                if (PackageSettings != null)
+                {
+                    _PackageSettingEntry = null;
+                    PackageSettings.TryGetSetting("CurrentPackageSelection", out _PackageSettingEntry);
+                    if (_PackageSettingEntry != null)
+                    {
+                        _CurrentPackage = _PackageSettingEntry.Value.ToString();
+                    }
+                }
+
                 // Initialize timer UI variables
                 _timerStartTimes = new DateTime?[TimerRowNum];
                 _timerNotes = new List<List<string>>();
@@ -1220,6 +1366,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 _staticRunning[i] = false;
             }
+            LoadStaticDefaults(StaticRowNum);
 
             #endregion
 
@@ -1258,28 +1405,31 @@ namespace roguishpanda.AB_Bauble_Farm
                 #region Static Window
                 _StaticWindow = new StandardWindow(
                     NoTexture,
-                    new Rectangle(0, 0, 320, 300), // The windowRegion
-                    new Rectangle(0, -10, 320, 300)) // The contentRegion
+                    new Rectangle(0, 0, 320, 280), // The windowRegion
+                    new Rectangle(0, -10, 320, 280)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "",
                     SavesPosition = true,
-                    BackgroundColor = Color.Black,
-                    Opacity = _OpacityDefault.Value,
-                    //SavesSize = true,
-                    //CanResize = true,
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmStaticWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
                 /// Create texture panel for timer window
-                _staticPanel = new Blish_HUD.Controls.Panel
+                _staticBackgroundPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(320, 250), // Match the panel to the content region
-                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 40), // Align with content region
+                    Size = new Point(320, 280), // Match the panel to the content region
+                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y), // Align with content region
                     CanScroll = true,
                     ShowBorder = true,
                     BackgroundColor = Color.Black,
                     Opacity = _OpacityDefault.Value
+                };
+                _staticPanel = new Blish_HUD.Controls.Panel
+                {
+                    Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
+                    Size = new Point(320, 180), // Match the panel to the content region
+                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 80), // Align with content region
+                    CanScroll = true
                 };
                 #endregion
 
@@ -1566,11 +1716,30 @@ namespace roguishpanda.AB_Bauble_Farm
                 #endregion
 
                 #region Static Controls
+                _resetStaticEventsButton = new StandardButton
+                {
+                    Text = "Reset Events",
+                    Size = new Point(120, 30),
+                    Location = new Point(0, 40),
+                    Parent = _StaticWindow
+                };
+                _resetStaticEventsButton.Click += (s, e) => _resetStaticEventsButton_Click();
+
+                _hideStaticEventsCheckbox = new Checkbox
+                {
+                    Text = "Hide Completions",
+                    Size = new Point(120, 30),
+                    Location = new Point(130, 40),
+                    Parent = _StaticWindow
+                };
+                _hideStaticEventsCheckbox.Checked = _hideStaticEventsDefault.Value;
+                _hideStaticEventsCheckbox.Click += (s, e) => _hideStaticEventsCheckbox_Click();
+
                 Blish_HUD.Controls.Label staticEventsLabel = new Blish_HUD.Controls.Label
                 {
                     Text = "Static Events",
                     Size = new Point(120, 30),
-                    Location = new Point(105, 40),
+                    Location = new Point(100, 70),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
@@ -1644,6 +1813,7 @@ namespace roguishpanda.AB_Bauble_Farm
                         Size = new Point(32, 32),
                         Parent = _StaticWindowsOrdered[j]
                     };
+                    _staticCheckboxes[j].CheckedChanged += (s, e) => _StaticEventsCheckbox_Click(index);
 
                     // Timer Event Description
                     _staticLabelDescriptions[j].Size = new Point(200, 30);
@@ -1801,10 +1971,138 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             else
             {
-                Logger.Info("No Timers Event_Timers JSON file found.");
+                Logger.Info("No Event_Timers JSON file found.");
             }
 
             #endregion
+
+            #region Load Backup Static Events JSON
+
+            List<StaticLogData> staticEventDataList = new List<StaticLogData>();
+            string staticModuleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
+            string staticJsonFilePath = Path.Combine(staticModuleDir, "Static_Events.json");
+            if (File.Exists(staticJsonFilePath))
+            {
+                try
+                {
+                    using (StreamReader reader = new StreamReader(staticJsonFilePath))
+                    {
+                        string jsonContent = await reader.ReadToEndAsync();
+                        staticEventDataList = JsonSerializer.Deserialize<List<StaticLogData>>(jsonContent, _jsonOptions);
+                        //Logger.Info($"Loaded {_eventDataList.Count} events from {jsonFilePath}");
+                    }
+
+                    var eventData = staticEventDataList;
+                    for (int i = 0; i < StaticRowNum; i++)
+                    {
+                        bool isActive = eventData[i].IsActive;
+                        if (isActive == true)
+                        {
+                            _staticCheckboxes[i].Checked = true;
+                            _staticRunning[i] = true;
+                        }
+                        else
+                        {
+                            _staticCheckboxes[i].Checked = false;
+                            _staticRunning[i] = false;
+                        }
+                    }
+                    _hideStaticEvents();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Info($"Failed to load Static_Events JSON file: {ex.Message}");
+                }
+            }
+            else
+            {
+                Logger.Info("No Static_Events JSON file found.");
+            }
+
+            #endregion
+        }
+
+        private void _StaticEventsCheckbox_Click(int index)
+        {
+            if (_staticCheckboxes[index].Checked == true)
+            {
+                _staticRunning[index] = true;
+            }
+            else
+            {
+                _staticRunning[index] = false;
+            }
+            _hideStaticEvents();
+            UpdateStaticJsonEvents();
+        }
+
+        private void _hideStaticEvents()
+        {
+            int countVisible = 0;
+            for (int i = 0; i < StaticRowNum; i++)
+            {
+                if (_hideStaticEventsCheckbox.Checked == true)
+                {
+                    if (_staticCheckboxes[i].Checked == true)
+                    {
+                        _StaticWindowsOrdered[i].Visible = false;
+                    }
+                    else
+                    {
+                        _StaticWindowsOrdered[i].Visible = true;
+                        _StaticWindowsOrdered[i].Location = new Point(0, (countVisible * 30));
+                        countVisible++;
+                    }
+                }
+                else
+                {
+                    _StaticWindowsOrdered[i].Visible = true;
+                    _StaticWindowsOrdered[i].Location = new Point(0, (countVisible * 30));
+                    countVisible++;
+                }
+            }
+        }
+
+        private void _hideStaticEventsCheckbox_Click()
+        {
+            _hideStaticEvents();
+        }
+
+        private void _resetStaticEventsButton_Click()
+        {
+            for (int staticIndex = 0; staticIndex < StaticRowNum; staticIndex++)
+            {
+                _staticRunning[staticIndex] = false;
+                _staticCheckboxes[staticIndex].Checked = false;
+            }
+
+            UpdateStaticJsonEvents();
+        }
+        private void UpdateStaticJsonEvents()
+        {
+            /// Backup static events in case of DC, disconnect, or crash
+            List<StaticLogData> eventDataList = new List<StaticLogData>();
+            string moduleDir = DirectoriesManager.GetFullDirectoryPath("Shiny_Baubles");
+            string jsonFilePath = Path.Combine(moduleDir, "Static_Events.json");
+            for (int i = 0; i < StaticRowNum; i++)
+            {
+                eventDataList.Add(new StaticLogData
+                {
+                    ID = i,
+                    Description = $"{_staticLabelDescriptions[i].Text}",
+                    IsActive = _staticRunning[i]
+                });
+            }
+            try
+            {
+                string jsonContent = JsonSerializer.Serialize(eventDataList, _jsonOptions);
+                File.WriteAllText(jsonFilePath, jsonContent);
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"Failed to save JSON file: {ex.Message}");
+            }
+            //eventDataList = new List<EventData>();
         }
 
         protected override void Update(GameTime gameTime)
@@ -1950,7 +2248,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _InfoWindow = null;
 
             // Dispose static UI
-            for (int i = 0; i < TimerRowNum; i++)
+            for (int i = 0; i < StaticRowNum; i++)
             {
                 _staticLabelDescriptions[i]?.Dispose();
                 _staticWaypointIcon[i]?.Dispose();
