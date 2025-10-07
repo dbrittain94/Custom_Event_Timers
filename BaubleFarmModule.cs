@@ -54,17 +54,21 @@ namespace roguishpanda.AB_Bauble_Farm
         public string Description { get; set; }
         public double Minutes { get; set; }
         public double Seconds { get; set; }
-        public List<string> Notes { get; set; }
-        public List<bool> Broadcast { get; set; }
         public List<string> Waypoints { get; set; }
+        public List<NotesData> NotesData { get; set; }
     }
     public class StaticDetailData
     {
         public int ID { get; set; }
         public string Description { get; set; }
-        public List<string> Notes { get; set; }
-        public List<bool> Broadcast { get; set; }
         public List<string> Waypoints { get; set; }
+        public List<NotesData> NotesData { get; set; }
+
+    }
+    public class NotesData
+    {
+        public string Notes { get; set; }
+        public bool Broadcast { get; set; }
     }
 
     [Export(typeof(Blish_HUD.Modules.Module))]
@@ -86,8 +90,6 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Label _statusValue;
         public Blish_HUD.Controls.Label _startTimeValue;
         public Blish_HUD.Controls.Label _endTimeValue;
-        public List<List<string>> _timerNotes;
-        public List<List<bool>> _timerBroadcast;
         public List<List<string>> _timerWaypoints;
         public Checkbox _InOrdercheckbox;
         public DateTime elapsedDateTime;
@@ -101,8 +103,6 @@ namespace roguishpanda.AB_Bauble_Farm
         public DateTime?[] _timerStartTimes; // Nullable to track if timer is started
         public bool[] _timerRunning; // Track running state
         public TimeSpan[] _timerDurationDefaults;
-        public List<List<string>> _staticNotes;
-        public List<List<bool>> _staticBroadcast;
         public List<List<string>> _staticWaypoints;
         public bool[] _staticRunning;
         public Blish_HUD.Controls.Label[] _staticLabelDescriptions;
@@ -124,7 +124,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Panel _timerSettingsPanel;
         public CornerIcon _cornerIcon;
         public SettingEntry<KeyBinding> _toggleTimerWindowKeybind;
-        public SettingEntry<KeyBinding> _toggleInfoWindowKeybind;
+        public SettingEntry<KeyBinding> _toggleStaticWindowKeybind;
         public SettingEntry<KeyBinding> _stoneheadKeybind;
         public SettingEntry<KeyBinding> _postNotesKeybind;
         public SettingEntry<KeyBinding> _cancelNotesKeybind;
@@ -184,10 +184,10 @@ namespace roguishpanda.AB_Bauble_Farm
             _toggleTimerWindowKeybind.Value.Enabled = true;
             _toggleTimerWindowKeybind.Value.Activated += ToggleTimerWindowKeybind_Activated;
 
-            _toggleInfoWindowKeybind = _MainSettingsCollection.DefineSetting("InfoKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Info Window",() => "Keybind to show or hide the Information window.");
-            _toggleInfoWindowKeybind.Value.BlockSequenceFromGw2 = true;
-            _toggleInfoWindowKeybind.Value.Enabled = true;
-            _toggleInfoWindowKeybind.Value.Activated += ToggleInfoWindowKeybind_Activated;
+            _toggleStaticWindowKeybind = _MainSettingsCollection.DefineSetting("StaticKeybinding",new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.OemSemicolon),() => "Static Window", () => "Keybind to show or hide the Static window.");
+            _toggleStaticWindowKeybind.Value.BlockSequenceFromGw2 = true;
+            _toggleStaticWindowKeybind.Value.Enabled = true;
+            _toggleStaticWindowKeybind.Value.Activated += ToggleStaticWindowKeybind_Activated;
 
             _postNotesKeybind = _MainSettingsCollection.DefineSetting("PostNotesKeybinding", new KeyBinding(ModifierKeys.Shift, Microsoft.Xna.Framework.Input.Keys.B), () => "Post Notes", () => "Keybind to confirm posting notes in chat.");
             _postNotesKeybind.Value.BlockSequenceFromGw2 = true;
@@ -199,7 +199,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _cancelNotesKeybind.Value.Enabled = true;
             _cancelNotesKeybind.Value.BindingChanged += CancelNotes_BindingChanged;
 
-            _CurrentPackageSelection = _PackageSettingsCollection.DefineSetting("CurrentPackageSelection", "Default", () => "Current Package", () => "This is the current package selection.");
+            _CurrentPackageSelection = _PackageSettingsCollection.DefineSetting("CurrentPackageSelection", "Default", () => "Current Package", () => "This is the current package selection");
 
             _settings = settings;
         }
@@ -256,15 +256,15 @@ namespace roguishpanda.AB_Bauble_Farm
                 _TimerWindow.Show();
             }
         }
-        private void ToggleInfoWindowKeybind_Activated(object sender, EventArgs e)
+        private void ToggleStaticWindowKeybind_Activated(object sender, EventArgs e)
         {
-            if (_InfoWindow.Visible)
+            if (_StaticWindow.Visible)
             {
-                _InfoWindow.Hide();
+                _StaticWindow.Hide();
             }
             else
             {
-                _InfoWindow.Show();
+                _StaticWindow.Show();
             }
         }
         private void ChangeOpacity_Activated(object sender, EventArgs e)
@@ -290,31 +290,13 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 int count = i;
                 SettingCollection PackageInfo = _settings.AddSubCollection(_CurrentPackage + "_PackageInfo");
-                SettingCollection TimerCollector = PackageInfo.AddSubCollection(_timerLabelDescriptions[i].Text + "_TimerInfo");
+                SettingCollection TimerCollector = PackageInfo.AddSubCollection("TimerInfo_" + _timerEvents[i].ID);
                 SettingEntry<KeyBinding> KeybindSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_Keybind", out KeybindSettingEntry);
+                TimerCollector.TryGetSetting("Keybind", out KeybindSettingEntry);
                 SettingEntry<int> MintuesSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_TimerMinutes", out MintuesSettingEntry);
+                TimerCollector.TryGetSetting("TimerMinutes", out MintuesSettingEntry);
                 SettingEntry<int> SecondsSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_TimerSeconds", out SecondsSettingEntry);
-                SettingEntry<string> WaypointSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_Waypoint", out WaypointSettingEntry);
-                SettingEntry<string> NotesOneSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteOne", out NotesOneSettingEntry);
-                SettingEntry<string> NotesTwoSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteTwo", out NotesTwoSettingEntry);
-                SettingEntry<string> NotesThreeSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteThree", out NotesThreeSettingEntry);
-                SettingEntry<string> NotesFourSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_NoteFour", out NotesFourSettingEntry);
-                SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteOne", out BroadcastNotesOneSettingEntry);
-                SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteTwo", out BroadcastNotesTwoSettingEntry);
-                SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteThree", out BroadcastNotesThreeSettingEntry);
-                SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
-                TimerCollector.TryGetSetting(_timerLabelDescriptions[i].Text + "_BroadcastNoteFour", out BroadcastNotesFourSettingEntry);
+                TimerCollector.TryGetSetting("TimerSeconds", out SecondsSettingEntry);
 
                 if (KeybindSettingEntry != null)
                 {
@@ -343,227 +325,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 _timerDurationDefaults[i] = Minutes + Seconds;
                 _timerLabels[i].Text = _timerDurationDefaults[i].ToString(@"mm\:ss");
-
-                List<string> WaypointList = new List<string>();
-                if (WaypointSettingEntry != null)
-                {
-                    string Waypoints = WaypointSettingEntry.Value;
-                    if (Waypoints != "")
-                    {
-                        WaypointList.Add(Waypoints);
-                    }
-                }
-                if (WaypointList.Count > 0)
-                {
-                    _timerWaypoints[i].Clear();
-                    _timerWaypoints[i].AddRange(WaypointList);
-                }
-
-                List<string> NotesList = new List<string>();
-                List<bool> BroadcastNotesList = new List<bool>();
-                if (NotesOneSettingEntry != null)
-                {
-                    string Notes = NotesOneSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (NotesTwoSettingEntry != null)
-                {
-                    string Notes = NotesTwoSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (NotesThreeSettingEntry != null)
-                {
-                    string Notes = NotesThreeSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (NotesFourSettingEntry != null)
-                {
-                    string Notes = NotesFourSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (BroadcastNotesOneSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesOneSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-                if (BroadcastNotesTwoSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesTwoSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-                if (BroadcastNotesThreeSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesThreeSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-                if (BroadcastNotesFourSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesFourSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-
-                if (NotesList.Count > 0)
-                {
-                    _timerNotes[i].Clear();
-                    _timerNotes[i].AddRange(NotesList);
-                }
-                if (BroadcastNotesList.Count > 0)
-                {
-                    _timerBroadcast[i].Clear();
-                    _timerBroadcast[i].AddRange(BroadcastNotesList);
-                }
-            }
-        }
-        public void LoadStaticDefaults(int TotalEvents)
-        {
-            for (int i = 0; i < TotalEvents; i++)
-            {
-                int count = i;
-                SettingCollection PackageInfo = _settings.AddSubCollection(_CurrentPackage + "_PackageInfo");
-                SettingCollection staticCollector = PackageInfo.AddSubCollection(_staticLabelDescriptions[i].Text + "_StaticInfo");
-                SettingEntry<string> WaypointSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_Waypoint", out WaypointSettingEntry);
-                SettingEntry<string> NotesOneSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteOne", out NotesOneSettingEntry);
-                SettingEntry<string> NotesTwoSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteTwo", out NotesTwoSettingEntry);
-                SettingEntry<string> NotesThreeSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteThree", out NotesThreeSettingEntry);
-                SettingEntry<string> NotesFourSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_NoteFour", out NotesFourSettingEntry);
-                SettingEntry<bool> BroadcastNotesOneSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteOne", out BroadcastNotesOneSettingEntry);
-                SettingEntry<bool> BroadcastNotesTwoSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteTwo", out BroadcastNotesTwoSettingEntry);
-                SettingEntry<bool> BroadcastNotesThreeSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteThree", out BroadcastNotesThreeSettingEntry);
-                SettingEntry<bool> BroadcastNotesFourSettingEntry = null;
-                staticCollector.TryGetSetting(_staticLabelDescriptions[i].Text + "_BroadcastNoteFour", out BroadcastNotesFourSettingEntry);
-
-                List<string> WaypointList = new List<string>();
-                if (WaypointSettingEntry != null)
-                {
-                    string Waypoints = WaypointSettingEntry.Value;
-                    if (Waypoints != "")
-                    {
-                        WaypointList.Add(Waypoints);
-                    }
-                }
-                if (WaypointList.Count > 0)
-                {
-                    _staticWaypoints[i].Clear();
-                    _staticWaypoints[i].AddRange(WaypointList);
-                }
-
-                List<string> NotesList = new List<string>();
-                List<bool> BroadcastNotesList = new List<bool>();
-                if (NotesOneSettingEntry != null)
-                {
-                    string Notes = NotesOneSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (NotesTwoSettingEntry != null)
-                {
-                    string Notes = NotesTwoSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (NotesThreeSettingEntry != null)
-                {
-                    string Notes = NotesThreeSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (NotesFourSettingEntry != null)
-                {
-                    string Notes = NotesFourSettingEntry.Value;
-                    if (Notes != "")
-                    {
-                        NotesList.Add(Notes);
-                    }
-                }
-                if (BroadcastNotesOneSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesOneSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-                if (BroadcastNotesTwoSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesTwoSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-                if (BroadcastNotesThreeSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesThreeSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-                if (BroadcastNotesFourSettingEntry != null)
-                {
-                    bool BroadcastNotes = BroadcastNotesFourSettingEntry.Value;
-                    BroadcastNotesList.Add(BroadcastNotes);
-                }
-                else
-                {
-                    BroadcastNotesList.Add(false); // Add false for broadcast if note not null
-                }
-
-                if (NotesList.Count > 0)
-                {
-                    _staticNotes[i].Clear();
-                    _staticNotes[i].AddRange(NotesList);
-                }
-                if (BroadcastNotesList.Count > 0)
-                {
-                    _staticBroadcast[i].Clear();
-                    _staticBroadcast[i].AddRange(BroadcastNotesList);
-                }
             }
         }
         protected override void Initialize()
@@ -839,9 +600,9 @@ namespace roguishpanda.AB_Bauble_Farm
             thread.Start();
             thread.Join(); // Wait for clipboard operation to complete
         }
-        private void ClipboardPaste(string Message, bool Broadcast)
+        private void ClipboardPaste(NotesData notesData)
         {
-            if (Broadcast == true)
+            if (notesData.Broadcast == true)
             {
                 // Press Shift + Return to broadcast
                 SendTwoKeys(VK_SHIFT, VK_RETURN);
@@ -854,7 +615,7 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             Thread.Sleep(100);
             // Copy "hello" to clipboard
-            CopyToClipboard(Message);
+            CopyToClipboard(notesData.Notes);
             Thread.Sleep(100);
             // Simulate Ctrl+V to paste
             SendCtrlV();
@@ -865,25 +626,21 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private async Task NotesIcon_Click(int index, string eventType)
         {
-            var notesText = new List<List<string>>();
-            var notesBroadcast = new List<bool>();
+            var notesData = new List<NotesData>();
             var waypointIcon = new Image[0];
             var notesIcon = new Image[0];
             if (eventType == "Static")
             {
-                notesText = _staticNotes;
-                notesBroadcast = _staticEvents[index].Broadcast;
+                notesData = _staticEvents[index].NotesData;
                 waypointIcon = _staticNotesIcon;
                 notesIcon = _staticWaypointIcon;
             }
             else
             {
-                notesText = _timerNotes;
-                notesBroadcast = _timerEvents[index].Broadcast;
+                notesData = _timerEvents[index].NotesData;
                 waypointIcon = _timerNotesIcon;
                 notesIcon = _timerWaypointIcon;
             }
-            List<string> notes = notesText[index];
 
             for (int i = 0; i < notesIcon.Count(); i++)
             {
@@ -900,12 +657,12 @@ namespace roguishpanda.AB_Bauble_Farm
 
             if (wasKeybindPressed)
             {
-                for (int i = 0; i < notes.Count; i++)
+                for (int i = 0; i < notesData.Count; i++)
                 {
-                    string message = notes[i];
+                    string message = notesData[i].Notes;
                     if (message != null && message.Length > 0)
                     {
-                        ClipboardPaste(notes[i], notesBroadcast[i]);
+                        ClipboardPaste(notesData[i]);
                     }
                 }
             }
@@ -918,22 +675,31 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private void WaypointIcon_Click(int index, string eventType)
         {
-            var waypointText = new List<List<string>>();
+            var notesData = new List<NotesData>();
             var waypointIcon = new Image[0];
             var notesIcon = new Image[0];
             if (eventType == "Static")
             {
-                waypointText = _staticWaypoints;
+                NotesData note = new NotesData
+                {
+                    Notes = _staticWaypoints[index][0],
+                    Broadcast = false
+                };
+                notesData.Add(note);
                 waypointIcon = _staticNotesIcon;
                 notesIcon = _staticWaypointIcon;
             }
             else
             {
-                waypointText = _timerWaypoints;
+                NotesData note = new NotesData
+                {
+                    Notes = _staticWaypoints[index][0],
+                    Broadcast = false
+                };
+                notesData.Add(note);
                 waypointIcon = _timerNotesIcon;
                 notesIcon = _timerWaypointIcon;
             }
-            List<string> waypoints = waypointText[index];
 
             for (int i = 0; i < waypointIcon.Count(); i++)
             {
@@ -941,12 +707,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 waypointIcon[i].Enabled = false;
             }
 
-            for (int i = 0; i < waypoints.Count; i++)
+            for (int i = 0; i < notesData.Count; i++)
             {
-                string message = waypoints[i];
+                string message = notesData[i].Notes;
                 if (message != null && message.Length > 0)
                 {
-                    ClipboardPaste(waypoints[i], false);
+                    ClipboardPaste(notesData[i]);
                 }
             }
 
@@ -1294,8 +1060,6 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 // Initialize timer UI variables
                 _timerStartTimes = new DateTime?[TimerRowNum];
-                _timerNotes = new List<List<string>>();
-                _timerBroadcast = new List<List<bool>>();
                 _timerWaypoints = new List<List<string>>();
                 _timerRunning = new bool[TimerRowNum];
                 _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
@@ -1310,8 +1074,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerDurationDefaults = new TimeSpan[TimerRowNum];
 
                 // Initialize static UI variables
-                _staticNotes = new List<List<string>>();
-                _staticBroadcast = new List<List<bool>>();
                 _staticWaypoints = new List<List<string>>();
                 _staticRunning = new bool[StaticRowNum];
                 _staticLabelDescriptions = new Blish_HUD.Controls.Label[StaticRowNum];
@@ -1327,8 +1089,6 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 for (int i = 0; i < TimerRowNum; i++)
                 {
-                    _timerNotes.Add(timerNotesData[i].Notes);
-                    _timerBroadcast.Add(timerNotesData[i].Broadcast);
                     _timerWaypoints.Add(timerNotesData[i].Waypoints);
                     _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
@@ -1339,8 +1099,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 for (int j = 0; j < StaticRowNum; j++)
                 {
-                    _staticNotes.Add(staticNotesData[j].Notes);
-                    _staticBroadcast.Add(staticNotesData[j].Broadcast);
                     _staticWaypoints.Add(staticNotesData[j].Waypoints);
                     _staticLabelDescriptions[j] = new Blish_HUD.Controls.Label();
                     _staticLabelDescriptions[j].Text = staticNotesData[j].Description;
@@ -1366,7 +1124,6 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 _staticRunning[i] = false;
             }
-            LoadStaticDefaults(StaticRowNum);
 
             #endregion
 
@@ -2240,9 +1997,9 @@ namespace roguishpanda.AB_Bauble_Farm
             _stopButton?.Dispose();
             _InOrdercheckbox?.Dispose();
 
-            if (_toggleInfoWindowKeybind != null)
+            if (_toggleStaticWindowKeybind != null)
             {
-                _toggleInfoWindowKeybind.Value.Activated -= ToggleInfoWindowKeybind_Activated;
+                _toggleStaticWindowKeybind.Value.Activated -= ToggleStaticWindowKeybind_Activated;
             }
             _InfoWindow?.Dispose();
             _InfoWindow = null;
