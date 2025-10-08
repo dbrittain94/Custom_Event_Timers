@@ -280,13 +280,16 @@ namespace roguishpanda.AB_Bauble_Farm
                     Description = _textNewEvent.Text,
                     Minutes = 8,
                     Seconds = 30,
-                    Waypoints = new List<string>() { "" },
+                    WaypointData = new List<NotesData>
+                    {
+                        new NotesData { Type = "squad", Notes = "", Broadcast = false }
+                    },
                     NotesData = new List<NotesData>
                     {
-                        new NotesData { Notes = "", Broadcast = false },
-                        new NotesData { Notes = "", Broadcast = false },
-                        new NotesData { Notes = "", Broadcast = false },
-                        new NotesData { Notes = "", Broadcast = false }
+                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
+                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
+                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
+                        new NotesData { Type = "squad", Notes = "", Broadcast = false }
                     }
                 };
                 _eventNotes.Add(notesData);
@@ -388,7 +391,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Description = note.Description,
                     Minutes = note.Minutes,
                     Seconds = note.Seconds,
-                    Waypoints = note.Waypoints,
+                    WaypointData = note.WaypointData,
                     NotesData = note.NotesData
                 }).ToList();
                 if (_eventNotes.Count <= 0)
@@ -640,13 +643,13 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerSecondsDefault.SettingChanged += (s2, e2) => LoadTimeCustomized(senderIndex);
 
                 string Waypoint = "";
-                if (_eventNotes[senderIndex].Waypoints != null)
+                if (_eventNotes[senderIndex].WaypointData != null)
                 {
-                    if (_eventNotes[senderIndex].Waypoints.Count > 0)
+                    if (_eventNotes[senderIndex].WaypointData.Count > 0)
                     {
-                        if (_eventNotes[senderIndex].Waypoints[0] != null)
+                        if (_eventNotes[senderIndex].WaypointData[0].Notes != null)
                         {
-                            Waypoint = _eventNotes[senderIndex].Waypoints[0];
+                            Waypoint = _eventNotes[senderIndex].WaypointData[0].Notes;
                         }
                     }
                 }
@@ -870,13 +873,13 @@ namespace roguishpanda.AB_Bauble_Farm
                         if (WaypointSettingEntry != null)
                         {
                             string Waypoint = WaypointSettingEntry.Value;
-                            if (eventNotes[i].Waypoints != null)
+                            if (eventNotes[i].WaypointData != null)
                             {
-                                if (eventNotes[i].Waypoints.Count >= 0)
+                                if (eventNotes[i].WaypointData.Count >= 0)
                                 {
-                                    if (Waypoint == "" && eventNotes[i].Waypoints[0] != null)
+                                    if (Waypoint == "" && eventNotes[i].WaypointData[0].Notes != null)
                                     {
-                                        WaypointSettingEntry.Value = eventNotes[i].Waypoints[0];
+                                        WaypointSettingEntry.Value = eventNotes[i].WaypointData[0].Notes;
                                     }
                                 }
                             }
@@ -1029,21 +1032,22 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             try
             {
-                List<string> WaypointList = new List<string>();
+                List<NotesData> WaypointList = new List<NotesData>
+                {
+                    new NotesData { Type = "squad", Notes = "", Broadcast = false }
+                };
                 if (_timerWaypoint != null)
                 {
-                    string Waypoint = _timerWaypoint.Value;
-                    if (Waypoint != "")
+                    string Notes = _timerWaypoint.Value;
+                    if (Notes != "")
                     {
-                        WaypointList.Add(Waypoint);
+                        WaypointList[0].Notes = Notes;
                     }
                 }
                 if (WaypointList.Count > 0)
                 {
-                    _BaubleFarmModule._timerWaypoints[Index].Clear();
-                    _BaubleFarmModule._timerWaypoints[Index].AddRange(WaypointList);
-                    _eventNotes[Index].Waypoints.Clear();
-                    _eventNotes[Index].Waypoints.AddRange(WaypointList);
+                    _BaubleFarmModule._timerEvents[Index].WaypointData = WaypointList;
+                    _eventNotes[Index].WaypointData = WaypointList;
                 }
 
                 _textNewEvent.Text = "";
@@ -1061,10 +1065,10 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 List<NotesData> NotesList = new List<NotesData>
                 {
-                    new NotesData { Notes = "", Broadcast = false },
-                    new NotesData { Notes = "", Broadcast = false },
-                    new NotesData { Notes = "", Broadcast = false },
-                    new NotesData { Notes = "", Broadcast = false }
+                    new NotesData { Type = "squad", Notes = "", Broadcast = false },
+                    new NotesData { Type = "squad", Notes = "", Broadcast = false },
+                    new NotesData { Type = "squad", Notes = "", Broadcast = false },
+                    new NotesData { Type = "squad", Notes = "", Broadcast = false }
                 };
                 if (_timerNoteOneDefault != null)
                 {

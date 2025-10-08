@@ -54,19 +54,20 @@ namespace roguishpanda.AB_Bauble_Farm
         public string Description { get; set; }
         public double Minutes { get; set; }
         public double Seconds { get; set; }
-        public List<string> Waypoints { get; set; }
+        public List<NotesData> WaypointData { get; set; }
         public List<NotesData> NotesData { get; set; }
     }
     public class StaticDetailData
     {
         public int ID { get; set; }
         public string Description { get; set; }
-        public List<string> Waypoints { get; set; }
+        public List<NotesData> WaypointData { get; set; }
         public List<NotesData> NotesData { get; set; }
 
     }
     public class NotesData
     {
+        public string Type { get; set; }
         public string Notes { get; set; }
         public bool Broadcast { get; set; }
     }
@@ -675,28 +676,18 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private void WaypointIcon_Click(int index, string eventType)
         {
-            var notesData = new List<NotesData>();
+            var waypointData = new List<NotesData>();
             var waypointIcon = new Image[0];
             var notesIcon = new Image[0];
             if (eventType == "Static")
             {
-                NotesData note = new NotesData
-                {
-                    Notes = _staticWaypoints[index][0],
-                    Broadcast = false
-                };
-                notesData.Add(note);
+                waypointData = _staticEvents[index].WaypointData;
                 waypointIcon = _staticNotesIcon;
                 notesIcon = _staticWaypointIcon;
             }
             else
             {
-                NotesData note = new NotesData
-                {
-                    Notes = _staticWaypoints[index][0],
-                    Broadcast = false
-                };
-                notesData.Add(note);
+                waypointData = _timerEvents[index].WaypointData;
                 waypointIcon = _timerNotesIcon;
                 notesIcon = _timerWaypointIcon;
             }
@@ -707,12 +698,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 waypointIcon[i].Enabled = false;
             }
 
-            for (int i = 0; i < notesData.Count; i++)
+            for (int i = 0; i < waypointData.Count; i++)
             {
-                string message = notesData[i].Notes;
+                string message = waypointData[i].Notes;
                 if (message != null && message.Length > 0)
                 {
-                    ClipboardPaste(notesData[i]);
+                    ClipboardPaste(waypointData[i]);
                 }
             }
 
@@ -1089,7 +1080,6 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 for (int i = 0; i < TimerRowNum; i++)
                 {
-                    _timerWaypoints.Add(timerNotesData[i].Waypoints);
                     _timerLabelDescriptions[i] = new Blish_HUD.Controls.Label();
                     _timerLabelDescriptions[i].Text = timerNotesData[i].Description;
                     _TimerMinutes[i] = timerNotesData[i].Minutes;
@@ -1099,7 +1089,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 for (int j = 0; j < StaticRowNum; j++)
                 {
-                    _staticWaypoints.Add(staticNotesData[j].Waypoints);
                     _staticLabelDescriptions[j] = new Blish_HUD.Controls.Label();
                     _staticLabelDescriptions[j].Text = staticNotesData[j].Description;
                 }
