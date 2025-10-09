@@ -213,7 +213,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
                     _timerNotesIcon[i].Hide();
-                    _timerWaypointIcon[i].Hide();
+                    //_timerWaypointIcon[i].Hide();
+                }
+                for (int j = 0; j < _staticNotesIcon.Count(); j++)
+                {
+                    _staticNotesIcon[j].Hide();
+                    //_staticWaypointIcon[j].Hide();
                 }
             }
             else
@@ -221,7 +226,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
                     _timerNotesIcon[i].Show();
-                    _timerWaypointIcon[i].Show();
+                    //_timerWaypointIcon[i].Show();
+                }
+                for (int j = 0; j < _staticNotesIcon.Count(); j++)
+                {
+                    _staticNotesIcon[j].Show();
+                    //_staticWaypointIcon[j].Show();
                 }
             }
         }
@@ -233,7 +243,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
                     _timerNotesIcon[i].Hide();
-                    _timerWaypointIcon[i].Hide();
+                    //_timerWaypointIcon[i].Hide();
+                }
+                for (int j = 0; j < _staticNotesIcon.Count(); j++)
+                {
+                    _staticNotesIcon[j].Hide();
+                    //_staticWaypointIcon[j].Hide();
                 }
             }
             else
@@ -241,7 +256,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < _timerNotesIcon.Count(); i++)
                 {
                     _timerNotesIcon[i].Show();
-                    _timerWaypointIcon[i].Show();
+                    //_timerWaypointIcon[i].Show();
+                }
+                for (int j = 0; j < _staticNotesIcon.Count(); j++)
+                {
+                    _staticNotesIcon[j].Show();
+                    //_staticWaypointIcon[j].Show();
                 }
             }
         }
@@ -628,25 +648,24 @@ namespace roguishpanda.AB_Bauble_Farm
         private async Task NotesIcon_Click(int index, string eventType)
         {
             var notesData = new List<NotesData>();
-            var waypointIcon = new Image[0];
-            var notesIcon = new Image[0];
             if (eventType == "Static")
             {
                 notesData = _staticEvents[index].NotesData;
-                waypointIcon = _staticNotesIcon;
-                notesIcon = _staticWaypointIcon;
             }
             else
             {
                 notesData = _timerEvents[index].NotesData;
-                waypointIcon = _timerNotesIcon;
-                notesIcon = _timerWaypointIcon;
             }
 
-            for (int i = 0; i < notesIcon.Count(); i++)
+            for (int i = 0; i < _staticNotesIcon.Count(); i++)
             {
-                notesIcon[i].Enabled = false;
-                waypointIcon[i].Enabled = false;
+                _staticNotesIcon[i].Enabled = false;
+                _staticWaypointIcon[i].Enabled = false;
+            }
+            for (int i = 0; i < _timerNotesIcon.Count(); i++)
+            {
+                _timerNotesIcon[i].Enabled = false;
+                _timerWaypointIcon[i].Enabled = false;
             }
 
             ShowInputPanel("Notes");
@@ -668,34 +687,38 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
             }
 
-            for (int i = 0; i < notesIcon.Count(); i++)
+            for (int i = 0; i < _staticNotesIcon.Count(); i++)
             {
-                notesIcon[i].Enabled = true;
-                waypointIcon[i].Enabled = true;
+                _staticNotesIcon[i].Enabled = true;
+                _staticWaypointIcon[i].Enabled = true;
+            }
+            for (int i = 0; i < _timerNotesIcon.Count(); i++)
+            {
+                _timerNotesIcon[i].Enabled = true;
+                _timerWaypointIcon[i].Enabled = true;
             }
         }
         private void WaypointIcon_Click(int index, string eventType)
         {
             var waypointData = new List<NotesData>();
-            var waypointIcon = new Image[0];
-            var notesIcon = new Image[0];
             if (eventType == "Static")
             {
                 waypointData = _staticEvents[index].WaypointData;
-                waypointIcon = _staticNotesIcon;
-                notesIcon = _staticWaypointIcon;
             }
             else
             {
                 waypointData = _timerEvents[index].WaypointData;
-                waypointIcon = _timerNotesIcon;
-                notesIcon = _timerWaypointIcon;
             }
 
-            for (int i = 0; i < waypointIcon.Count(); i++)
+            for (int i = 0; i < _staticNotesIcon.Count(); i++)
             {
-                notesIcon[i].Enabled = false;
-                waypointIcon[i].Enabled = false;
+                _staticNotesIcon[i].Enabled = false;
+                _staticWaypointIcon[i].Enabled = false;
+            }
+            for (int i = 0; i < _timerNotesIcon.Count(); i++)
+            {
+                _timerNotesIcon[i].Enabled = false;
+                _timerWaypointIcon[i].Enabled = false;
             }
 
             for (int i = 0; i < waypointData.Count; i++)
@@ -707,10 +730,15 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
             }
 
-            for (int i = 0; i < waypointIcon.Count(); i++)
+            for (int i = 0; i < _staticNotesIcon.Count(); i++)
             {
-                notesIcon[i].Enabled = true;
-                waypointIcon[i].Enabled = true;
+                _staticNotesIcon[i].Enabled = true;
+                _staticWaypointIcon[i].Enabled = true;
+            }
+            for (int i = 0; i < _timerNotesIcon.Count(); i++)
+            {
+                _timerNotesIcon[i].Enabled = true;
+                _timerWaypointIcon[i].Enabled = true;
             }
         }
         private void ShowInputPanel(string Title)
@@ -1151,8 +1179,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 #region Static Window
                 _StaticWindow = new StandardWindow(
                     NoTexture,
-                    new Rectangle(0, 0, 320, 280), // The windowRegion
-                    new Rectangle(0, -10, 320, 280)) // The contentRegion
+                    new Rectangle(0, 0, 340, 280), // The windowRegion
+                    new Rectangle(0, -10, 340, 280)) // The contentRegion
                 {
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "",
@@ -1163,7 +1191,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _staticBackgroundPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(320, 280), // Match the panel to the content region
+                    Size = new Point(340, 280), // Match the panel to the content region
                     Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y), // Align with content region
                     CanScroll = true,
                     ShowBorder = true,
@@ -1173,8 +1201,8 @@ namespace roguishpanda.AB_Bauble_Farm
                 _staticPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(320, 180), // Match the panel to the content region
-                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 80), // Align with content region
+                    Size = new Point(340, 190), // Match the panel to the content region
+                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 70), // Align with content region
                     CanScroll = true
                 };
                 #endregion
@@ -1340,6 +1368,50 @@ namespace roguishpanda.AB_Bauble_Farm
                     Parent = _TimerWindow
                 };
 
+                AsyncTexture2D infoTexture = AsyncTexture2D.FromAssetId(440023);
+                Image infoIcon = new Image
+                {
+                    Texture = infoTexture,
+                    Location = new Point(250, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    //Visible = false,
+                    Parent = _TimerWindow
+                };
+                infoIcon.MouseEntered += (sender, e) => {
+                    infoIcon.Location = new Point(250 - 4, 30 - 4);
+                    infoIcon.Size = new Point(40, 40);
+                    infoIcon.Opacity = 1f;
+                };
+                infoIcon.MouseLeft += (s, e) => {
+                    infoIcon.Location = new Point(250, 30);
+                    infoIcon.Size = new Point(32, 32);
+                    infoIcon.Opacity = 0.7f;
+                };
+                infoIcon.Click += InfoIcon_Click;
+
+                AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
+                Image settingsIcon = new Image
+                {
+                    Texture = geartexture,
+                    Location = new Point(280, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    //Visible = false,
+                    Parent = _TimerWindow
+                };
+                settingsIcon.MouseEntered += (sender, e) => {
+                    settingsIcon.Location = new Point(280 - 4, 30 - 4);
+                    settingsIcon.Size = new Point(40, 40);
+                    settingsIcon.Opacity = 1f;
+                };
+                settingsIcon.MouseLeft += (s, e) => {
+                    settingsIcon.Location = new Point(280, 30);
+                    settingsIcon.Size = new Point(32, 32);
+                    settingsIcon.Opacity = 0.7f;
+                };
+                settingsIcon.Click += SettingsIcon_Click;
+
                 AsyncTexture2D waypointTexture = AsyncTexture2D.FromAssetId(102348);
                 AsyncTexture2D notesTexture = AsyncTexture2D.FromAssetId(2604584);
                 for (int i = 0; i < TimerRowNum; i++)
@@ -1447,16 +1519,15 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
                     _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
 
-
                     if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
                     {
                         _timerNotesIcon[i].Hide();
-                        _timerWaypointIcon[i].Hide();
+                        //_timerWaypointIcon[i].Hide();
                     }
                     else
                     {
                         _timerNotesIcon[i].Show();
-                        _timerWaypointIcon[i].Show();
+                        //_timerWaypointIcon[i].Show();
                     }
                 }
                 #endregion
@@ -1466,7 +1537,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Reset Events",
                     Size = new Point(120, 30),
-                    Location = new Point(0, 40),
+                    Location = new Point(0, 30),
                     Parent = _StaticWindow
                 };
                 _resetStaticEventsButton.Click += (s, e) => _resetStaticEventsButton_Click();
@@ -1475,7 +1546,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Hide Completions",
                     Size = new Point(120, 30),
-                    Location = new Point(130, 40),
+                    Location = new Point(130, 30),
                     Parent = _StaticWindow
                 };
                 _hideStaticEventsCheckbox.Checked = _hideStaticEventsDefault.Value;
@@ -1485,12 +1556,52 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Static Events",
                     Size = new Point(120, 30),
-                    Location = new Point(100, 70),
+                    Location = new Point(100, 60),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
                     Parent = _StaticWindow
                 };
+
+                Image infoIcon2 = new Image
+                {
+                    Texture = infoTexture,
+                    Location = new Point(270, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    Parent = _StaticWindow
+                };
+                infoIcon2.MouseEntered += (sender, e) => {
+                    infoIcon2.Location = new Point(270 - 4, 30 - 4);
+                    infoIcon2.Size = new Point(40, 40);
+                    infoIcon2.Opacity = 1f;
+                };
+                infoIcon2.MouseLeft += (s, e) => {
+                    infoIcon2.Location = new Point(270, 30);
+                    infoIcon2.Size = new Point(32, 32);
+                    infoIcon2.Opacity = 0.7f;
+                };
+                infoIcon2.Click += InfoIcon_Click;
+
+                Image settingsIcon2 = new Image
+                {
+                    Texture = geartexture,
+                    Location = new Point(300, 30),
+                    Size = new Point(32, 32),
+                    Opacity = 0.7f,
+                    Parent = _StaticWindow
+                };
+                settingsIcon2.MouseEntered += (sender, e) => {
+                    settingsIcon2.Location = new Point(300 - 4, 30 - 4);
+                    settingsIcon2.Size = new Point(40, 40);
+                    settingsIcon2.Opacity = 1f;
+                };
+                settingsIcon2.MouseLeft += (s, e) => {
+                    settingsIcon2.Location = new Point(300, 30);
+                    settingsIcon2.Size = new Point(32, 32);
+                    settingsIcon2.Opacity = 0.7f;
+                };
+                settingsIcon2.Click += SettingsIcon_Click;
 
                 for (int j = 0; j < StaticRowNum; j++)
                 {
@@ -1569,12 +1680,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
                     {
                         _staticNotesIcon[j].Hide();
-                        _staticWaypointIcon[j].Hide();
+                        //_staticWaypointIcon[j].Hide();
                     }
                     else
                     {
                         _staticNotesIcon[j].Show();
-                        _staticWaypointIcon[j].Show();
+                        //_staticWaypointIcon[j].Show();
                     }
                 }
                 #endregion
@@ -1618,50 +1729,6 @@ namespace roguishpanda.AB_Bauble_Farm
                     () => new ListSettingsTabView(),
                     "General Settings"
                 ));
-
-                AsyncTexture2D infoTexture = AsyncTexture2D.FromAssetId(440023);
-                Image infoIcon = new Image
-                {
-                    Texture = infoTexture,
-                    Location = new Point(250, 30),
-                    Size = new Point(32, 32),
-                    Opacity = 0.7f,
-                    //Visible = false,
-                    Parent = _TimerWindow
-                };
-                infoIcon.MouseEntered += (sender, e) => {
-                    infoIcon.Location = new Point(250 - 4, 30 - 4);
-                    infoIcon.Size = new Point(40, 40);
-                    infoIcon.Opacity = 1f;
-                };
-                infoIcon.MouseLeft += (s, e) => {
-                    infoIcon.Location = new Point(250, 30);
-                    infoIcon.Size = new Point(32, 32);
-                    infoIcon.Opacity = 0.7f;
-                };
-                infoIcon.Click += InfoIcon_Click;
-
-                AsyncTexture2D geartexture = AsyncTexture2D.FromAssetId(155052);
-                Image settingsIcon = new Image
-                {
-                    Texture = geartexture,
-                    Location = new Point(280, 30),
-                    Size = new Point(32, 32),
-                    Opacity = 0.7f,
-                    //Visible = false,
-                    Parent = _TimerWindow
-                };
-                settingsIcon.MouseEntered += (sender, e) => {
-                    settingsIcon.Location = new Point(280 - 4, 30 - 4);
-                    settingsIcon.Size = new Point(40, 40);
-                    settingsIcon.Opacity = 1f;
-                };
-                settingsIcon.MouseLeft += (s, e) => {
-                    settingsIcon.Location = new Point(280, 30);
-                    settingsIcon.Size = new Point(32, 32);
-                    settingsIcon.Opacity = 0.7f;
-                };
-                settingsIcon.Click += SettingsIcon_Click;
 
                 #endregion
             }
@@ -1741,8 +1808,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     var eventData = staticEventDataList;
                     for (int i = 0; i < StaticRowNum; i++)
                     {
-                        bool isActive = eventData[i].IsActive;
-                        if (isActive == true)
+                        if (eventData[i].IsActive == true && eventData[i].Description == _staticLabelDescriptions[i].Text)
                         {
                             _staticCheckboxes[i].Checked = true;
                             _staticRunning[i] = true;

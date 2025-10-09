@@ -92,7 +92,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 Size = new Point(120, 40),
                 Location = new Point(270, 110),
                 Font = GameService.Content.DefaultFont16,
-                TextColor = Color.Gold,
+                //TextColor = Color.Gold,
                 Visible = true,
                 Parent = listSettingsPanel
             };
