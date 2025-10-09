@@ -613,7 +613,7 @@ namespace roguishpanda.AB_Bauble_Farm
         }
 
         // Copy text to clipboard
-        private static void CopyToClipboard(string text)
+        public static void CopyToClipboard(string text)
         {
             // Ensure clipboard access is thread-safe
             Thread thread = new Thread(() => Clipboard.SetText(text));
