@@ -48,7 +48,6 @@ namespace roguishpanda.AB_Bauble_Farm
         private Blish_HUD.Controls.Label _PackageLoadCommunityLabel;
         private Dropdown _PackageLoadCommunityDropdown;
         private Blish_HUD.Controls.Label _PackageLoadPackageAlert;
-        private StandardButton _buttonRestartModule;
         private StandardButton _ButtonDeletePersonal;
         private StandardButton _ButtonLoadCommunity;
         private Blish_HUD.Controls.Label _PackageLoadCommunityAlert;
@@ -90,11 +89,35 @@ namespace roguishpanda.AB_Bauble_Farm
                 Parent = _timerEventsTitlePanel
             };
 
+            _ButtonCopyClipboard = new StandardButton()
+            {
+                Text = "Copy to Clipboard",
+                Size = new Point(140, 30),
+                Location = new Point(110, 110),
+                Parent = listSettingsPanel
+            };
+            _ButtonCopyClipboard.Click += _ButtonCopyClipboard_Click;
+            _ButtonImportClipboard = new StandardButton()
+            {
+                Text = "Import from Clipboard",
+                Size = new Point(160, 30),
+                Location = new Point(270, 110),
+                Parent = listSettingsPanel
+            };
+            _ButtonImportClipboard.Click += _ButtonImportClipboard_Click;
+            _PackageLoadPackageAlert = new Blish_HUD.Controls.Label
+            {
+                Size = new Point(500, 40),
+                Location = new Point(440, 105),
+                Font = GameService.Content.DefaultFont16,
+                Visible = false,
+                Parent = listSettingsPanel
+            };
             _PackageLabelDisplay = new Blish_HUD.Controls.Label
             {
                 Text = "Current Package:",
                 Size = new Point(160, 40),
-                Location = new Point(110, 110),
+                Location = new Point(110, 150),
                 Font = GameService.Content.DefaultFont16,
                 HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Right,
                 Visible = true,
@@ -103,7 +126,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _DefaultPackageLabel = new Blish_HUD.Controls.Label
             {
                 Size = new Point(120, 40),
-                Location = new Point(290, 110),
+                Location = new Point(290, 150),
                 Font = GameService.Content.DefaultFont16,
                 //TextColor = Color.Gold,
                 Visible = true,
@@ -112,7 +135,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageRenameTextBox = new Blish_HUD.Controls.TextBox
             {
                 Size = new Point(150, 30),
-                Location = new Point(280, 110),
+                Location = new Point(280, 150),
                 Font = GameService.Content.DefaultFont16,
                 Visible = false,
                 Parent = listSettingsPanel
@@ -121,7 +144,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Rename",
                 Size = new Point(80, 30),
-                Location = new Point(460, 110),
+                Location = new Point(460, 150),
                 Visible = true,
                 Parent = listSettingsPanel
             };
@@ -130,7 +153,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Save",
                 Size = new Point(80, 30),
-                Location = new Point(460, 110),
+                Location = new Point(460, 150),
                 Visible = false,
                 Parent = listSettingsPanel
             };
@@ -138,7 +161,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageRenameAlert = new Blish_HUD.Controls.Label
             {
                 Size = new Point(400, 40),
-                Location = new Point(550, 110),
+                Location = new Point(550, 150),
                 Font = GameService.Content.DefaultFont16,
                 Visible = false,
                 Parent = listSettingsPanel
@@ -147,7 +170,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Create Package:",
                 Size = new Point(160, 40),
-                Location = new Point(110, 150),
+                Location = new Point(110, 200),
                 Font = GameService.Content.DefaultFont16,
                 HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Right,
                 Visible = true,
@@ -156,7 +179,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageCreateTextBox = new Blish_HUD.Controls.TextBox
             {
                 Size = new Point(150, 30),
-                Location = new Point(280, 150),
+                Location = new Point(280, 200),
                 Font = GameService.Content.DefaultFont16,
                 Visible = true,
                 Parent = listSettingsPanel
@@ -165,7 +188,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Create",
                 Size = new Point(80, 30),
-                Location = new Point(460, 150),
+                Location = new Point(460, 200),
                 Visible = true,
                 Parent = listSettingsPanel
             };
@@ -173,7 +196,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageCreateAlert = new Blish_HUD.Controls.Label
             {
                 Size = new Point(400, 40),
-                Location = new Point(550, 150),
+                Location = new Point(550, 200),
                 Font = GameService.Content.DefaultFont16,
                 Visible = false,
                 Parent = listSettingsPanel
@@ -183,7 +206,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Community Packages:",
                 Size = new Point(160, 40),
-                Location = new Point(110, 200),
+                Location = new Point(110, 250),
                 Font = GameService.Content.DefaultFont16,
                 HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Right,
                 Parent = listSettingsPanel
@@ -191,20 +214,20 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageLoadCommunityDropdown = new Blish_HUD.Controls.Dropdown
             {
                 Size = new Point(160, 40),
-                Location = new Point(280, 200),
+                Location = new Point(280, 250),
                 Parent = listSettingsPanel
             };
             _ButtonLoadCommunity = new StandardButton()
             {
                 Text = "Import",
                 Size = new Point(80, 30),
-                Location = new Point(460, 200),
+                Location = new Point(460, 250),
                 Parent = listSettingsPanel
             };
             _PackageLoadCommunityAlert = new Blish_HUD.Controls.Label
             {
                 Size = new Point(500, 40),
-                Location = new Point(550, 200),
+                Location = new Point(550, 250),
                 Font = GameService.Content.DefaultFont16,
                 Visible = false,
                 Parent = listSettingsPanel
@@ -216,7 +239,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Personal Packages:",
                 Size = new Point(160, 40),
-                Location = new Point(110, 250),
+                Location = new Point(110, 300),
                 Font = GameService.Content.DefaultFont16,
                 HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Right,
                 Visible = false,
@@ -225,7 +248,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageLoadPersonalDropdown = new Blish_HUD.Controls.Dropdown
             {
                 Size = new Point(160, 40),
-                Location = new Point(280, 250),
+                Location = new Point(280, 300),
                 Visible = false,
                 Parent = listSettingsPanel
             };
@@ -233,7 +256,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Load",
                 Size = new Point(80, 30),
-                Location = new Point(460, 250),
+                Location = new Point(460, 300),
                 Visible = false,
                 Parent = listSettingsPanel
             };
@@ -242,49 +265,12 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Delete",
                 Size = new Point(80, 30),
-                Location = new Point(550, 250),
+                Location = new Point(550, 300),
                 Visible = false,
                 Parent = listSettingsPanel
             };
             _ButtonDeletePersonal.Click += _ButtonDeletePersonal_Click;
             Task task2 = LoadPersonalPackageDropdownOptions();
-
-            _ButtonCopyClipboard = new StandardButton()
-            {
-                Text = "Copy to Clipboard",
-                Size = new Point(180, 30),
-                Location = new Point(110, 300),
-                Visible = false,
-                Parent = listSettingsPanel
-            };
-            _ButtonCopyClipboard.Click += _ButtonCopyClipboard_Click;
-            _ButtonImportClipboard = new StandardButton()
-            {
-                Text = "Import from Clipboard",
-                Size = new Point(180, 30),
-                Location = new Point(300, 300),
-                Visible = false,
-                Parent = listSettingsPanel
-            };
-            _ButtonImportClipboard.Click += _ButtonImportClipboard_Click;
-            _PackageLoadPackageAlert = new Blish_HUD.Controls.Label
-            {
-                Size = new Point(500, 40),
-                Location = new Point(490, 300),
-                Font = GameService.Content.DefaultFont16,
-                Visible = false,
-                Parent = listSettingsPanel
-            };
-
-            _buttonRestartModule = new StandardButton
-            {
-                Text = "Restart Module",
-                Size = new Point(200, 40),
-                Location = new Point(110, 350),
-                Visible = false,
-                Parent = listSettingsPanel
-            };
-            _buttonRestartModule.Click += RestartModule_Click;
 
             SettingCollection SettingsCollection = _BaubleFarmModule._PackageSettingsCollection;
 
@@ -317,14 +303,14 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageCreateAlert.Visible = false;
             _PackageLoadCommunityAlert.Visible = false;
             _PackageLoadPackageAlert.Visible = true;
-            string PackageName = _PackageLoadPersonalDropdown.SelectedItem.ToString();
+            string PackageName = _DefaultPackageLabel.Text.ToString();
             int index = _PackageData.FindIndex(p => p.PackageName == PackageName);
             if (index >= 0)
             {
                 PackageData CommunityPackageData = _PackageData[index];
                 string PackageData = JsonSerializer.Serialize(CommunityPackageData, _jsonOptions);
                 CopyToClipboard(PackageData.ToString());
-                _PackageLoadPackageAlert.Text = "* The package has been copied to your clipboard!";
+                _PackageLoadPackageAlert.Text = "The package has been copied to your clipboard!";
                 _PackageLoadPackageAlert.TextColor = Color.LimeGreen;
             }
             else
@@ -371,7 +357,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     SavePackageJsonUpdate();
                     Task task = LoadPersonalPackageDropdownOptions();
 
-                    _PackageLoadPackageAlert.Text = "* The package was imported from your clipboard to personal packages!";
+                    _PackageLoadPackageAlert.Text = "The package was imported from your clipboard to personal packages!";
                     _PackageLoadPackageAlert.TextColor = Color.LimeGreen;
                 }
                 else
@@ -413,11 +399,13 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageRenameAlert.Visible = false;
             _PackageCreateAlert.Visible = false;
             _PackageLoadCommunityAlert.Visible = false;
-            _PackageLoadPackageAlert.Visible = false;
+            _PackageLoadPackageAlert.Visible = true;
             _PackageSettingEntry.Value = _PackageLoadPersonalDropdown.SelectedItem.ToString();
             _DefaultPackageLabel.Text = _PackageLoadPersonalDropdown.SelectedItem.ToString();
             Task task = LoadPersonalPackageDropdownOptions();
             _BaubleFarmModule.Restart();
+            _PackageLoadPackageAlert.Text = "The personal package has been loaded!";
+            _PackageLoadPackageAlert.TextColor = Color.LimeGreen;
         }
         private void _ButtonLoadCommunity_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
@@ -444,9 +432,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 PackageData CommunityPackageData = _CommunityPackageData[index];
                 _PackageData.Add(CommunityPackageData);
                 SavePackageJsonUpdate();
+                _PackageSettingEntry.Value = _PackageLoadCommunityDropdown.SelectedItem.ToString();
+                _DefaultPackageLabel.Text = _PackageLoadCommunityDropdown.SelectedItem.ToString();
                 Task task = LoadPersonalPackageDropdownOptions();
+                _BaubleFarmModule.Restart();
 
-                _PackageLoadCommunityAlert.Text = "This community package has been imported into personal packages!";
+                _PackageLoadCommunityAlert.Text = "This community package has been loaded into personal packages!";
                 _PackageLoadCommunityAlert.TextColor = Color.LimeGreen;
             }
             else
@@ -493,8 +484,10 @@ namespace roguishpanda.AB_Bauble_Farm
 
             _PackageData.Add(newPackage);
             SavePackageJsonUpdate();
+            _PackageSettingEntry.Value = _PackageCreateTextBox.Text.ToString();
+            _DefaultPackageLabel.Text = _PackageCreateTextBox.Text.ToString();
             Task task = LoadPersonalPackageDropdownOptions();
-            //_buttonRestartModule.Visible = true;
+            _BaubleFarmModule.Restart();
         }
 
         private void _ButtonLoadRename_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
@@ -538,9 +531,12 @@ namespace roguishpanda.AB_Bauble_Farm
                 }
                 else
                 {
-                    _PackageLoadCommunityLabel.Visible = false;
-                    _PackageLoadCommunityDropdown.Visible = false;
-                    _ButtonLoadCommunity.Visible = false;
+                    _PackageLoadPersonalLabel.Visible = false;
+                    _PackageLoadPersonalDropdown.Visible = false;
+                    _ButtonLoadPersonal.Visible = false;
+                    _ButtonDeletePersonal.Visible = false;
+                    _PackageRenameAlert.Visible = false;
+                    _PackageCreateAlert.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -565,7 +561,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 for (int i = 0; i < _PackageData.Count; i++)
                 {
                     string PackageName = _PackageData[i].PackageName;
-                    //_PackageLoadDropdown.Items.Add(PackageName);
                     if (PackageName != _DefaultPackageLabel.Text)
                     {
                         _PackageLoadPersonalDropdown.Items.Add(PackageName);
@@ -579,8 +574,6 @@ namespace roguishpanda.AB_Bauble_Farm
                     _PackageLoadPersonalDropdown.Visible = true;
                     _ButtonLoadPersonal.Visible = true;
                     _ButtonDeletePersonal.Visible = true;
-                    _ButtonCopyClipboard.Visible = true;
-                    _ButtonImportClipboard.Visible = true;
                 }
                 else
                 {
@@ -588,11 +581,8 @@ namespace roguishpanda.AB_Bauble_Farm
                     _PackageLoadPersonalDropdown.Visible = false;
                     _ButtonLoadPersonal.Visible = false;
                     _ButtonDeletePersonal.Visible = false;
-                    _ButtonCopyClipboard.Visible = false;
-                    _ButtonImportClipboard.Visible = false;
                     _PackageRenameAlert.Visible = false;
                     _PackageCreateAlert.Visible = false;
-                    _PackageLoadPackageAlert.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -642,7 +632,7 @@ namespace roguishpanda.AB_Bauble_Farm
             }
             SavePackageJsonUpdate();
             Task task = LoadPersonalPackageDropdownOptions();
-            _buttonRestartModule.Visible = true;
+            _BaubleFarmModule.Restart();
         }
         private void SavePackageJsonUpdate()
         {
@@ -658,15 +648,6 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Logger.Warn($"Failed to save JSON file: {ex.Message}");
             }
-        }
-        private void RestartModule_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
-        {
-            _BaubleFarmModule.Restart();
-            _buttonRestartModule.Visible = false;
-            _PackageCreateAlert.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
-            _PackageLoadPackageAlert.Visible = false;
         }
     }
 }

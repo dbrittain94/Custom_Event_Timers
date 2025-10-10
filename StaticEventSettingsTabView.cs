@@ -569,7 +569,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Parent = _staticSettingsPanel,
                     Location = new Point(410, 110),
-                    Size = new Point(600, 450),
+                    Size = new Point(600, 400),
                     CanScroll = true,
                 };
                 int waypointCount = _eventNotes[senderIndex].WaypointData.Count;
