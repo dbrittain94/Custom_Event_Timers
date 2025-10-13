@@ -117,6 +117,7 @@ namespace roguishpanda.AB_Bauble_Farm
         public Blish_HUD.Controls.Panel _timerPanel;
         public Blish_HUD.Controls.Panel _SettingsPanel;
         public StandardWindow _TimerWindow;
+        private Blish_HUD.Controls.Panel _timerBackgroundPanel;
         public StandardWindow _StaticWindow;
         public Blish_HUD.Controls.Panel _staticBackgroundPanel;
         public Blish_HUD.Controls.Panel _staticPanel;
@@ -1165,14 +1166,23 @@ namespace roguishpanda.AB_Bauble_Farm
                     CanResize = true,
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
+                _TimerWindow.Resized += _TimerWindow_Resized;
                 /// Create texture panel for timer window
+                _timerBackgroundPanel = new Blish_HUD.Controls.Panel
+                {
+                    Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
+                    Size = new Point(_TimerWindow.Size.X, _TimerWindow.Size.Y), // Match the panel to the content region
+                    Location = new Point(_TimerWindow.ContentRegion.Location.X, _TimerWindow.ContentRegion.Location.Y), // Align with content region
+                    BackgroundColor = Color.Black,
+                    Opacity = _OpacityDefault.Value
+                };
+                double panelTimerScaleHeight = _TimerWindow.Size.Y - 120;
                 _timerPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(_TimerWindow.ContentRegion.Size.X + 500, _TimerWindow.ContentRegion.Size.Y + 500), // Match the panel to the content region
-                    Location = _TimerWindow.ContentRegion.Location, // Align with content region
-                    BackgroundColor = Color.Black,
-                    Opacity = _OpacityDefault.Value
+                    Size = new Point(_TimerWindow.Size.X, (int)panelTimerScaleHeight), // Match the panel to the content region
+                    Location = new Point(_TimerWindow.ContentRegion.Location.X, _TimerWindow.ContentRegion.Location.Y + 70), // Align with content region
+                    CanScroll = true
                 };
                 #endregion
 
@@ -1185,23 +1195,24 @@ namespace roguishpanda.AB_Bauble_Farm
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "",
                     SavesPosition = true,
+                    CanResize = true,
                     Id = $"{nameof(BaubleFarmModule)}_BaubleFarmStaticWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
+                _StaticWindow.Resized += _StaticWindow_Resized;
                 /// Create texture panel for timer window
                 _staticBackgroundPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(340, 280), // Match the panel to the content region
+                    Size = new Point(_StaticWindow.Size.X, _StaticWindow.Size.Y), // Match the panel to the content region
                     Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y), // Align with content region
-                    CanScroll = true,
-                    ShowBorder = true,
                     BackgroundColor = Color.Black,
                     Opacity = _OpacityDefault.Value
                 };
+                double panelStaticScaleHeight = _StaticWindow.Size.Y - 120;
                 _staticPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
-                    Size = new Point(340, 190), // Match the panel to the content region
+                    Size = new Point(_StaticWindow.Size.X, (int)panelStaticScaleHeight), // Match the panel to the content region
                     Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 70), // Align with content region
                     CanScroll = true
                 };
@@ -1421,9 +1432,9 @@ namespace roguishpanda.AB_Bauble_Farm
                     // Timer Panels
                     _TimerWindowsOrdered[i] = new Blish_HUD.Controls.Panel
                     {
-                        Parent = _TimerWindow,
+                        Parent = _timerPanel,
                         Size = new Point(390, 30),
-                        Location = new Point(0, 95 + (i * 30)),
+                        Location = new Point(0, (i * 30)),
                     };
 
                     // Waypoint Icon
@@ -1556,7 +1567,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     Text = "Static Events",
                     Size = new Point(120, 30),
-                    Location = new Point(100, 60),
+                    Location = new Point(100, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
                     TextColor = Color.DodgerBlue,
@@ -1832,6 +1843,20 @@ namespace roguishpanda.AB_Bauble_Farm
             }
 
             #endregion
+        }
+
+        private void _TimerWindow_Resized(object sender, ResizedEventArgs e)
+        {
+            double newHeight = _TimerWindow.Size.Y - 120;
+            _timerPanel.Size = new Point(_TimerWindow.Size.X, (int)newHeight);
+            _timerBackgroundPanel.Size = new Point(_TimerWindow.Size.X, _TimerWindow.Size.Y);
+        }
+
+        private void _StaticWindow_Resized(object sender, ResizedEventArgs e)
+        {
+            double newHeight = _StaticWindow.Size.Y - 120;
+            _staticPanel.Size = new Point(_StaticWindow.Size.X, (int)newHeight);
+            _staticBackgroundPanel.Size = new Point(_StaticWindow.Size.X, _StaticWindow.Size.Y);
         }
 
         private void _StaticEventsCheckbox_Click(int index)

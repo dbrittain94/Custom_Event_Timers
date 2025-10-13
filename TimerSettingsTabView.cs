@@ -269,14 +269,14 @@ namespace roguishpanda.AB_Bauble_Farm
                     Seconds = 30,
                     WaypointData = new List<NotesData>
                     {
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false }
+                        new NotesData { Type = "", Notes = "", Broadcast = false }
                     },
                     NotesData = new List<NotesData>
                     {
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false }
+                        new NotesData { Type = "", Notes = "", Broadcast = false },
+                        new NotesData { Type = "", Notes = "", Broadcast = false },
+                        new NotesData { Type = "", Notes = "", Broadcast = false },
+                        new NotesData { Type = "", Notes = "", Broadcast = false }
                     }
                 };
                 _eventNotes.Add(notesData);
@@ -351,8 +351,9 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 string jsonContent = JsonSerializer.Serialize(_PackageData, _jsonOptions);
                 File.WriteAllText(jsonFilePath, jsonContent);
-                _CreateEventAlert.Text = "Events have been saved! Restart Module to reset timer UI";
+                _CreateEventAlert.Text = "Events have been saved!";
                 _CreateEventAlert.Visible = true;
+                _buttonReloadEvents.Visible = false;
                 _CreateEventAlert.TextColor = Color.LimeGreen;
                 //Logger.Info($"Saved {_eventDataList.Count} events to {_jsonFilePath}");
             }
@@ -360,9 +361,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Logger.Warn($"Failed to save JSON file: {ex.Message}");
             }
-            _buttonSaveEvents.Visible = false;
-            _buttonReloadEvents.Visible = false;
-            _buttonRestartModule.Visible = true;
+            _BaubleFarmModule.Restart();
         }
         private void CancelEvent_Click(int Index)
         {
@@ -543,7 +542,6 @@ namespace roguishpanda.AB_Bauble_Farm
                         Location = new Point(0, (i * 40)),
                     };
                     _timerEventsPanels[i].Click += TimerSettings_Click;
-                    _timerPackagePanel.ChildAdded += _timerPackagePanel_ChildAdded;
 
                     if (i % 2 == 0)
                     {
@@ -600,11 +598,6 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Logger.Warn($"Failed to load events: {ex.Message}");
             }
-        }
-
-        private void _timerPackagePanel_ChildAdded(object sender, ChildChangedEventArgs e)
-        {
-            _timerPackagePanel.VerticalScrollOffset = 50;
         }
 
         private void TimerSettings_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
@@ -684,7 +677,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     _WaypointsLabel[y] = new Blish_HUD.Controls.Label
                     {
-                        Text = "Waypoint #" + (y + 1).ToString() + ":",
+                        Text = "Waypoint:",
                         Size = new Point(100, 40),
                         Location = new Point(0, 90),
                         HorizontalAlignment = HorizontalAlignment.Right,

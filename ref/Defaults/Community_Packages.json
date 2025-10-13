@@ -7,29 +7,29 @@
         "Description": "Break Time",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=]",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Next run starts at XX:30. Feel free to grab drink, snack, or take bathroom break in meantime.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -40,29 +40,29 @@
         "Description": "Breachers",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] breachers",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Wait for all 4 breachers to come out of ground before attacking.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -73,29 +73,29 @@
         "Description": "Rannik",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=]",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Press F @ portal entrance. Avoid yellow AOEs.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -106,29 +106,29 @@
         "Description": "Bombs",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAYIAAA=] bombs",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Throw bombs at Vine Crawler and Overseer Grael to do damage.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -139,29 +139,29 @@
         "Description": "Tarocheeki",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAYIAAA=] taro",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Revive Tarocheeki. Kill 4 waves and husk.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -172,29 +172,29 @@
         "Description": "Vet Hunt",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -205,29 +205,29 @@
         "Description": "Mirrors",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] mirrors",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Help Burnisher to the pylon. Superspeed burnisher if you have it.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill mobs at North and East mirrors. Then, rotate to West and South mirrors.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -238,29 +238,29 @@
         "Description": "Escort Vasanni",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] vasanni",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Escort Vasanni",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "1-2 help Mansir make to sap gate, then regroup with everyone.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -271,29 +271,29 @@
         "Description": "Escort Gorra",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] gorra",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Escort Gorra",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -304,29 +304,29 @@
         "Description": "Mansir Gate",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] mansir",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Help Mansir open the gate.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -337,29 +337,29 @@
         "Description": "Sap",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] sap",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill 1 corpse taker. Then, destroy sap for credit. Repeat twice.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -370,29 +370,29 @@
         "Description": "Sap Pylon",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Finish pylon. Escort Mansir while clearing mobs.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -403,29 +403,29 @@
         "Description": "Vet Hunt",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -436,29 +436,29 @@
         "Description": "Crash Site",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] crash site",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Crash Site. Revive downed NPCs.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -469,29 +469,29 @@
         "Description": "Check TM",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -502,29 +502,29 @@
         "Description": "Escort Vasanni (Meat)",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] vasanni",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Escort Vasanni again",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Main group clear mobs ahead. 1-2 stay on Vasanni.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "After clearing mobs, stand on meat marker.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -535,29 +535,29 @@
         "Description": "Wyvern",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] wyvern",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Prep CC",
             "Broadcast": true
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "CC when wyvern turns around.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "All out DPS when Wyvern falls.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -568,29 +568,29 @@
         "Description": "Sap",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] sap",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill 1 corpse taker. Then, destroy sap for credit. Repeat twice.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -601,29 +601,29 @@
         "Description": "Vet Hunt",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -634,29 +634,29 @@
         "Description": "Escort Gorra (Aid)",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] gorra",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Deliver Aid to NPCs. Kill mobs for credit.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Prep CC when Teragriff lands after event completes.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -667,29 +667,29 @@
         "Description": "East Pylon",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BGwIAAA=] epylon",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Revive Korin. Kill vinetenders and DPS Breacher. Do not CC.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Repeat 3-4 times.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -700,29 +700,29 @@
         "Description": "Sap",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] sap",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill 1 corpse taker. Then, destroy sap for credit. Repeat twice.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -733,29 +733,29 @@
         "Description": "Vet Hunt",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -766,29 +766,29 @@
         "Description": "Dawkkurra",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BN0HAAA=] dawk",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Tag Dawkkurra event",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -799,29 +799,29 @@
         "Description": "Wyvern",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] wyvern",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Prep CC",
             "Broadcast": true
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "CC when wyvern turns around.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "All out DPS when Wyvern falls.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -832,29 +832,29 @@
         "Description": "Ooze/Bramble/Prime",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -865,29 +865,29 @@
         "Description": "Sap",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] sap",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill 1 corpse taker. Then, destroy sap for credit. Repeat twice.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -898,29 +898,62 @@
         "Description": "Monocot (meta soon)",
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] monocot",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill Monocot",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 29,
+        "Description": "Pre-Meta Challenges",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BAYIAAA=] challenges",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Meta starting soon. Do challenges and tag mustering mobs at all 4 gates for maximum loot.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -935,29 +968,29 @@
         "Seconds": 45,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] svet",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "2-3 taps on vets. Only need 3.5k damage for gold.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -970,29 +1003,29 @@
         "Seconds": 45,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BGwIAAA=] evet",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "2-3 taps on vets. Only need 3.5k damage for gold.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1005,29 +1038,29 @@
         "Seconds": 45,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BN0HAAA=] nvet",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "2-3 taps on vets. Only need 3.5k damage for gold.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1040,29 +1073,29 @@
         "Seconds": 45,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAYIAAA=] wvet",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "2-3 taps on vets. Only need 3.5k damage for gold.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1075,29 +1108,29 @@
         "Seconds": 20,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] sap",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Please hold right before the entrance to first sap.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "There are 3 sap events. Target 1 Corpse Taker until dead. Then, attack the sap for credit.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1110,29 +1143,29 @@
         "Seconds": 30,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] balth",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Hold at the doorway before entering the Rest!!",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Wait for all friends and my call to enter.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1145,29 +1178,29 @@
         "Seconds": 30,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BEkIAAA=] wyvern",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Prep CC for when wyvern turns around.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1180,29 +1213,29 @@
         "Seconds": 20,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BN0HAAA=] bramble",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Prep CC",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1215,29 +1248,29 @@
         "Seconds": 0,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAYIAAA=] ooze",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Take the north walkway if you do not have mount",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Hold at entrance of cave until whole group is together.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1250,29 +1283,29 @@
         "Seconds": 30,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BN0HAAA=] guzzler",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Throw rocks or CC with Turtle mount to remove layers.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1285,29 +1318,29 @@
         "Seconds": 30,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BGwIAAA=] TM",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "You need stealth detection mastery to see the TM. AOE area for credit.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }
@@ -1320,29 +1353,29 @@
         "Seconds": 20,
         "WaypointData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "[\u0026BAIIAAA=] stoneheads",
             "Broadcast": false
           }
         ],
         "NotesData": [
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Attack Alpha. Then Beta. One is always invulnerable at given time",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "Kill rollers when they spawn halfway through.",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           },
           {
-            "Type": "squad",
+            "Type": "",
             "Notes": "",
             "Broadcast": false
           }

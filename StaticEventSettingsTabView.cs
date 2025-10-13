@@ -10,6 +10,7 @@ using Blish_HUD.Settings.UI.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.MediaFoundation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,7 @@ using System.Reflection;
 using System.Runtime;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace roguishpanda.AB_Bauble_Farm
@@ -51,6 +53,7 @@ namespace roguishpanda.AB_Bauble_Farm
         private Panel _staticSettingsPanel;
         private SettingCollection _MainSettings;
         private List<StaticDetailData> _eventNotes;
+        private List<StaticDetailData> _eventNotesReload;
         private List<PackageData> _PackageData;
         private int StaticRowNum;
         private StandardButton _buttonSaveEvents;
@@ -70,6 +73,7 @@ namespace roguishpanda.AB_Bauble_Farm
             _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
             _MainSettings = _BaubleFarmModule._settings;
             _eventNotes = new List<StaticDetailData>(_BaubleFarmModule._staticEvents);
+            _eventNotesReload = new List<StaticDetailData>(_BaubleFarmModule._staticEvents);
             _PackageData = new List<PackageData>(_BaubleFarmModule._PackageData);
             StaticRowNum = _BaubleFarmModule.StaticRowNum;
             _CurrentPackage = _BaubleFarmModule._CurrentPackage;
@@ -254,14 +258,14 @@ namespace roguishpanda.AB_Bauble_Farm
                     Description = _textNewEvent.Text,
                     WaypointData = new List<NotesData>
                     {
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false }
+                        new NotesData { Type = "", Notes = "", Broadcast = false }
                     },
                     NotesData = new List<NotesData>
                     {
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false },
-                        new NotesData { Type = "squad", Notes = "", Broadcast = false }
+                        new NotesData { Type = "", Notes = "", Broadcast = false },
+                        new NotesData { Type = "", Notes = "", Broadcast = false },
+                        new NotesData { Type = "", Notes = "", Broadcast = false },
+                        new NotesData { Type = "", Notes = "", Broadcast = false }
                     }
                 };
                 _eventNotes.Add(notesData);
@@ -328,8 +332,9 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 string jsonContent = JsonSerializer.Serialize(_PackageData, _jsonOptions);
                 File.WriteAllText(jsonFilePath, jsonContent);
-                _CreateEventAlert.Text = "Events have been saved! Restart Module to reset static UI";
+                _CreateEventAlert.Text = "Events have been saved!";
                 _CreateEventAlert.Visible = true;
+                _buttonReloadEvents.Visible = false;
                 _CreateEventAlert.TextColor = Color.LimeGreen;
                 //Logger.Info($"Saved {_eventDataList.Count} events to {_jsonFilePath}");
             }
@@ -337,9 +342,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Logger.Warn($"Failed to save JSON file: {ex.Message}");
             }
-            _buttonSaveEvents.Visible = false;
-            _buttonReloadEvents.Visible = false;
-            _buttonRestartModule.Visible = true;
+            _BaubleFarmModule.Restart();
         }
         private void CancelEvent_Click(int Index)
         {
@@ -445,7 +448,7 @@ namespace roguishpanda.AB_Bauble_Farm
             try
             {
                 // Reload events from original UI
-                _eventNotes = new List<StaticDetailData>(_BaubleFarmModule._staticEvents);
+                _eventNotes = new List<StaticDetailData>(_eventNotesReload);
 
                 // Clear old UI info
                 for (int i = 0; i < StaticRowNum; i++)
@@ -466,8 +469,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 _downArrowButton = new Image[StaticRowNum];
                 LoadEventTable(StaticRowNum);
                 StaticSettings_Click(_staticEventsPanels[StaticRowNum - 1], null);
-                _buttonSaveEvents.Visible = false;
-                _buttonReloadEvents.Visible = false;
                 _CreateEventAlert.Visible = true;
                 _CurrentEventLabel.Visible = true;
                 _CreateEventAlert.Text = "Events have reloaded!";
@@ -550,7 +551,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 Logger.Warn($"Failed to load events: {ex.Message}");
             }
         }
-
         private void StaticSettings_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
         {
             try
@@ -585,7 +585,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 {
                     _WaypointsLabel[y] = new Blish_HUD.Controls.Label
                     {
-                        Text = "Waypoint #" + (y+1).ToString() + ":",
+                        Text = "Waypoint:",
                         Size = new Point(100, 40),
                         Location = new Point(0, 0),
                         HorizontalAlignment = HorizontalAlignment.Right,

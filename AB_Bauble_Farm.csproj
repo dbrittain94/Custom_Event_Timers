@@ -152,7 +152,6 @@
     <None Include="mgfxc.runtimeconfig.json" />
     <None Include="packages.config" />
     <None Include="ref\Defaults\Community_Packages.json" />
-    <None Include="ref\Defaults\Event_Defaults.json" />
     <None Include="ref\Defaults\Package_Defaults.json" />
   </ItemGroup>
   <ItemGroup>
