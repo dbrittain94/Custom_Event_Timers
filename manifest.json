@@ -5,7 +5,7 @@
   "package": "Custom_Event_Timers.dll",
   "manifest_version": 1,
   "directories": [ "Shiny_Baubles" ],
-  "description": "Can be used to create custom timers and event trackers for gold per hour farms and/or meta events. \n\nAdditional features include: custom packages for timer/events, fast chat links for waypoints and notes, community packages, and the ability to copy/import your friend''s packages.",
+  "description": "Can be used to create custom timers and event trackers for gold per hour farms and/or meta events. \n\nAdditional features include: custom packages for timer/events, fast chat shorts for waypoints and notes, community packages, and the ability to copy/import your friend''s packages.",
   "dependencies": {
     "bh.blishhud": ">=1.2.0"
   },
