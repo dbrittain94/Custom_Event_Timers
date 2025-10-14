@@ -23,7 +23,7 @@ namespace roguishpanda.AB_Bauble_Farm
         }
         private void OpenSettings_Click(object sender, MouseEventArgs e)
         {
-            BaubleFarmModule module = BaubleFarmModule.ModuleInstance;
+            MainWindowModule module = MainWindowModule.ModuleInstance;
             if (module._SettingsWindow.Visible == false)
             {
                 module._SettingsWindow.Show();

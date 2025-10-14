@@ -155,7 +155,7 @@
     <None Include="ref\Defaults\Package_Defaults.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaubleFarmModule.cs" />
+    <Compile Include="MainWindowModule.cs" />
     <Compile Include="ListSettingsTabView.cs" />
     <Compile Include="ModuleSettingsView.cs" />
     <Compile Include="PackageSettingsTabView.cs" />
@@ -337,6 +337,7 @@
     <Content Include="mgfxc.dll" />
     <Content Include="mgfxc.exe" />
     <Content Include="mgfxc.pdb" />
+    <Content Include="ref\png\1010539-modified.png" />
     <Content Include="ref\png\517181-180.png" />
     <Content Include="ref\png\517181.png" />
     <Content Include="SharpDX.D3DCompiler.dll" />

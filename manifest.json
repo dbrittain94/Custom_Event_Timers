@@ -1,11 +1,11 @@
 {
-  "name": "Shiny Baubles",
+  "name": "Custom Timers & Events",
   "version": "0.0.8",
   "namespace": "roguishpanda.AB_Bauble_Farm",
   "package": "AB_Bauble_Farm.dll",
   "manifest_version": 1,
   "directories": [ "Shiny_Baubles" ],
-  "description": "Can be used to farm Shiny Baubles from events in Auric Basin. \n\nComes with event timers and a window to track when the Shiny Bauble map bonus begins.",
+  "description": "Can be used to create custom timers and event trackers for gold per hour farms and/or meta events. \n\nAdditional features include: custom packages for timer/events, fast chat links for waypoints and notes, community packages, and the ability to copy/import your friend''s packages.",
   "dependencies": {
     "bh.blishhud": ">=1.2.0"
   },

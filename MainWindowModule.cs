@@ -73,10 +73,10 @@ namespace roguishpanda.AB_Bauble_Farm
     }
 
     [Export(typeof(Blish_HUD.Modules.Module))]
-    public class BaubleFarmModule : Blish_HUD.Modules.Module
+    public class MainWindowModule : Blish_HUD.Modules.Module
     {
-        private static readonly Logger Logger = Logger.GetLogger<BaubleFarmModule>();
-        internal static BaubleFarmModule ModuleInstance;
+        private static readonly Logger Logger = Logger.GetLogger<MainWindowModule>();
+        internal static MainWindowModule ModuleInstance;
 
         #region Service Managers
         internal SettingsManager SettingsManager => this.ModuleParameters.SettingsManager;
@@ -161,7 +161,7 @@ namespace roguishpanda.AB_Bauble_Farm
         };
 
         [ImportingConstructor]
-        public BaubleFarmModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
+        public MainWindowModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters)
         {
             ModuleInstance = this;
         }
@@ -674,7 +674,7 @@ namespace roguishpanda.AB_Bauble_Farm
             await WaitForShiftKeyUpAsync();
             _inputPanel?.Hide();
             _inputPanel = null;
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
             if (wasKeybindPressed)
             {
@@ -1164,7 +1164,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     SavesPosition = true,
                     SavesSize = true,
                     CanResize = true,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                    Id = $"{nameof(MainWindowModule)}_TimerWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
                 _TimerWindow.Resized += _TimerWindow_Resized;
                 /// Create texture panel for timer window
@@ -1196,7 +1196,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Title = "",
                     SavesPosition = true,
                     CanResize = true,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmStaticWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                    Id = $"{nameof(MainWindowModule)}_StaticWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
                 _StaticWindow.Resized += _StaticWindow_Resized;
                 /// Create texture panel for timer window
@@ -1228,7 +1228,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Parent = GameService.Graphics.SpriteScreen,
                     Title = "Information",
                     SavesPosition = true,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmInfoWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
+                    Id = $"{nameof(MainWindowModule)}_InfoWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56",
                 };
 
                 _infoPanel = new Blish_HUD.Controls.Panel
@@ -1245,13 +1245,14 @@ namespace roguishpanda.AB_Bauble_Farm
                 #region Corner Icon
 
                 // Update the corner icon
-                AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
+                AsyncTexture2D cornertexture = ContentsManager.GetTexture(@"png\1010539-modified.png");
+                //AsyncTexture2D cornertexture = AsyncTexture2D.FromAssetId(1010539); //156022
                 _cornerIcon = new CornerIcon
                 {
                     Icon = cornertexture, // Use a game-sourced texture
                     Size = new Point(32, 32),
                     //Location = new Point(0, 0), // Adjust to position as corner icon
-                    BasicTooltipText = "Bauble Farm",
+                    BasicTooltipText = "Custom Timers & Events",
                     Parent = GameService.Graphics.SpriteScreen
                 };
 
@@ -1386,7 +1387,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Location = new Point(250, 30),
                     Size = new Point(32, 32),
                     Opacity = 0.7f,
-                    //Visible = false,
+                    Visible = false,
                     Parent = _TimerWindow
                 };
                 infoIcon.MouseEntered += (sender, e) => {
@@ -1579,6 +1580,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Texture = infoTexture,
                     Location = new Point(270, 30),
                     Size = new Point(32, 32),
+                    Visible = false,
                     Opacity = 0.7f,
                     Parent = _StaticWindow
                 };
@@ -1713,7 +1715,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Location = new Point(300, 300),
                     SavesPosition = true,
                     Visible = false,
-                    Id = $"{nameof(BaubleFarmModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
+                    Id = $"{nameof(MainWindowModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
                 };
 
                 AsyncTexture2D clockTexture = AsyncTexture2D.FromAssetId(155156);

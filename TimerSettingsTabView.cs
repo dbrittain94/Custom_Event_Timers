@@ -24,8 +24,8 @@ namespace roguishpanda.AB_Bauble_Farm
 {
     public class TimerSettingsTabView : View
     {
-        private static readonly Logger Logger = Logger.GetLogger<BaubleFarmModule>();
-        private BaubleFarmModule _BaubleFarmModule;
+        private static readonly Logger Logger = Logger.GetLogger<MainWindowModule>();
+        private MainWindowModule _BaubleFarmModule;
         private AsyncTexture2D _NoTexture;
         private Panel[] _timerEventsPanels;
         private TextBox[] _timerEventTextbox;
@@ -73,7 +73,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
         protected override void Build(Container buildPanel)
         {
-            _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
+            _BaubleFarmModule = MainWindowModule.ModuleInstance;
             _MainSettings = _BaubleFarmModule._settings;
             _eventNotes = new List<TimerDetailData>(_BaubleFarmModule._timerEvents);
             _PackageData = new List<PackageData>(_BaubleFarmModule._PackageData);
@@ -91,7 +91,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 Size = new Point(buildPanel.ContentRegion.Size.X + 500, buildPanel.ContentRegion.Size.Y + 400), // Match the panel to the content region
                 Location = new Point(buildPanel.ContentRegion.Location.X, buildPanel.ContentRegion.Location.Y - 35), // Align with content region
                 CanScroll = true,
-                BackgroundTexture = BaubleFarmModule.ModuleInstance._asyncTimertexture
+                BackgroundTexture = MainWindowModule.ModuleInstance._asyncTimertexture
             };
             _timerPackagePanel = new Blish_HUD.Controls.Panel
             {

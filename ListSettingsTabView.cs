@@ -13,7 +13,7 @@ namespace roguishpanda.AB_Bauble_Farm
 {
     public class ListSettingsTabView : View
     {
-        private BaubleFarmModule _BaubleFarmModule;
+        private MainWindowModule _BaubleFarmModule;
         private ViewContainer _settingsViewContainer;
         private Panel _timerEventsTitlePanel;
         private Label _timerEventsTitleLabel;
@@ -25,14 +25,14 @@ namespace roguishpanda.AB_Bauble_Farm
 
         protected override void Build(Container buildPanel)
         {
-            _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
+            _BaubleFarmModule = MainWindowModule.ModuleInstance;
 
             Blish_HUD.Controls.Panel listSettingsPanel = new Blish_HUD.Controls.Panel
             {
                 Parent = buildPanel,
                 Size = new Point(buildPanel.ContentRegion.Size.X + 200, buildPanel.ContentRegion.Size.Y + 300), // Match the panel to the content region
                 Location = new Point(buildPanel.ContentRegion.Location.X, buildPanel.ContentRegion.Location.Y - 35), // Align with content region
-                BackgroundTexture = BaubleFarmModule.ModuleInstance._asyncTimertexture
+                BackgroundTexture = MainWindowModule.ModuleInstance._asyncTimertexture
             };
 
             SettingCollection SettingsCollection = _BaubleFarmModule._MainSettingsCollection;

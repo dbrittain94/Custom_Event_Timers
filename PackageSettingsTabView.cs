@@ -24,8 +24,8 @@ namespace roguishpanda.AB_Bauble_Farm
 {
     public class PackageSettingsTabView : Blish_HUD.Graphics.UI.View
     {
-        private static readonly Logger Logger = Logger.GetLogger<BaubleFarmModule>();
-        private BaubleFarmModule _BaubleFarmModule;
+        private static readonly Logger Logger = Logger.GetLogger<MainWindowModule>();
+        private MainWindowModule _BaubleFarmModule;
         private List<PackageData> _PackageData;
         private List<PackageData> _CommunityPackageData;
         private Blish_HUD.Controls.Panel _timerEventsTitlePanel;
@@ -60,7 +60,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
         protected override void Build(Container buildPanel)
         {
-            _BaubleFarmModule = BaubleFarmModule.ModuleInstance;
+            _BaubleFarmModule = MainWindowModule.ModuleInstance;
             _PackageData = new List<PackageData>(_BaubleFarmModule._PackageData);
 
             Blish_HUD.Controls.Panel listSettingsPanel = new Blish_HUD.Controls.Panel
@@ -68,7 +68,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 Parent = buildPanel,
                 Size = new Point(buildPanel.ContentRegion.Size.X + 200, buildPanel.ContentRegion.Size.Y + 300), // Match the panel to the content region
                 Location = new Point(buildPanel.ContentRegion.Location.X, buildPanel.ContentRegion.Location.Y - 35), // Align with content region
-                BackgroundTexture = BaubleFarmModule.ModuleInstance._asyncTimertexture
+                BackgroundTexture = MainWindowModule.ModuleInstance._asyncTimertexture
             };
 
             AsyncTexture2D TitleTexture = AsyncTexture2D.FromAssetId(1234872);
