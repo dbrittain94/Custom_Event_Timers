@@ -2,7 +2,7 @@
   "name": "Custom Timers & Events",
   "version": "0.0.9",
   "namespace": "roguishpanda.AB_Bauble_Farm",
-  "package": "AB_Bauble_Farm.dll",
+  "package": "Custom_Event_Timers.dll",
   "manifest_version": 1,
   "directories": [ "Shiny_Baubles" ],
   "description": "Can be used to create custom timers and event trackers for gold per hour farms and/or meta events. \n\nAdditional features include: custom packages for timer/events, fast chat links for waypoints and notes, community packages, and the ability to copy/import your friend''s packages.",

@@ -1176,12 +1176,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     BackgroundColor = Color.Black,
                     Opacity = _OpacityDefault.Value
                 };
-                double panelTimerScaleHeight = _TimerWindow.Size.Y - 120;
+                double panelTimerScaleHeight = _TimerWindow.Size.Y - 100;
                 _timerPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _TimerWindow, // Set the panel's parent to the StandardWindow
                     Size = new Point(_TimerWindow.Size.X, (int)panelTimerScaleHeight), // Match the panel to the content region
-                    Location = new Point(_TimerWindow.ContentRegion.Location.X, _TimerWindow.ContentRegion.Location.Y + 70), // Align with content region
+                    Location = new Point(_TimerWindow.ContentRegion.Location.X, _TimerWindow.ContentRegion.Location.Y + 50), // Align with content region
                     CanScroll = true
                 };
                 #endregion
@@ -1208,12 +1208,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     BackgroundColor = Color.Black,
                     Opacity = _OpacityDefault.Value
                 };
-                double panelStaticScaleHeight = _StaticWindow.Size.Y - 120;
+                double panelStaticScaleHeight = _StaticWindow.Size.Y - 100;
                 _staticPanel = new Blish_HUD.Controls.Panel
                 {
                     Parent = _StaticWindow, // Set the panel's parent to the StandardWindow
                     Size = new Point(_StaticWindow.Size.X, (int)panelStaticScaleHeight), // Match the panel to the content region
-                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 70), // Align with content region
+                    Location = new Point(_StaticWindow.ContentRegion.Location.X, _StaticWindow.ContentRegion.Location.Y + 50), // Align with content region
                     CanScroll = true
                 };
                 #endregion
@@ -1355,6 +1355,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Location = new Point(60, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
+                    Visible = false,
                     TextColor = Color.DodgerBlue,
                     Parent = _TimerWindow
                 };
@@ -1365,6 +1366,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Location = new Point(160, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
+                    Visible = false,
                     TextColor = Color.DodgerBlue,
                     Parent = _TimerWindow
                 };
@@ -1571,6 +1573,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Location = new Point(100, 65),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
+                    Visible = false,
                     TextColor = Color.DodgerBlue,
                     Parent = _StaticWindow
                 };
@@ -1849,14 +1852,14 @@ namespace roguishpanda.AB_Bauble_Farm
 
         private void _TimerWindow_Resized(object sender, ResizedEventArgs e)
         {
-            double newHeight = _TimerWindow.Size.Y - 120;
+            double newHeight = _TimerWindow.Size.Y - 100;
             _timerPanel.Size = new Point(_TimerWindow.Size.X, (int)newHeight);
             _timerBackgroundPanel.Size = new Point(_TimerWindow.Size.X, _TimerWindow.Size.Y);
         }
 
         private void _StaticWindow_Resized(object sender, ResizedEventArgs e)
         {
-            double newHeight = _StaticWindow.Size.Y - 120;
+            double newHeight = _StaticWindow.Size.Y - 100;
             _staticPanel.Size = new Point(_StaticWindow.Size.X, (int)newHeight);
             _staticBackgroundPanel.Size = new Point(_StaticWindow.Size.X, _StaticWindow.Size.Y);
         }
@@ -2049,7 +2052,7 @@ namespace roguishpanda.AB_Bauble_Farm
 
             for (int i = 0; i < TimerRowNum; i++)
             {
-                _TimerWindowsOrdered[sortedWithIndices[i].OriginalIndex].Location = new Point(0, 95 + (i * 30));
+                _TimerWindowsOrdered[sortedWithIndices[i].OriginalIndex].Location = new Point(0, (i * 30));
             }
         }
         private void InOrdercheckbox_Click()
@@ -2058,7 +2061,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 for (int i = 0; i < TimerRowNum; i++)
                 {
-                    _TimerWindowsOrdered[i].Location = new Point(0, 95 + (i * 30));
+                    _TimerWindowsOrdered[i].Location = new Point(0, (i * 30));
                 }
             }
         }

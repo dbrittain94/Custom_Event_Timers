@@ -304,7 +304,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[TimerRowNum];
                 _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
-                TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
+                TimerSettings_Click(_timerEventsPanels[0], null);
                 //CreateEventJson();
                 _textNewEvent.Text = "";
                 _buttonSaveEvents.Visible = true;
@@ -424,7 +424,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[TimerRowNum];
                 _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
-                TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
+                TimerSettings_Click(_timerEventsPanels[0], null);
                 _buttonSaveEvents.Visible = true;
                 _buttonReloadEvents.Visible = true;
                 _buttonRestartModule.Visible = false;
@@ -512,7 +512,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[TimerRowNum];
                 _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
-                TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
+                TimerSettings_Click(_timerEventsPanels[0], null);
                 _buttonSaveEvents.Visible = false;
                 _buttonReloadEvents.Visible = false;
                 _CreateEventAlert.Visible = true;

@@ -288,7 +288,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[StaticRowNum];
                 _downArrowButton = new Image[StaticRowNum];
                 LoadEventTable(StaticRowNum);
-                StaticSettings_Click(_staticEventsPanels[StaticRowNum - 1], null);
+                StaticSettings_Click(_staticEventsPanels[0], null);
                 _textNewEvent.Text = "";
                 _buttonSaveEvents.Visible = true;
                 _buttonReloadEvents.Visible = true;
@@ -392,7 +392,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[StaticRowNum];
                 _downArrowButton = new Image[StaticRowNum];
                 LoadEventTable(StaticRowNum);
-                StaticSettings_Click(_staticEventsPanels[StaticRowNum - 1], null);
+                StaticSettings_Click(_staticEventsPanels[0], null);
                 _buttonSaveEvents.Visible = true;
                 _buttonReloadEvents.Visible = true;
                 _buttonRestartModule.Visible = false;
@@ -468,7 +468,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[StaticRowNum];
                 _downArrowButton = new Image[StaticRowNum];
                 LoadEventTable(StaticRowNum);
-                StaticSettings_Click(_staticEventsPanels[StaticRowNum - 1], null);
+                StaticSettings_Click(_staticEventsPanels[0], null);
                 _CreateEventAlert.Visible = true;
                 _CurrentEventLabel.Visible = true;
                 _CreateEventAlert.Text = "Events have reloaded!";
