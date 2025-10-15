@@ -31,7 +31,6 @@ namespace roguishpanda.AB_Bauble_Farm
         private Blish_HUD.Controls.Panel _timerEventsTitlePanel;
         private Blish_HUD.Controls.Label _timerEventsTitleLabel;
         private Blish_HUD.Controls.Label _PackageLabelDisplay;
-        private Blish_HUD.Controls.Label _PackageRenameAlert;
         private Blish_HUD.Controls.Label _PackageCreateLabel;
         private Blish_HUD.Controls.TextBox _PackageCreateTextBox;
         private StandardButton _ButtonCreate;
@@ -44,13 +43,11 @@ namespace roguishpanda.AB_Bauble_Farm
         private Blish_HUD.Controls.Label _PackageLoadPersonalLabel;
         private Dropdown _PackageLoadPersonalDropdown;
         private StandardButton _ButtonLoadPersonal;
-        private Blish_HUD.Controls.Label _PackageCreateAlert;
         private Blish_HUD.Controls.Label _PackageLoadCommunityLabel;
         private Dropdown _PackageLoadCommunityDropdown;
         private Blish_HUD.Controls.Label _PackageLoadPackageAlert;
         private StandardButton _ButtonDeletePersonal;
         private StandardButton _ButtonLoadCommunity;
-        private Blish_HUD.Controls.Label _PackageLoadCommunityAlert;
         private StandardButton _ButtonCopyClipboard;
         private StandardButton _ButtonImportClipboard;
         public readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
@@ -125,7 +122,7 @@ namespace roguishpanda.AB_Bauble_Farm
             };
             _DefaultPackageLabel = new Blish_HUD.Controls.Label
             {
-                Size = new Point(120, 40),
+                Size = new Point(300, 40),
                 Location = new Point(290, 150),
                 Font = GameService.Content.DefaultFont16,
                 //TextColor = Color.Gold,
@@ -134,7 +131,7 @@ namespace roguishpanda.AB_Bauble_Farm
             };
             _PackageRenameTextBox = new Blish_HUD.Controls.TextBox
             {
-                Size = new Point(150, 30),
+                Size = new Point(300, 30),
                 Location = new Point(280, 150),
                 Font = GameService.Content.DefaultFont16,
                 Visible = false,
@@ -144,7 +141,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Rename",
                 Size = new Point(80, 30),
-                Location = new Point(460, 150),
+                Location = new Point(610, 150),
                 Visible = true,
                 Parent = listSettingsPanel
             };
@@ -153,19 +150,11 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Save",
                 Size = new Point(80, 30),
-                Location = new Point(460, 150),
+                Location = new Point(610, 150),
                 Visible = false,
                 Parent = listSettingsPanel
             };
             _ButtonSaveRename.Click += _ButtonSaveRename_Click;
-            _PackageRenameAlert = new Blish_HUD.Controls.Label
-            {
-                Size = new Point(400, 40),
-                Location = new Point(550, 150),
-                Font = GameService.Content.DefaultFont16,
-                Visible = false,
-                Parent = listSettingsPanel
-            };
             _PackageCreateLabel = new Blish_HUD.Controls.Label
             {
                 Text = "Create Package:",
@@ -178,7 +167,7 @@ namespace roguishpanda.AB_Bauble_Farm
             };
             _PackageCreateTextBox = new Blish_HUD.Controls.TextBox
             {
-                Size = new Point(150, 30),
+                Size = new Point(300, 30),
                 Location = new Point(280, 200),
                 Font = GameService.Content.DefaultFont16,
                 Visible = true,
@@ -188,19 +177,11 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Create",
                 Size = new Point(80, 30),
-                Location = new Point(460, 200),
+                Location = new Point(610, 200),
                 Visible = true,
                 Parent = listSettingsPanel
             };
             _ButtonCreate.Click += _ButtonCreate_Click;
-            _PackageCreateAlert = new Blish_HUD.Controls.Label
-            {
-                Size = new Point(400, 40),
-                Location = new Point(550, 200),
-                Font = GameService.Content.DefaultFont16,
-                Visible = false,
-                Parent = listSettingsPanel
-            };
 
             _PackageLoadCommunityLabel = new Blish_HUD.Controls.Label
             {
@@ -213,7 +194,7 @@ namespace roguishpanda.AB_Bauble_Farm
             };
             _PackageLoadCommunityDropdown = new Blish_HUD.Controls.Dropdown
             {
-                Size = new Point(160, 40),
+                Size = new Point(310, 40),
                 Location = new Point(280, 250),
                 Parent = listSettingsPanel
             };
@@ -221,15 +202,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Import",
                 Size = new Point(80, 30),
-                Location = new Point(460, 250),
-                Parent = listSettingsPanel
-            };
-            _PackageLoadCommunityAlert = new Blish_HUD.Controls.Label
-            {
-                Size = new Point(500, 40),
-                Location = new Point(550, 250),
-                Font = GameService.Content.DefaultFont16,
-                Visible = false,
+                Location = new Point(610, 250),
                 Parent = listSettingsPanel
             };
             _ButtonLoadCommunity.Click += _ButtonLoadCommunity_Click;
@@ -247,7 +220,7 @@ namespace roguishpanda.AB_Bauble_Farm
             };
             _PackageLoadPersonalDropdown = new Blish_HUD.Controls.Dropdown
             {
-                Size = new Point(160, 40),
+                Size = new Point(310, 40),
                 Location = new Point(280, 300),
                 Visible = false,
                 Parent = listSettingsPanel
@@ -256,7 +229,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Load",
                 Size = new Point(80, 30),
-                Location = new Point(460, 300),
+                Location = new Point(610, 300),
                 Visible = false,
                 Parent = listSettingsPanel
             };
@@ -265,7 +238,7 @@ namespace roguishpanda.AB_Bauble_Farm
             {
                 Text = "Delete",
                 Size = new Point(80, 30),
-                Location = new Point(550, 300),
+                Location = new Point(700, 300),
                 Visible = false,
                 Parent = listSettingsPanel
             };
@@ -299,9 +272,6 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _DefaultPackageLabel.Visible = true;
             _PackageRenameTextBox.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageCreateAlert.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
             _PackageLoadPackageAlert.Visible = true;
             string PackageName = _DefaultPackageLabel.Text.ToString();
             int index = _PackageData.FindIndex(p => p.PackageName == PackageName);
@@ -332,9 +302,6 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _DefaultPackageLabel.Visible = true;
             _PackageRenameTextBox.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageCreateAlert.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
             _PackageLoadPackageAlert.Visible = true;
 
             string ClipboardText = GetClipboardText();
@@ -384,10 +351,9 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _DefaultPackageLabel.Visible = true;
             _PackageRenameTextBox.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageCreateAlert.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
             _PackageLoadPackageAlert.Visible = false;
+            _ButtonSaveRename.Visible = false;
+            _ButtonLoadRename.Visible = true;
             _PackageData = _PackageData.Where(pd => pd.PackageName != _PackageLoadPersonalDropdown.SelectedItem).ToList();
             SavePackageJsonUpdate();
             Task task = LoadPersonalPackageDropdownOptions();
@@ -396,9 +362,8 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _DefaultPackageLabel.Visible = true;
             _PackageRenameTextBox.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageCreateAlert.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
+            _ButtonSaveRename.Visible = false;
+            _ButtonLoadRename.Visible = true;
             _PackageLoadPackageAlert.Visible = true;
             _PackageSettingEntry.Value = _PackageLoadPersonalDropdown.SelectedItem.ToString();
             _DefaultPackageLabel.Text = _PackageLoadPersonalDropdown.SelectedItem.ToString();
@@ -411,17 +376,16 @@ namespace roguishpanda.AB_Bauble_Farm
         {
             _DefaultPackageLabel.Visible = true;
             _PackageRenameTextBox.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageCreateAlert.Visible = true;
-            _PackageLoadCommunityAlert.Visible = true;
-            _PackageLoadPackageAlert.Visible = false;
+            _PackageLoadPackageAlert.Visible = true;
+            _ButtonSaveRename.Visible = false;
+            _ButtonLoadRename.Visible = true;
             string CommunityPackageName = _PackageLoadCommunityDropdown.SelectedItem.ToString();
             foreach (var Packages in _PackageData)
             {
                 if (Packages.PackageName == CommunityPackageName)
                 {
-                    _PackageLoadCommunityAlert.Text = "* This package name already exists within personal packages!";
-                    _PackageLoadCommunityAlert.TextColor = Color.Red;
+                    _PackageLoadPackageAlert.Text = "* This package name already exists within personal packages!";
+                    _PackageLoadPackageAlert.TextColor = Color.Red;
                     return;
                 }
             }
@@ -437,13 +401,13 @@ namespace roguishpanda.AB_Bauble_Farm
                 Task task = LoadPersonalPackageDropdownOptions();
                 _BaubleFarmModule.Restart();
 
-                _PackageLoadCommunityAlert.Text = "This community package has been loaded into personal packages!";
-                _PackageLoadCommunityAlert.TextColor = Color.LimeGreen;
+                _PackageLoadPackageAlert.Text = "This community package has been loaded into personal packages!";
+                _PackageLoadPackageAlert.TextColor = Color.LimeGreen;
             }
             else
             {
-                _PackageLoadCommunityAlert.Text = "* This community package could not be loaded into personal packages!";
-                _PackageLoadCommunityAlert.TextColor = Color.Red;
+                _PackageLoadPackageAlert.Text = "* This community package could not be loaded into personal packages!";
+                _PackageLoadPackageAlert.TextColor = Color.Red;
             }
         }
         private void _ButtonCreate_Click(object sender, Blish_HUD.Input.MouseEventArgs e)
@@ -451,28 +415,33 @@ namespace roguishpanda.AB_Bauble_Farm
             // Check parameters
             _DefaultPackageLabel.Visible = true;
             _PackageRenameTextBox.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageCreateAlert.Visible = true;
-            _PackageLoadCommunityAlert.Visible = false;
-            _PackageLoadPackageAlert.Visible = false;
+            _PackageLoadPackageAlert.Visible = true;
+            _ButtonSaveRename.Visible = false;
+            _ButtonLoadRename.Visible = true;
             if (_PackageCreateTextBox.Text.Length < 4)
             {
-                _PackageCreateAlert.Text = "* 4 characters mininimum required to create new package";
-                _PackageCreateAlert.TextColor = Color.Red;
+                _PackageLoadPackageAlert.Text = "* 4 characters mininimum required to create new package";
+                _PackageLoadPackageAlert.TextColor = Color.Red;
+                return;
+            }
+            else if (_PackageCreateTextBox.Text.Length > 28)
+            {
+                _PackageLoadPackageAlert.Text = "* 28 characters maximum allowed for new package names";
+                _PackageLoadPackageAlert.TextColor = Color.Red;
                 return;
             }
             foreach (var Packages in _PackageData)
             {
                 if (Packages.PackageName == _PackageCreateTextBox.Text)
                 {
-                    _PackageCreateAlert.Text = "* This package name already exists";
-                    _PackageCreateAlert.TextColor = Color.Red;
+                    _PackageLoadPackageAlert.Text = "* This package name already exists";
+                    _PackageLoadPackageAlert.TextColor = Color.Red;
                     return;
                 }
             }
             _PackageRenameTextBox.Text = "";
-            _PackageCreateAlert.Text = "Package has been created!";
-            _PackageCreateAlert.TextColor = Color.LimeGreen;
+            _PackageLoadPackageAlert.Text = "Package has been created!";
+            _PackageLoadPackageAlert.TextColor = Color.LimeGreen;
 
             // Create a new PackageData instance
             PackageData newPackage = new PackageData
@@ -496,9 +465,6 @@ namespace roguishpanda.AB_Bauble_Farm
             _PackageRenameTextBox.Visible = true;
             _ButtonLoadRename.Visible = false;
             _ButtonSaveRename.Visible = true;
-            _PackageCreateAlert.Visible = false;
-            _PackageRenameAlert.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
             _PackageLoadPackageAlert.Visible = false;
             _PackageRenameTextBox.Text = _DefaultPackageLabel.Text;
         }
@@ -535,8 +501,6 @@ namespace roguishpanda.AB_Bauble_Farm
                     _PackageLoadPersonalDropdown.Visible = false;
                     _ButtonLoadPersonal.Visible = false;
                     _ButtonDeletePersonal.Visible = false;
-                    _PackageRenameAlert.Visible = false;
-                    _PackageCreateAlert.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -581,8 +545,6 @@ namespace roguishpanda.AB_Bauble_Farm
                     _PackageLoadPersonalDropdown.Visible = false;
                     _ButtonLoadPersonal.Visible = false;
                     _ButtonDeletePersonal.Visible = false;
-                    _PackageRenameAlert.Visible = false;
-                    _PackageCreateAlert.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -596,33 +558,35 @@ namespace roguishpanda.AB_Bauble_Farm
             // Check parameters
             if (_PackageRenameTextBox.Text.Length < 4)
             {
-                _PackageRenameAlert.Text = "* 4 characters mininimum required to create new package";
-                _PackageRenameAlert.Visible = true;
-                _PackageRenameAlert.TextColor = Color.Red;
+                _PackageLoadPackageAlert.Text = "* 4 characters mininimum required to create new package";
+                _PackageLoadPackageAlert.TextColor = Color.Red;
+                return;
+            }
+            else if (_PackageRenameTextBox.Text.Length > 28)
+            {
+                _PackageLoadPackageAlert.Text = "* 28 characters maximum allowed for new package names";
+                _PackageLoadPackageAlert.TextColor = Color.Red;
                 return;
             }
             foreach (var Packages in _PackageData)
             {
                 if (Packages.PackageName == _PackageRenameTextBox.Text && _DefaultPackageLabel.Text != _PackageRenameTextBox.Text)
                 {
-                    _PackageRenameAlert.Text = "* This package name already exists";
-                    _PackageRenameAlert.Visible = true;
-                    _PackageRenameAlert.TextColor = Color.Red;
+                    _PackageLoadPackageAlert.Text = "* This package name already exists";
+                    _PackageLoadPackageAlert.Visible = true;
+                    _PackageLoadPackageAlert.TextColor = Color.Red;
                     return;
                 }
             }
-            _PackageRenameAlert.Text = "Package has been renamed!";
-            _PackageRenameAlert.Visible = true;
-            _PackageRenameAlert.TextColor = Color.LimeGreen;
+            _PackageLoadPackageAlert.Text = "Package has been renamed!";
+            _PackageLoadPackageAlert.Visible = true;
+            _PackageLoadPackageAlert.TextColor = Color.LimeGreen;
 
             _ButtonSaveRename.Visible = false;
             _DefaultPackageLabel.Visible = true;
-            _PackageCreateAlert.Visible = false;
             _PackageRenameTextBox.Visible = false;
             _ButtonLoadRename.Visible = true;
             _ButtonSaveRename.Visible = false;
-            _PackageLoadCommunityAlert.Visible = false;
-            _PackageLoadPackageAlert.Visible = false;
             var package = _PackageData.FirstOrDefault(p => p.PackageName == _DefaultPackageLabel.Text);
             if (package != null)
             {

@@ -292,7 +292,7 @@ namespace roguishpanda.AB_Bauble_Farm
         private void ChangeOpacity_Activated(object sender, EventArgs e)
         {
             _infoPanel.Opacity = _OpacityDefault.Value;
-            _timerPanel.Opacity = _OpacityDefault.Value;
+            _timerBackgroundPanel.Opacity = _OpacityDefault.Value;
             _staticBackgroundPanel.Opacity = _OpacityDefault.Value;
         }
         private void timerKeybinds(int timerIndex)
@@ -1350,55 +1350,45 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 Blish_HUD.Controls.Label eventsLabel = new Blish_HUD.Controls.Label
                 {
-                    Text = "Events",
-                    Size = new Point(120, 30),
-                    Location = new Point(60, 65),
+                    Text = "Add an event OR select a package\nin the settings",
+                    Size = new Point(250, 60),
+                    Location = new Point(50, 80),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
+                    HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
                     Visible = false,
-                    TextColor = Color.DodgerBlue,
+                    TextColor = Color.Gold,
                     Parent = _TimerWindow
                 };
-                Blish_HUD.Controls.Label timerLabel = new Blish_HUD.Controls.Label
+
+                if (TimerRowNum > 0)
                 {
-                    Text = "Timer",
-                    Size = new Point(120, 30),
-                    Location = new Point(160, 65),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    Visible = false,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _TimerWindow
-                };
-                Blish_HUD.Controls.Label overridesLabel = new Blish_HUD.Controls.Label
+                    eventsLabel.Visible = false;
+                    _timerPanel.Visible = true;
+                }
+                else
                 {
-                    Text = "Override (min)",
-                    Size = new Point(120, 30),
-                    Location = new Point(300, 65),
-                    Font = GameService.Content.DefaultFont16,
-                    StrokeText = true,
-                    Visible = false,
-                    TextColor = Color.DodgerBlue,
-                    Parent = _TimerWindow
-                };
+                    eventsLabel.Visible = true;
+                    _timerPanel.Visible = false;
+                }
 
                 AsyncTexture2D infoTexture = AsyncTexture2D.FromAssetId(440023);
                 Image infoIcon = new Image
                 {
                     Texture = infoTexture,
-                    Location = new Point(250, 30),
+                    Location = new Point(270, 30),
                     Size = new Point(32, 32),
                     Opacity = 0.7f,
                     Visible = false,
                     Parent = _TimerWindow
                 };
                 infoIcon.MouseEntered += (sender, e) => {
-                    infoIcon.Location = new Point(250 - 4, 30 - 4);
+                    infoIcon.Location = new Point(270 - 4, 30 - 4);
                     infoIcon.Size = new Point(40, 40);
                     infoIcon.Opacity = 1f;
                 };
                 infoIcon.MouseLeft += (s, e) => {
-                    infoIcon.Location = new Point(250, 30);
+                    infoIcon.Location = new Point(270, 30);
                     infoIcon.Size = new Point(32, 32);
                     infoIcon.Opacity = 0.7f;
                 };
@@ -1408,19 +1398,19 @@ namespace roguishpanda.AB_Bauble_Farm
                 Image settingsIcon = new Image
                 {
                     Texture = geartexture,
-                    Location = new Point(280, 30),
+                    Location = new Point(300, 30),
                     Size = new Point(32, 32),
                     Opacity = 0.7f,
                     //Visible = false,
                     Parent = _TimerWindow
                 };
                 settingsIcon.MouseEntered += (sender, e) => {
-                    settingsIcon.Location = new Point(280 - 4, 30 - 4);
+                    settingsIcon.Location = new Point(300 - 4, 30 - 4);
                     settingsIcon.Size = new Point(40, 40);
                     settingsIcon.Opacity = 1f;
                 };
                 settingsIcon.MouseLeft += (s, e) => {
-                    settingsIcon.Location = new Point(280, 30);
+                    settingsIcon.Location = new Point(300, 30);
                     settingsIcon.Size = new Point(32, 32);
                     settingsIcon.Opacity = 0.7f;
                 };
@@ -1568,15 +1558,27 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 Blish_HUD.Controls.Label staticEventsLabel = new Blish_HUD.Controls.Label
                 {
-                    Text = "Static Events",
-                    Size = new Point(120, 30),
-                    Location = new Point(100, 65),
+                    Text = "Add an event OR select a package\nin the settings",
+                    Size = new Point(250, 60),
+                    Location = new Point(50, 80),
                     Font = GameService.Content.DefaultFont16,
                     StrokeText = true,
+                    HorizontalAlignment = Blish_HUD.Controls.HorizontalAlignment.Center,
                     Visible = false,
-                    TextColor = Color.DodgerBlue,
+                    TextColor = Color.Gold,
                     Parent = _StaticWindow
                 };
+
+                if (TimerRowNum > 0)
+                {
+                    staticEventsLabel.Visible = false;
+                    _staticPanel.Visible = true;
+                }
+                else
+                {
+                    staticEventsLabel.Visible = true;
+                    _staticPanel.Visible = false;
+                }
 
                 Image infoIcon2 = new Image
                 {
@@ -1721,6 +1723,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     Id = $"{nameof(MainWindowModule)}_BaubleFarmTimerSettingsWindow_38d37290-b5f9-447d-97ea-45b0b50e5f56"
                 };
 
+                AsyncTexture2D packageTexture = AsyncTexture2D.FromAssetId(156701);
+                _SettingsWindow.Tabs.Add(new Tab(
+                    packageTexture,
+                    () => new PackageSettingsTabView(),
+                    "Packages"
+                ));
                 AsyncTexture2D clockTexture = AsyncTexture2D.FromAssetId(155156);
                 _SettingsWindow.Tabs.Add(new Tab(
                     clockTexture,
@@ -1732,12 +1740,6 @@ namespace roguishpanda.AB_Bauble_Farm
                     staticTexture,
                     () => new StaticEventSettingsTabView(),
                     "Static Events"
-                ));
-                AsyncTexture2D packageTexture = AsyncTexture2D.FromAssetId(156701);
-                _SettingsWindow.Tabs.Add(new Tab(
-                    packageTexture,
-                    () => new PackageSettingsTabView(),
-                    "Packages"
                 ));
                 AsyncTexture2D listTexture = AsyncTexture2D.FromAssetId(157109);
                 _SettingsWindow.Tabs.Add(new Tab(
