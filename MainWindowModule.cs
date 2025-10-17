@@ -1569,7 +1569,7 @@ namespace roguishpanda.AB_Bauble_Farm
                     Parent = _StaticWindow
                 };
 
-                if (TimerRowNum > 0)
+                if (StaticRowNum > 0)
                 {
                     staticEventsLabel.Visible = false;
                     _staticPanel.Visible = true;

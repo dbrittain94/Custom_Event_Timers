@@ -304,7 +304,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[TimerRowNum];
                 _downArrowButton = new Image[TimerRowNum];
                 LoadEventTable(TimerRowNum);
-                TimerSettings_Click(_timerEventsPanels[0], null);
+                TimerSettings_Click(_timerEventsPanels[TimerRowNum - 1], null);
                 //CreateEventJson();
                 _textNewEvent.Text = "";
                 _buttonSaveEvents.Visible = true;

@@ -238,15 +238,12 @@ namespace roguishpanda.AB_Bauble_Farm
                     maxId = originalNotesData.Max(note => note.ID);
                     NewID = maxId + 1;
                 }
-                foreach (var Events in originalNotesData)
+                if (_textNewEvent.Text.Length < 4)
                 {
-                    if (Events.Description == _textNewEvent.Text)
-                    {
-                        _CreateEventAlert.Text = "* This event already exists";
-                        _CreateEventAlert.Visible = true;
-                        _CreateEventAlert.TextColor = Color.Red;
-                        return;
-                    }
+                    _CreateEventAlert.Text = "* 4 characters mininimum required to create new event";
+                    _CreateEventAlert.Visible = true;
+                    _CreateEventAlert.TextColor = Color.Red;
+                    return;
                 }
                 _CreateEventAlert.Text = "Event has been added! Click save to confirm changes!";
                 _CreateEventAlert.Visible = true;
@@ -288,7 +285,7 @@ namespace roguishpanda.AB_Bauble_Farm
                 _upArrowButton = new Image[StaticRowNum];
                 _downArrowButton = new Image[StaticRowNum];
                 LoadEventTable(StaticRowNum);
-                StaticSettings_Click(_staticEventsPanels[0], null);
+                StaticSettings_Click(_staticEventsPanels[StaticRowNum - 1], null);
                 _textNewEvent.Text = "";
                 _buttonSaveEvents.Visible = true;
                 _buttonReloadEvents.Visible = true;

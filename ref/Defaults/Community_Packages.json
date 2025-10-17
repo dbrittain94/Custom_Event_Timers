@@ -1382,5 +1382,2420 @@
         ]
       }
     ]
+  },
+  {
+    "PackageName": "Dragon Stand Meta (North)",
+    "StaticDetailData": [
+      {
+        "ID": 1,
+        "Description": "Pods and Crystal Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for mordrem pods and wyvern crystal events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 glide up to the islands and deliver the mordrems pods to Briallen",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 climb up to the wyvern nest and deliver the crystals to Chakata.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "Thornheart",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Thornheart will spawn at my position/marker. Prepare CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite Stalkers will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 4,
+        "Description": "Riders",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Riders will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 5,
+        "Description": "Clear Mobs",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Clear mobs ahead",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 6,
+        "Description": "First Spitfire",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "DPS spitfire. When vintenders spawn, attack them. Then, finish spitfire.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 7,
+        "Description": "Vinetenders",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Kill vintenders",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 8,
+        "Description": "Meat and Mushroom Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for meat and mushroom events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 deliver the meat from the nests.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 defend the mushrooms in the cave. Do not come into the cave if you do not have the poison mastery.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 9,
+        "Description": "Regroup at Camp",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFIIAAA=]",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Regroup at camp! Wait for the approaching boss to get closer to camp before attacking.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 10,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite Stalkers will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 11,
+        "Description": "Stavemaster Adryn",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Attack Stavemaster Adryn. CC first. Then DPS.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 12,
+        "Description": "Thornheart",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Thornheart will spawn at my position/marker. Prepare CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 13,
+        "Description": "Second Spitfire",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "DPS spitfire. When preservers spawn, attack them. Then, finish spitfire.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 14,
+        "Description": "Bramble and Mirror Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for Bramble and Mirrors events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 help the NPC. Destroy the bramble. Use the bramble begone to destroy the gates.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 enter the hole behind the waypoint and help the NPC setup mirrors.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 15,
+        "Description": "Regroup at Camp",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BAAJAAA=]",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Regroup at camp! Wait for the approaching boss to get closer to camp before attacking.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 16,
+        "Description": "Stavemaster Adryn",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Attack Stavemaster Adryn. CC first. Then DPS.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 17,
+        "Description": "Setup Groups for Boss Fight",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "The lane boss fight will be coming up soon. I need 5-10 volunteers to drag themselves into subgroup #2.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 18,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite stalkers will spawn at my position/marker after escort starts.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "We will kill the stalkers first, then snipers, and finally the thornheart. Be sure to CC the thornheart.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 19,
+        "Description": "Clear Mobs",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Clear mobs between us and the gate.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 20,
+        "Description": "Pre-Boss Fight Speech",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "When the gate opens, we will turn right. Group #1 will kill preservers and attack pods. Group #2 will keep boss in center until all pods have been destroyed.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Boss is invulnerable until all pods are destroyed, so be patient.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 we have to keep doing laps and kill preservers or the pods will respawn. If the pods respawn, the boss respawns.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 regroup with Group #1 once boss dies. We have to keep doing laps until all other lanes finish.",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 21,
+        "Description": "Mordremoth Tips",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Zoom out mini-map to see the island events spawning more easily.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "If Mordy\u0027s head goes left, jump off the island or Mordy will kill you. If Mordy\u0027s head goes right, use stability or you will be feared off island.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      }
+    ],
+    "TimerDetailData": [
+      {
+        "ID": 1,
+        "Description": "TM #1",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BGUIAAA=]TM1",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "TM #2",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFMIAAA=]TM2",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "TM #3",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFIIAAA=]TM3",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "PackageName": "Dragon Stand Meta (Mid)",
+    "StaticDetailData": [
+      {
+        "ID": 1,
+        "Description": "Parts and Escort Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for engine parts and escort events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 deliver engine parts to Kaywinn",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 escort Grumlukl",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #3 escort Muldotl to swamp and kill mushroom king",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "Thornheart",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Thornheart will spawn at my position/marker. Prepare CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite Stalkers will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 4,
+        "Description": "Riders",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Riders will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 5,
+        "Description": "Clear Mobs",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Clear mobs ahead",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 6,
+        "Description": "First Spitfire",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "DPS spitfire. When vintenders spawn, attack them. Then, finish spitfire.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 7,
+        "Description": "Vinetenders",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Kill vintenders",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 8,
+        "Description": "Scrap and Prisoner Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for scrap and prisoner events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 deliver scrap to Braeden above.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 help the soldiers escape in the swamp below",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 9,
+        "Description": "Regroup at Camp",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BC4IAAA=]",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Regroup at camp! Wait for the approaching boss to get closer to camp before attacking.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 10,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite Stalkers will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 11,
+        "Description": "Blademaster Diarmid",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Attack Blademaster Diarmid. CC first. Then DPS.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 12,
+        "Description": "Thornheart",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Thornheart will spawn at my position/marker. Prepare CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 13,
+        "Description": "Second Spitfire",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "DPS spitfire. When preservers spawn, attack them. Then, finish spitfire.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 14,
+        "Description": "Supplies and Escort Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for supplies and escort events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 climb to the top of mountain, gather supplies, and deliver to NPC at camp",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 escort Alara",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 15,
+        "Description": "Regroup at Camp",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFMIAAA=]",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Regroup at camp! Wait for the approaching boss to get closer to camp before attacking.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 16,
+        "Description": "Blademaster Diarmid",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Attack Blademaster Diarmid. CC first. Then DPS.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 17,
+        "Description": "Setup Groups for Boss Fight",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "The lane boss fight will be coming up soon. I need 5-10 volunteers to drag themselves into subgroup #2.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 18,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite stalkers will spawn at my position/marker after escort starts.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "We will kill the stalkers first, then snipers, and finally the thornheart. Be sure to CC the thornheart.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 19,
+        "Description": "Clear Mobs",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Clear mobs between us and the gate.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 20,
+        "Description": "Pre-Boss Fight Speech",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "When the gate opens, we will turn left. Group #1 will kill preservers and attack pods. Group #2 will keep boss in center until all pods have been destroyed.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Boss is invulnerable until all pods are destroyed, so be patient.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 we have to keep doing laps and kill preservers or the pods will respawn. If the pods respawn, the boss respawns.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 regroup with Group #1 once boss dies. We have to keep doing laps until all other lanes finish.",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 21,
+        "Description": "Mordremoth Tips",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Zoom out mini-map to see the island events spawning more easily.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "If Mordy\u0027s head goes left, jump off the island or Mordy will kill you. If Mordy\u0027s head goes right, use stability or you will be feared off island.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      }
+    ],
+    "TimerDetailData": [
+      {
+        "ID": 1,
+        "Description": "TM #1",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BGUIAAA=]TM1",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "TM #2",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFMIAAA=]TM2",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "TM #3",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFIIAAA=]TM3",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "PackageName": "Dragon Stand Meta (South)",
+    "StaticDetailData": [
+      {
+        "ID": 1,
+        "Description": "Ley-Line and Escort Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for ley-line collectors and escort events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 collect ley-line energy and deliver to collector",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 escort Splort",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "Thornheart",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Thornheart will spawn at my position/marker. Prepare CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite Stalkers will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 4,
+        "Description": "Riders",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Riders will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 5,
+        "Description": "Clear Mobs",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Clear mobs ahead",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 6,
+        "Description": "First Spitfire",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "DPS spitfire. When vintenders spawn, attack them. Then, finish spitfire.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 7,
+        "Description": "Vinetenders",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Kill vintenders",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 8,
+        "Description": "Chak and Dolyak Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for chak and dolyak escort events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 kill the chak in cave",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 escort the dolyak",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 9,
+        "Description": "Regroup at Camp",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BE8IAAA=]",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Regroup at camp! Wait for the approaching boss to get closer to camp before attacking.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 10,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite Stalkers will spawn at my position/marker. Prep CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 11,
+        "Description": "Axemaster Hareth",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Attack Axemaster Hareth. CC first. Then DPS.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 12,
+        "Description": "Thornheart",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Thornheart will spawn at my position/marker. Prepare CC.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 13,
+        "Description": "Second Spitfire",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "DPS spitfire. When preservers spawn, attack them. Then, finish spitfire.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 14,
+        "Description": "Beetles and Escort Event",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Split up for beetles and escort events!",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 tame the beetles in the cave. Stand on the mushrooms and use warclaw chain to pull them to you.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 escort Skeln",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 15,
+        "Description": "Regroup at Camp",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BGUIAAA=]",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Regroup at camp! Wait for the approaching boss to get closer to camp before attacking.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 16,
+        "Description": "Axemaster Hareth.",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Attack Axemaster Hareth. CC first. Then DPS.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 17,
+        "Description": "Setup Groups for Boss Fight",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "The lane boss fight will be coming up soon. I need 5-10 volunteers to drag themselves into subgroup #2.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 18,
+        "Description": "Elite Stalkers",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Elite stalkers will spawn at my position/marker after escort starts.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "We will kill the stalkers first, then snipers, and finally the thornheart. Be sure to CC the thornheart.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 19,
+        "Description": "Clear Mobs",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Clear mobs between us and the gate.",
+            "Broadcast": true
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 20,
+        "Description": "Pre-Boss Fight Speech",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "When the gate opens, we will turn left. Group #1 will kill preservers and attack pods. Group #2 will keep boss in center until all pods have been destroyed.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Boss is invulnerable until all pods are destroyed, so be patient.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #1 we have to keep doing laps and kill preservers or the pods will respawn. If the pods respawn, the boss respawns.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "Group #2 regroup with Group #1 once boss dies. We have to keep doing laps until all other lanes finish.",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 21,
+        "Description": "Mordremoth Tips",
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "Zoom out mini-map to see the island events spawning more easily.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "If Mordy\u0027s head goes left, jump off the island or Mordy will kill you. If Mordy\u0027s head goes right, use stability or you will be feared off island.",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      }
+    ],
+    "TimerDetailData": [
+      {
+        "ID": 1,
+        "Description": "TM #1",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BGUIAAA=]TM1",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 2,
+        "Description": "TM #2",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFMIAAA=]TM2",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      },
+      {
+        "ID": 3,
+        "Description": "TM #3",
+        "Minutes": 10,
+        "Seconds": 0,
+        "WaypointData": [
+          {
+            "Type": "",
+            "Notes": "[\u0026BFIIAAA=]TM3",
+            "Broadcast": false
+          }
+        ],
+        "NotesData": [
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          },
+          {
+            "Type": "",
+            "Notes": "",
+            "Broadcast": false
+          }
+        ]
+      }
+    ]
   }
 ]
