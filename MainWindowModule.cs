@@ -1080,7 +1080,6 @@ namespace roguishpanda.AB_Bauble_Farm
 
                 // Initialize timer UI variables
                 _timerStartTimes = new DateTime?[TimerRowNum];
-                _timerWaypoints = new List<List<string>>();
                 _timerRunning = new bool[TimerRowNum];
                 _timerLabelDescriptions = new Blish_HUD.Controls.Label[TimerRowNum];
                 _timerNotesIcon = new Image[TimerRowNum];
@@ -1094,7 +1093,6 @@ namespace roguishpanda.AB_Bauble_Farm
                 _timerDurationDefaults = new TimeSpan[TimerRowNum];
 
                 // Initialize static UI variables
-                _staticWaypoints = new List<List<string>>();
                 _staticRunning = new bool[StaticRowNum];
                 _staticLabelDescriptions = new Blish_HUD.Controls.Label[StaticRowNum];
                 _staticNotesIcon = new Image[StaticRowNum];
@@ -1114,7 +1112,6 @@ namespace roguishpanda.AB_Bauble_Farm
                     _TimerMinutes[i] = timerNotesData[i].Minutes;
                     _TimerSeconds[i] = timerNotesData[i].Seconds;
                     _TimerID[i] = timerNotesData[i].ID;
-                    //Logger.Info($"Waypoint: {timerNotesData[i].Waypoint} Notes: {timerNotesData[i].Notes}");
                 }
                 for (int j = 0; j < StaticRowNum; j++)
                 {
@@ -1478,6 +1475,42 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
                     _timerNotesIcon[i].Click += async (s, e) => await NotesIcon_Click(index, "Timer");
 
+                    if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
+                    {
+                        _timerNotesIcon[i].Hide();
+                    }
+                    else
+                    {
+                        _timerNotesIcon[i].Show();
+                    }
+
+                    bool waypointNote = false;
+                    for (int k = 0; k < _timerEvents[i].WaypointData.Count; k++)
+                    {
+                        string note = _timerEvents[i].WaypointData[k].Notes;
+                        if (note != "")
+                        {
+                            waypointNote = true;
+                        }
+                    }
+                    if (waypointNote == false)
+                    {
+                        _timerWaypointIcon[i].Visible = false;
+                    }
+                    bool notesNote = false;
+                    for (int k = 0; k < _timerEvents[i].NotesData.Count; k++)
+                    {
+                        string note = _timerEvents[i].NotesData[k].Notes;
+                        if (note != "")
+                        {
+                            notesNote = true;
+                        }
+                    }
+                    if (notesNote == false)
+                    {
+                        _timerNotesIcon[i].Visible = false;
+                    }
+
                     // Timer Event Description
                     _timerLabelDescriptions[i].Size = new Point(100, 30);
                     _timerLabelDescriptions[i].Location = new Point(60, 0);
@@ -1522,17 +1555,6 @@ namespace roguishpanda.AB_Bauble_Farm
                         Parent = _TimerWindowsOrdered[i]
                     };
                     _customDropdownTimers[i].ValueChanged += (s, e) => dropdownChanged_Click(index);
-
-                    if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
-                    {
-                        _timerNotesIcon[i].Hide();
-                        //_timerWaypointIcon[i].Hide();
-                    }
-                    else
-                    {
-                        _timerNotesIcon[i].Show();
-                        //_timerWaypointIcon[i].Show();
-                    }
                 }
                 #endregion
 
@@ -1690,21 +1712,46 @@ namespace roguishpanda.AB_Bauble_Farm
                     };
                     _staticCheckboxes[j].CheckedChanged += (s, e) => _StaticEventsCheckbox_Click(index);
 
-                    // Timer Event Description
-                    _staticLabelDescriptions[j].Size = new Point(200, 30);
-                    _staticLabelDescriptions[j].Location = new Point(100, 0);
-                    _staticLabelDescriptions[j].Parent = _StaticWindowsOrdered[j];
-
                     if (_postNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None || _cancelNotesKeybind.Value.PrimaryKey == Microsoft.Xna.Framework.Input.Keys.None)
                     {
                         _staticNotesIcon[j].Hide();
-                        //_staticWaypointIcon[j].Hide();
                     }
                     else
                     {
                         _staticNotesIcon[j].Show();
-                        //_staticWaypointIcon[j].Show();
                     }
+
+                    bool waypointNote = false;
+                    for (int k = 0; k < _staticEvents[j].WaypointData.Count; k++)
+                    {
+                        string note = _staticEvents[j].WaypointData[k].Notes;
+                        if (note != "")
+                        {
+                            waypointNote = true;
+                        }
+                    }
+                    if (waypointNote == false)
+                    {
+                        _staticWaypointIcon[j].Visible = false;
+                    }
+                    bool notesNote = false;
+                    for (int k = 0; k < _staticEvents[j].NotesData.Count; k++)
+                    {
+                        string note = _staticEvents[j].NotesData[k].Notes;
+                        if (note != "")
+                        {
+                            notesNote = true;
+                        }
+                    }
+                    if (notesNote == false)
+                    {
+                        _staticNotesIcon[j].Visible = false;
+                    }
+
+                    // Timer Event Description
+                    _staticLabelDescriptions[j].Size = new Point(200, 30);
+                    _staticLabelDescriptions[j].Location = new Point(100, 0);
+                    _staticLabelDescriptions[j].Parent = _StaticWindowsOrdered[j];
                 }
                 #endregion
 
